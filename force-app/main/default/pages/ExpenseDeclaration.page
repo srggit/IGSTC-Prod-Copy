@@ -1756,7 +1756,7 @@
 
                             <div class="row mt-4 mb-4">
                                 <!-- Condition removed for Submit and Next Button, because we were not able to save the data. -->
-                                <div class="col-md-12">dde
+                                <div class="col-md-12">
                                     <!-- <button type="button" class="blue-btn float-end ms-3" ng-click="redirectPageURL('Declartion_2plus2')">Save and Next</button> -->
                                     <button type="button" class="blue-btn float-end ms-3" ng-click="submitExpense()">Save and Next</button>
                                     <button type="button" class="blue-bordered-btn float-end" ng-click="redirectPageURL('ProjectDetail')">Previous</button>
