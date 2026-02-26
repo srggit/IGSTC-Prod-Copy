@@ -1,18 +1,18 @@
 angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $rootScope) {
 
     debugger;
-    $rootScope.apaId=null
+    $rootScope.apaId = null
     // Fetching the proposalId from Local Storage
     if (localStorage.getItem('yearlyCallId')) {
         $rootScope.yearlyCallId = localStorage.getItem('yearlyCallId');
         console.log('Loaded proposalId from localStorage:', $rootScope.yearlyCallId);
     }
 
-    if(localStorage.getItem('proposalId')){
+    if (localStorage.getItem('proposalId')) {
         $rootScope.proposalId = localStorage.getItem('proposalId');
         console.log('Loaded proposalId from localStorage:', $rootScope.proposalId);
     }
-        
+
     if (localStorage.getItem('apaId')) {
         $rootScope.apaId = localStorage.getItem('apaId');
         console.log('Loaded apaId from localStorage:', $rootScope.apaId);
@@ -43,7 +43,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         console.log('thematicAreaList value:', $scope.thematicAreaList);
         console.log('thematicAreaList length:', $scope.thematicAreaList ? $scope.thematicAreaList.length : 0);
         debugger;
-        ApplicantPortal_Contoller.getApplicantDetails($rootScope.candidateId,$rootScope.apaId, function (result, event) {
+        ApplicantPortal_Contoller.getApplicantDetails($rootScope.candidateId, $rootScope.apaId, function (result, event) {
             console.log('Apex called===============>');
             console.log('Result===================>' + JSON.stringify(result));
             console.log('Event=================>' + JSON.stringify(event));
@@ -52,19 +52,21 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                 debugger;
                 if (result != null) {
                     var thematicAreaId = [];
-                    let proposal=result.proposal;
+                    let proposal = result.proposal;
                     $rootScope.apaId = result.apa?.Id;
                     // Get coordinator status from APA
                     $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c == true ? 'true' : 'false';
-                    if($rootScope.isCoordinator == 'true'){     
-                        if(proposal.Proposal_Stages__c == 'Draft' && proposal.Stage__c == '1st Stage'){
+                    if ($rootScope.isCoordinator == 'true') {
+                        if (proposal.Proposal_Stages__c == 'Draft' && proposal.Stage__c == '1st Stage') {
                             $scope.proposalStage = false;
-                        }else if(proposal.Proposal_Stages__c == 'Submitted' && proposal.Stage__c == '2nd Stage'){
+                        } else if (proposal.Proposal_Stages__c == 'Submitted' && proposal.Stage__c == '2nd Stage') {
                             $scope.proposalStage = true;
-                        }else{
+                        } else if (proposal.Proposal_Stages__c == 'Draft' && proposal.Stage__c == '2nd Stage') { // New Condition added to remove path redirect
+                            $scope.proposalStage = false;
+                        } else {
                             $scope.proposalStage = true;
                         }
-                    }else{
+                    } else {
                         $scope.proposalStage = true;
                     }
                     if (proposal.Summary__c != undefined || proposal.Summary__c != "") {

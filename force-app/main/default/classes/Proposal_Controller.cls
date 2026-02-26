@@ -9348,7 +9348,7 @@ return e.getMessage();
             Contact conRec = conList[0];
             Account accRecord = [SELECT Id,Title__c,Head_Of_Project__c,Industry__c,Academia__c,Name,BillingStreet,BillingCity,BillingState,BillingCountry,BillingPostalCode,Homepage_URL__c,Year_Of_Establishment__c,Main_Business_Area__c,NumberOfEmployees,
                                  Infrastructural_Facilities__c,Domain_Expertise_Available__c,Ownership_Profile__c,Last_Year_s_Balance__c,Website,DSIR_Recoginition_Details__c,Country_Type__c,
-                                 (SELECT Id,Title,Name,LastName,Email,Phone,Department,Designation__c FROM Contacts) FROM Account WHERE Id=: conRec.AccountId];
+                                 (SELECT Id,Title,Name,LastName,Email,Phone,Department,Designation__c, MailingCountry FROM Contacts) FROM Account WHERE Id=: conRec.AccountId];
             return accRecord;
         }catch(Exception e){
             return null;

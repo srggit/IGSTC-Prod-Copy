@@ -359,8 +359,8 @@
                     </div>
                 </div>
 
-                <div class="row m-5">
-                    <div class="col-md-12" ng-if="!proposalStage">
+                <div class="row m-5" ng-if="!proposalStage">
+                    <div class="col-md-12">
                         <button class="blue-btn float-end" id="btnSubmit" ng-click="submitFinancialDetails()" type="button">
                             <i class="fa-solid fa-check me-2"></i>Save and Next</button>
                         <button class="blue-bordered-btn float-end me-2" ng-click="redirectPageURL('ConsortiaContacts')" type="button">

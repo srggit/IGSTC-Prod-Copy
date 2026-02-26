@@ -537,17 +537,97 @@
                             </div>
                         </div>
 
-                        <div class="row mt-3 mb-5" ng-if="!proposalStage">
-                            <div class="col-md-12">
-                                <button class="blue-btn float-end" id="btnSubmit" ng-click="saveAddressDetails()"
-                                    type="button">
-                                    <i class="fa-solid fa-check me-2"></i>Save and Next</button>
-                                <button class="btn btn-secondary float-end me-2"
-                                    style="padding: 8px 20px !important;font-size: 16px !important;"
-                                    ng-click="redirectPageURL('Consortia')" type="button">
-                                    <i class="fa-solid fa-arrow-left me-2"></i>Back</button>
+                        <!-- ANNUAL FINANCIAL REPORTS SECTION START -->
+                        <div ng-if="isSecondStage && isSecondStage == true" style="padding-bottom: 22px;">
+                            <div class="row mt-5">
+                                <div class="col-md-12">
+                                    <h4><b>Annual Financial Reports</b></h4>
+                                </div>
+                            </div>
+
+                            <div style="padding-left: 15px;">
+                                <div class="row mt-5">
+                                    <div class="col-md-5 input-group">
+                                        <label class="font-if">Annual Financial Report - Year 1 (PDF only till 1MB)<span
+                                                class="ms-2 text-danger"
+                                                ng-show="mailingCountry == 'India' || mailingCountry == 'Germany'">*</span></label>
+                                        <input type="file" accept=".pdf" class="form-control"
+                                            id="{{docAFR1.userDocument.Name}}" ng-disabled="proposalStage" />
+                                        <!-- ng-disabled="proposalStage"-->
+                                        <span class="input-group-btn pt-3" ng-hide="proposalStage"> <!-- ng-hide="
+                                            proposalStage"-->
+                                            <button class="btn btn-success mt-4 py-3"
+                                                ng-click="uploadFile(docAFR1.userDocument.Name, docAFR1.userDocument.Id, '', '1048576', '1048576')"
+                                                type="button">Upload</button>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 mt-4">
+                                        <div ng-show="docAFR1.userDocument.Status__c == 'Uploaded'">
+                                            <a class="blue-btn float-start mt-4 py-2"
+                                                ng-click="filePreviewHandler(docAFR1)">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-5">
+                                    <div class="col-md-5 input-group">
+                                        <label class="font-if">Annual Financial Report - Year 2 (PDF only till 1MB)<span
+                                                class="ms-2 text-danger"
+                                                ng-show="mailingCountry == 'India'">*</span></label>
+                                        <input type="file" accept=".pdf" class="form-control"
+                                            id="{{docAFR2.userDocument.Name}}" ng-disabled="proposalStage" />
+                                        <!-- ng-disabled="proposalStage"-->
+                                        <span class="input-group-btn pt-3" ng-hide="proposalStage">
+                                            <!-- ng-hide="proposalStage"-->
+                                            <button class="btn btn-success mt-4 py-3"
+                                                ng-click="uploadFile(docAFR2.userDocument.Name, docAFR2.userDocument.Id, '', '1048576', '1048576')"
+                                                type="button">Upload</button>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 mt-4">
+                                        <div ng-show="docAFR2.userDocument.Status__c == 'Uploaded'">
+                                            <a class="blue-btn float-start mt-4 py-2"
+                                                ng-click="filePreviewHandler(docAFR2)">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-5">
+                                    <div class="col-md-5 input-group">
+                                        <label class="font-if">Annual Financial Report - Year 3 (PDF only till 1MB)<span
+                                                class="ms-2 text-danger"
+                                                ng-show="mailingCountry == 'India'">*</span></label>
+                                        <input type="file" accept=".pdf" class="form-control"
+                                            id="{{docAFR3.userDocument.Name}}" ng-disabled="proposalStage" />
+                                        <span class="input-group-btn pt-3" ng-hide="proposalStage">
+                                            <button class="btn btn-success mt-4 py-3"
+                                                ng-click="uploadFile(docAFR3.userDocument.Name, docAFR3.userDocument.Id, '', '1048576', '1048576')"
+                                                type="button">Upload</button>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 mt-4">
+                                        <div ng-show="docAFR3.userDocument.Status__c == 'Uploaded'">
+                                            <a class="blue-btn float-start mt-4 py-2"
+                                                ng-click="filePreviewHandler(docAFR3)">View</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!-- ANNUAL FINANCIAL REPORTS SECTION END -->
+
+                    </div>
+                </div>
+
+
+                <div class="row mt-5 mx-5 mb-5 ms-3" ng-if="!proposalStage">
+                    <div class="col-md-12">
+                        <button class="blue-btn float-end" id="btnSubmit" ng-click="saveAddressDetails()" type="button">
+                            <i class="fa-solid fa-check me-2"></i>Save and Next</button>
+                        <button class="btn btn-secondary float-end me-2"
+                            style="padding: 8px 20px !important;font-size: 16px !important;"
+                            ng-click="redirectPageURL('Consortia')" type="button">
+                            <i class="fa-solid fa-arrow-left me-2"></i>Back</button>
                     </div>
                 </div>
 

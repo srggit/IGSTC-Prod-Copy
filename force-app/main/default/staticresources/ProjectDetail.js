@@ -64,6 +64,12 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.uploadProgress = 0;
     $scope.showProgressBar = false;
 
+    // Separate uploading flags per document type
+    $scope.isUploadingProjectProposal = false;
+    $scope.isUploadingFinancialStatement = false;
+    $scope.isUploadingQuotation = false;
+    $scope.isUploadingLetterOfConsent = false;
+
     $scope.previewFileLink = '';
 
     // Additional document variables
@@ -343,7 +349,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
         ApplicantPortal_Contoller.deleteWorkPackageDetails($scope.workPackList[index].Id, function (result, event) {
             if (event.status) {
-                swal("Work Package", "Your Work Package data has been Deleted Successfully");
+                swal("Work Package", "Your Work Package data has been Deleted Successfully", "info");
                 $scope.workPackList.splice(index, 1);
             }
             $scope.$applyAsync();
@@ -364,7 +370,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
         ApplicantPortal_Contoller.deleteDeliverables($scope.PIList[index].Id, function (result, event) {
             if (event.status) {
-                swal("PI Deliverables", "Your PI Deliverables detail has been deleted successfully.");
+                swal("PI Deliverables", "Your PI Deliverables detail has been deleted successfully.", "info");
                 $scope.PIList.splice(index, 1);
             }
             $scope.$apply();
@@ -398,43 +404,43 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 }
             }
             if (count <= 0) {
-                swal("Work Package Details", "Please Select Partners.");
+                swal("Work Package Details", "Please Select Partners.", "info");
                 $("#account" + i + "").addClass('border-theme');
                 return;
             }
 
             if (objData[i].trl_level == undefined || objData[i].trl_level == "") {
-                swal("Work Package Details", "Please Enter Start TRL Level.");
+                swal("Work Package Details", "Please Enter Start TRL Level.", "info");
                 $("#STL" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].end_trl_level == undefined || objData[i].end_trl_level == "") {
-                swal("Work Package Details", "Please Enter End TRL Level.");
+                swal("Work Package Details", "Please Enter End TRL Level.", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].title == undefined || objData[i].title == "") {
-                swal("Work Package Details", "Please Enter Title.");
+                swal("Work Package Details", "Please Enter Title.", "info");
                 $("#title" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].duration == undefined || objData[i].duration == "") {
-                swal("Work Package Details", "Please Enter Duration.");
+                swal("Work Package Details", "Please Enter Duration.", "info");
                 $("#duration" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].trl_level < 3 || objData[i].trl_level > 9) {
-                swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9");
+                swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9", "info");
                 $("#STL" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].end_trl_level < 3 || objData[i].end_trl_level > 9) {
-                swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9");
+                swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].end_trl_level < objData[i].trl_level) {
-                swal("Work Package Details", "End TRL Level should be greater than Start TRL Level.");
+                swal("Work Package Details", "End TRL Level should be greater than Start TRL Level.", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
@@ -858,7 +864,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         // Guard: ensure doc.userDocument with Name and Id exist (prevents errors when doc is null/undefined)
         if (!$scope.doc || !$scope.doc.userDocument || !$scope.doc.userDocument.Name || !$scope.doc.userDocument.Id) {
-            swal("info", "Document information is not available. Please refresh the page and try again.", "info");
+            swal("Info", "Document information is not available. Please refresh the page and try again.", "info");
             $scope.isUploading = false;
             $scope.showProjectProposalProgressBar = false;
             $scope.showSpinnereditProf = false;
@@ -885,10 +891,9 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         $scope.uploadProgress = 0;
         $scope.showProgressBar = true;
-        $scope.isUploading = true;
+        $scope.isUploadingProjectProposal = true;
         $scope.projectProposalUploadProgress = 0;
         $scope.showProjectProposalProgressBar = true;
-        $scope.isUploading = true;
 
         $scope.showSpinnereditProf = true;
         var file;
@@ -896,7 +901,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         file = document.getElementById('fileSignature').files[0];
         if (!file) {
             swal("info", "You must choose a file before trying to upload it", "info");
-            $scope.isUploading = false;
+            $scope.isUploadingProjectProposal = false;
             $scope.showSpinnereditProf = false;
             $scope.resetUploadState();
             return;
@@ -907,7 +912,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         if (typeOfFile[lengthOfType - 1] == "pdf" || typeOfFile[lengthOfType - 1] == "PDF") {
 
         } else {
-            $scope.isUploading = false;
+            $scope.isUploadingProjectProposal = false;
             $scope.showSpinnereditProf = false;
             swal('info', 'Please choose pdf only.', 'info');
             return;
@@ -956,7 +961,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                             }
                         });
                     } else {
-                        $scope.isUploading = false;
+                        $scope.isUploadingProjectProposal = false;
                         $scope.showSpinnereditProf = false;
                         // swal("info", "Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".", "info");
                         swal("info", "File size should be lesser than 4 MB.", "info"); return;
@@ -965,16 +970,16 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
                 }
                 fileReader.onerror = function (e) {
-                    $scope.isUploading = false;
+                    $scope.isUploadingProjectProposal = false;
                     $scope.showSpinnereditProf = false;
-                    swal("info", "There was an error reading the file.  Please try again.", "info");
+                    swal("Info", "There was an error reading the file.  Please try again.", "info");
                     return;
                     // alert("There was an error reading the file.  Please try again.");
                 }
                 fileReader.onabort = function (e) {
-                    $scope.isUploading = false;
+                    $scope.isUploadingProjectProposal = false;
                     $scope.showSpinnereditProf = false;
-                    swal("info", "There was an error reading the file.  Please try again.", "info");
+                    swal("Info", "There was an error reading the file.  Please try again.", "info");
                     return;
                     // alert("There was an error reading the file.  Please try again.");
                 }
@@ -982,15 +987,15 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 fileReader.readAsBinaryString(file);  //Read the body of the file
 
             } else {
-                $scope.isUploading = false;
+                $scope.isUploadingProjectProposal = false;
                 $scope.showSpinnereditProf = false;
-                swal("info", "File must be under 5 Mb in size.  Your file is too large.  Please try again.", "info");
+                swal("Info", "File must be under 5 Mb in size.  Your file is too large.  Please try again.", "info");
                 return;
             }
         } else {
-            $scope.isUploading = false;
+            $scope.isUploadingProjectProposal = false;
             $scope.showSpinnereditProf = false;
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             return;
             // alert("You must choose a file before trying to upload it");
             // $scope.showSpinnereditProf = false;
@@ -1000,7 +1005,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.resetUploadState = function () {
         if (!$scope.$$phase) { // Check if Angular digest cycle is not already in progress
             $scope.$applyAsync(function () {
-                $scope.isUploading = false;
+                $scope.isUploadingProjectProposal = false;
                 $scope.showSpinnereditProf = false;
                 $scope.showProgressBar = false;
                 $scope.uploadProgress = 0;
@@ -1009,7 +1014,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 document.getElementById('fileSignature').value = "";
             });
         } else {
-            $scope.isUploading = false;
+            $scope.isUploadingProjectProposal = false;
             $scope.showSpinnereditProf = false;
         }
     };
@@ -1032,7 +1037,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             debugger;
             attachmentBody = attachment.substring(positionIndex);
             doneUploading = true;
-            $scope.isUploading = false;
+            $scope.isUploadingProjectProposal = false;
             $scope.showSpinnereditProf = false;
         } else {
             attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
@@ -1052,18 +1057,18 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 if (event.type === 'exception') {
                     console.log("exception");
                     console.log(event);
-                    $scope.isUploading = false;
+                    $scope.isUploadingProjectProposal = false;
                     $scope.showSpinnereditProf = false;
                 } else if (event.status) {
                     if (doneUploading == true) {
-                        $scope.isUploading = false;
+                        $scope.isUploadingProjectProposal = false;
                         $scope.showSpinnereditProf = false;
                         $scope.$applyAsync(function () {
                             $scope.uploadProgress = 100;
                             $scope.projectProposalUploadProgress = 100;
                         });
                         swal(
-                            'success',
+                            'Success',
                             'Uploaded Successfully!',
                             'success'
                         )
@@ -1199,7 +1204,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         $scope.financialStatementUploadProgress = 0;
         $scope.showFinancialStatementProgressBar = true;
-        $scope.isUploading = true;
+        $scope.isUploadingFinancialStatement = true;
         $scope.showSpinnereditProf = true;
 
         var file;
@@ -1210,7 +1215,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         if (!file) {
             swal("info", "You must choose a file before trying to upload it", "info");
-            $scope.isUploading = false;
+            $scope.isUploadingFinancialStatement = false;
             $scope.showSpinnereditProf = false;
             $scope.showFinancialStatementProgressBar = false;
             return;
@@ -1221,7 +1226,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         var lengthOfType = typeOfFile.length;
 
         if (typeOfFile[lengthOfType - 1].toLowerCase() !== "pdf") {
-            $scope.isUploading = false;
+            $scope.isUploadingFinancialStatement = false;
             $scope.showSpinnereditProf = false;
             $scope.showFinancialStatementProgressBar = false;
             swal('info', 'Please choose PDF file only.', 'info');
@@ -1229,7 +1234,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
 
         if (file.size > maxFileSize) {
-            $scope.isUploading = false;
+            $scope.isUploadingFinancialStatement = false;
             $scope.showSpinnereditProf = false;
             $scope.showFinancialStatementProgressBar = false;
             swal("info", "File must be under 5 MB in size.", "info");
@@ -1254,8 +1259,8 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
                     // Validate userDocId exists
                     if (!userDocId) {
-                        swal('error', 'User Document not found. Please refresh the page and try again.', 'error');
-                        $scope.isUploading = false;
+                        swal('Error', 'User Document not found. Please refresh the page and try again.', 'error');
+                        $scope.isUploadingFinancialStatement = false;
                         $scope.showSpinnereditProf = false;
                         $scope.showFinancialStatementProgressBar = false;
                         document.getElementById(inputId).value = "";
@@ -1270,13 +1275,13 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         function (result, event) {
                             if (event.status) {
                                 $scope.financialStatementUploadProgress = 100;
-                                swal('success', 'Financial Statement Report uploaded successfully!', 'success');
+                                swal('Success', 'Financial Statement Report uploaded successfully!', 'success');
                                 // Reload APA User Documents to refresh the UI and get the latest attachment
                                 $scope.loadAPAUserDocs();
                             } else {
-                                swal('error', 'Error uploading file. Please try again.', 'error');
+                                swal('Error', 'Error uploading file. Please try again.', 'error');
                             }
-                            $scope.isUploading = false;
+                            $scope.isUploadingFinancialStatement = false;
                             $scope.showSpinnereditProf = false;
                             $scope.showFinancialStatementProgressBar = false;
                             document.getElementById(inputId).value = "";
@@ -1285,7 +1290,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         { buffer: true, escape: true, timeout: 120000 }
                     );
                 } else {
-                    $scope.isUploading = false;
+                    $scope.isUploadingFinancialStatement = false;
                     $scope.showSpinnereditProf = false;
                     $scope.showFinancialStatementProgressBar = false;
                     document.getElementById(inputId).value = "";
@@ -1295,10 +1300,10 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         };
 
         fileReader.onerror = function (e) {
-            $scope.isUploading = false;
+            $scope.isUploadingFinancialStatement = false;
             $scope.showSpinnereditProf = false;
             $scope.showFinancialStatementProgressBar = false;
-            swal("info", "Error reading file. Please try again.", "info");
+            swal("Error", "Error reading file. Please try again.", "error");
         };
 
         fileReader.readAsBinaryString(file);
@@ -1407,7 +1412,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         $scope.quotationEquipmentUploadProgress = 0;
         $scope.showQuotationEquipmentProgressBar = true;
-        $scope.isUploading = true;
+        $scope.isUploadingQuotation = true;
         $scope.showSpinnereditProf = true;
 
         var file;
@@ -1418,7 +1423,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         if (!file) {
             swal("info", "You must choose a file before trying to upload it", "info");
-            $scope.isUploading = false;
+            $scope.isUploadingQuotation = false;
             $scope.showSpinnereditProf = false;
             $scope.showQuotationEquipmentProgressBar = false;
             return;
@@ -1429,7 +1434,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         var lengthOfType = typeOfFile.length;
 
         if (typeOfFile[lengthOfType - 1].toLowerCase() !== "pdf") {
-            $scope.isUploading = false;
+            $scope.isUploadingQuotation = false;
             $scope.showSpinnereditProf = false;
             $scope.showQuotationEquipmentProgressBar = false;
             swal('info', 'Please choose PDF file only.', 'info');
@@ -1437,7 +1442,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
 
         if (file.size > maxFileSize) {
-            $scope.isUploading = false;
+            $scope.isUploadingQuotation = false;
             $scope.showSpinnereditProf = false;
             $scope.showQuotationEquipmentProgressBar = false;
             swal("info", "File must be under 5 MB in size.", "info");
@@ -1462,8 +1467,8 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
                     // Validate userDocId exists
                     if (!userDocId) {
-                        swal('error', 'User Document not found. Please refresh the page and try again.', 'error');
-                        $scope.isUploading = false;
+                        swal('Error', 'User Document not found. Please refresh the page and try again.', 'error');
+                        $scope.isUploadingQuotation = false;
                         $scope.showSpinnereditProf = false;
                         $scope.showQuotationEquipmentProgressBar = false;
                         document.getElementById(inputId).value = "";
@@ -1478,13 +1483,13 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         function (result, event) {
                             if (event.status) {
                                 $scope.quotationEquipmentUploadProgress = 100;
-                                swal('success', 'Quotation For Equipment/Accessories uploaded successfully!', 'success');
+                                swal('Success', 'Quotation For Equipment/Accessories uploaded successfully!', 'success');
                                 // Reload APA User Documents to refresh the UI and get the latest attachment
                                 $scope.loadAPAUserDocs();
                             } else {
-                                swal('error', 'Error uploading file. Please try again.', 'error');
+                                swal('Error', 'Error uploading file. Please try again.', 'error');
                             }
-                            $scope.isUploading = false;
+                            $scope.isUploadingQuotation = false;
                             $scope.showSpinnereditProf = false;
                             $scope.showQuotationEquipmentProgressBar = false;
                             document.getElementById(inputId).value = "";
@@ -1493,7 +1498,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         { buffer: true, escape: true, timeout: 120000 }
                     );
                 } else {
-                    $scope.isUploading = false;
+                    $scope.isUploadingQuotation = false;
                     $scope.showSpinnereditProf = false;
                     $scope.showQuotationEquipmentProgressBar = false;
                     document.getElementById(inputId).value = "";
@@ -1503,7 +1508,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         };
 
         fileReader.onerror = function (e) {
-            $scope.isUploading = false;
+            $scope.isUploadingQuotation = false;
             $scope.showSpinnereditProf = false;
             $scope.showQuotationEquipmentProgressBar = false;
             swal("info", "Error reading file. Please try again.", "info");
@@ -1518,7 +1523,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         $scope.uploadProgress = 0;
         $scope.showProgressBar = true;
-        $scope.isUploading = true;
+        $scope.isUploadingLetterOfConsent = true;
         $scope.showSpinnereditProf = true;
 
         var file;
@@ -1527,7 +1532,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         if (!file) {
             swal("info", "You must choose a file before trying to upload it", "info");
-            $scope.isUploading = false;
+            $scope.isUploadingLetterOfConsent = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
             return;
@@ -1538,7 +1543,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         var lengthOfType = typeOfFile.length;
 
         if (typeOfFile[lengthOfType - 1].toLowerCase() !== "pdf") {
-            $scope.isUploading = false;
+            $scope.isUploadingLetterOfConsent = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
             swal('info', 'Please choose PDF file only.', 'info');
@@ -1546,7 +1551,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
 
         if (file.size > maxFileSize) {
-            $scope.isUploading = false;
+            $scope.isUploadingLetterOfConsent = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
             swal("info", "File must be under 5 MB in size.", "info");
@@ -1575,12 +1580,13 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         attachmentData, fileName, fileId, userDocId,
                         function (result, event) {
                             if (event.status) {
-                                swal('success', 'Letter of Consent uploaded successfully!', 'success');
+                                swal('Success', 'Letter of Consent uploaded successfully!', 'success');
                                 $scope.getDocsDet();
+                                $scope.loadAPAUserDocs();
                             } else {
-                                swal('error', 'Error uploading file. Please try again.', 'error');
+                                swal('Error', 'Error uploading file. Please try again.', 'error');
                             }
-                            $scope.isUploading = false;
+                            $scope.isUploadingLetterOfConsent = false;
                             $scope.showSpinnereditProf = false;
                             $scope.showProgressBar = false;
                             document.getElementById('letterOfConsentFile').value = "";
@@ -1589,7 +1595,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         { buffer: true, escape: true, timeout: 120000 }
                     );
                 } else {
-                    $scope.isUploading = false;
+                    $scope.isUploadingLetterOfConsent = false;
                     $scope.showSpinnereditProf = false;
                     $scope.showProgressBar = false;
                     document.getElementById('letterOfConsentFile').value = "";
@@ -1599,7 +1605,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         };
 
         fileReader.onerror = function (e) {
-            $scope.isUploading = false;
+            $scope.isUploadingLetterOfConsent = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
             swal("info", "Error reading file. Please try again.", "info");
@@ -1716,19 +1722,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     //         { buffer: true, escape: true, timeout: 120000 }
     //     );
     // }
-    $scope.readCharacter = function (event, index) {
-        debugger
-        try {
-            var rtfString = event.toString().replace(/<[^>]*>|\s/g, '').replace(/\s+/g, '').replace(/&ndash;/g, '-').replace(/&euro;/g, '1').replace(/&amp;/g, '1').replace(/&#39;/g, '1').replace(/&quot;/g, '1').replace(/&nbsp;/g, '').replace(/&mdash;/g, '-').replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&bull;/g, '');
-            charLength = rtfString.length;
-            if (charLength > 0) {
-                $scope.objRtf[index].charCount = charLength;
-            }
-            else {
-                $scope.objRtf[index].charCount = 0;
-            }
-        } catch (e) { }
-    }
+    // readCharacter() is defined later with signature (event, index, maxLimit)
 
     $scope.saveDetails = function () {
         debugger;
@@ -1737,12 +1731,286 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             // console.log('File already uploaded !!');
             swal({
                 title: "Info",
-                text: "A file must be uploaded before saving.",
+                // text: "A file must be uploaded before saving.",
+                text: "Please upload Project Proposal before saving.",
                 icon: "info",
                 button: "OK",
             });
             return;
         }
+
+
+        // ---------------------- FIELD REQUIRED VALIDATION ---------------------------- //
+
+        // **************************************** Stage 1 required fields ****************************************
+        if ($scope.proposalFieldsDetails.Research_Approach_Objectives__c == undefined || $scope.proposalFieldsDetails.Research_Approach_Objectives__c == "") {
+            swal(
+                'Info',
+                'Please fill Main objectives of the research approach (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+        if ($scope.proposalFieldsDetails.Current_State_Of_The_Art__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art__c == "") {
+            swal(
+                'Info',
+                'Please fill Current state of the art in the field (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+        if ($scope.proposalFieldsDetails.Project_Description__c == undefined || $scope.proposalFieldsDetails.Project_Description__c == "") {
+            swal(
+                'Info',
+                'Please fill Project description including work packages/work distribution amongst partners. Comment on starting TRL and expected TRL at end of the project (max. chars 12000).',
+                'info'
+            );
+            return;
+        }
+        if ($scope.proposalFieldsDetails.Expected_Deliverables__c == undefined || $scope.proposalFieldsDetails.Expected_Deliverables__c == "") {
+            swal(
+                'Info',
+                'Please fill Expected deliverables as bullet points (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+        if ($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == "") {
+            swal(
+                'Info',
+                'Please fill Reasons for and benefits of cooperation - including previous collaboration with the partner country (max. chars 6000).',
+                'info'
+            );
+            return;
+        }
+        if ($scope.proposalFieldsDetails.Equipment__c == undefined || $scope.proposalFieldsDetails.Equipment__c == "") {
+            swal(
+                'Info',
+                'Please fill Equipment (if equipment to be purchased, please justify briefly the need) (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+        if ($scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == undefined || $scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == "") {
+            swal(
+                'Info',
+                'Please fill Brief profile of each partner institution with emphasis on research activities (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+
+        // **************************************** Stage 2 required fields ****************************************
+        if (($scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == undefined || $scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Main objectives of the research approach (max. chars 4000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Current state of the art in the field (max. chars 6000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Project_Description_Stage_2__c == undefined || $scope.proposalFieldsDetails.Project_Description_Stage_2__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Detailed project description (max. chars 20000).',
+                'info'
+            );
+            return;
+        }
+        if (($scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == undefined || $scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Risk assessment & mitigation strategy and Criteria for abandoning the project (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Reasons for and benefits of cooperation for each partner (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Innovative_Aspects__c == undefined || $scope.proposalFieldsDetails.Innovative_Aspects__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Innovative aspects / IP and future potential utilization plan (max. chars 10000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == undefined || $scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Market assessment of proposed technology/product (max. chars 12000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Future_Commercialization_Plan__c == undefined || $scope.proposalFieldsDetails.Future_Commercialization_Plan__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Future commercialization plan and expected timeline (max. chars 12000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == undefined || $scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Data Management and Sharing Protocols (max. chars 5000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == undefined || $scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Involvement of young scientists / research scholars (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Necessity_Of_Funding__c == undefined || $scope.proposalFieldsDetails.Necessity_Of_Funding__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Necessity of funding (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Tentative_plans_for_networking__c == undefined || $scope.proposalFieldsDetails.Tentative_plans_for_networking__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Tentative Plans For Network Meetings and Exchange Visits (including duration) (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == undefined || $scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Plan for the utilisation and preservation of project-acquired equipment after the completion of the project. (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+
+        if (($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == undefined || $scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == "") && $rootScope.secondStage == true) {
+            swal(
+                'Info',
+                'Please fill Profile of the academic institutions (max. chars 3000).',
+                'info'
+            );
+            return;
+        }
+
+
+        // ---------------------- CHARACTER LIMIT VALIDATION ---------------------------- //
+
+        // Recalculate character counts at save-time to ensure validation always runs
+        if ($rootScope.stage === '1st Stage') {
+            $scope.readCharacter($scope.proposalFieldsDetails.Research_Approach_Objectives__c, 0, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Current_State_Of_The_Art__c, 1, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Project_Description__c, 2, 12000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Expected_Deliverables__c, 3, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c, 4, 6000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Equipment__c, 5, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c, 6, 3000);
+        }
+
+        if ($rootScope.stage === '2nd Stage' && $rootScope.secondStage == true) {
+            $scope.readCharacter($scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c, 0, 4000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c, 1, 6000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Project_Description_Stage_2__c, 2, 20000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c, 3, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c, 4, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Innovative_Aspects__c, 5, 10000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c, 6, 12000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Future_Commercialization_Plan__c, 7, 12000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c, 8, 5000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c, 9, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Necessity_Of_Funding__c, 10, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Tentative_plans_for_networking__c, 11, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c, 12, 3000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c, 13, 10000);
+        }
+
+        // Stage 1 field char limit checks (only for 1st Stage)
+        if ($rootScope.stage === '1st Stage') {
+            // indices match readCharacter() calls in ProjectDetail.page
+            var charLimitErrors = [
+                { index: 0, limit: 3000, field: 'Research_Approach_Objectives__c', label: 'Main objectives of the research proposal' },
+                { index: 1, limit: 3000, field: 'Current_State_Of_The_Art__c', label: 'Current state of the art' },
+                { index: 2, limit: 12000, field: 'Project_Description__c', label: 'Project description' },
+                { index: 3, limit: 3000, field: 'Expected_Deliverables__c', label: 'Expected deliverables' },
+                { index: 4, limit: 6000, field: 'Reasons_For_And_Benefits_Of_Cooperation__c', label: 'Reasons for and benefits of cooperation' },
+                { index: 5, limit: 3000, field: 'Equipment__c', label: 'Equipment' },
+                { index: 6, limit: 3000, field: 'Brief_Statement_of_Purpose__c', label: 'Brief statement of purpose / reasons for cooperation' }
+            ];
+
+            for (var ci = 0; ci < charLimitErrors.length; ci++) {
+                var entry = charLimitErrors[ci];
+                if ($scope.objRtf[entry.index] && $scope.objRtf[entry.index].errorStatus) {
+                    swal('Info', 'Character limit exceeded for "' + entry.label + '". Maximum allowed is ' + entry.limit + ' characters.', 'info');
+                    return;
+                }
+            }
+        }
+
+        // Stage 2 additional field char limit checks (only for 2nd Stage)
+        if ($rootScope.stage === '2nd Stage' && $rootScope.secondStage == true) {
+            var charLimitErrorsS2 = [
+                { index: 0, limit: 4000, label: 'Main objectives of the research approach (Stage 2)' },
+                { index: 1, limit: 6000, label: 'Current state of the art (Stage 2)' },
+                { index: 2, limit: 20000, label: 'Project description (Stage 2)' },
+                { index: 3, limit: 3000, label: 'Risk assessment and mitigation strategy' },
+                { index: 4, limit: 3000, label: 'Reasons for and benefits of cooperation (Stage 2)' },
+                { index: 5, limit: 10000, label: 'Innovative aspects' },
+                { index: 6, limit: 12000, label: 'Market assessment of proposed technology' },
+                { index: 7, limit: 12000, label: 'Future commercialization plan' },
+                { index: 8, limit: 5000, label: 'Data management and sharing protocols' },
+                { index: 9, limit: 3000, label: 'Involvement of young scientists' },
+                { index: 10, limit: 3000, label: 'Necessity of funding' },
+                { index: 11, limit: 3000, label: 'Tentative plans for networking' },
+                { index: 12, limit: 3000, label: 'Plan for utilisation and preservation' },
+                { index: 13, limit: 10000, label: 'Profile of the academic institutions' }
+            ];
+
+            for (var ci2 = 0; ci2 < charLimitErrorsS2.length; ci2++) {
+                var entry2 = charLimitErrorsS2[ci2];
+                if ($scope.objRtf[entry2.index] && $scope.objRtf[entry2.index].errorStatus) {
+                    swal('Info', 'Character limit exceeded for "' + entry2.label + '". Maximum allowed is ' + entry2.limit + ' characters.', 'info');
+                    return;
+                }
+            }
+        }
+
+        // ---------------------- END CHARACTER LIMIT VALIDATION ---------------------------- //
+
+        // ---------------------- CHECKING PROPOSAL REQUIRED FIELDS ---------------------------- //
+
 
         // Validate Quotation for Equipment / Accessories is uploaded - Stage 1
         if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
@@ -1750,19 +2018,6 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 swal({
                     title: "Info",
                     text: "Please upload Quotation for Equipment / Accessories - Stage 1 before saving.",
-                    icon: "info",
-                    button: "OK",
-                });
-                return;
-            }
-        }
-
-        // Validate Quotation for Equipment / Accessories is uploaded - Stage 2
-        if ($rootScope.stage === '2nd Stage' && $rootScope.mailingCountry === 'India') {
-            if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
-                swal({
-                    title: "Info",
-                    text: "Please upload Quotation for Equipment / Accessories - Stage 2 before saving.",
                     icon: "info",
                     button: "OK",
                 });
@@ -1783,74 +2038,19 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             }
         }
 
-        // if($scope.proposalDetails.Research_Approach_Objectives__c == undefined || $scope.proposalDetails.Research_Approach_Objectives__c == ""){
-        //     Swal.fire(
-        //         '',
-        //       'Please fill main objectives of the research proposal.',
-        //       'error'
-        //       );
-        //       return;
-        // }
-        // if($scope.proposalDetails.Current_State_Of_The_Art__c == undefined || $scope.proposalDetails.Current_State_Of_The_Art__c == ""){
-        //     Swal.fire(
-        //         '',
-        //       'Please fill current state of the art.',
-        //       'error'
-        //       );
-        //       return;
-        // }
-        // if($scope.proposalDetails.Project_Description__c == undefined || $scope.proposalDetails.Project_Description__c == ""){
-        //     Swal.fire(
-        //         '',
-        //       'Please fill Project description of proposal.',
-        //       'error'
-        //       );
-        //       return;
-        // }
-        // if($scope.proposalDetails.Expected_Deliverables__c == undefined || $scope.proposalDetails.Expected_Deliverables__c == ""){
-        //     Swal.fire(
-        //         '',
-        //       'Please fill Expected Deliverables.',
-        //       'error'
-        //       );
-        //       return;
-        // }
-        // if($scope.proposalDetails.Reasons_For_And_Benefits_Of_Cooperation__c == undefined || $scope.proposalDetails.Reasons_For_And_Benefits_Of_Cooperation__c == ""){
-        //     Swal.fire(
-        //         '',
-        //       'Please fill Reasons for and benefits of cooperation including previous collaboration with the partner country.',
-        //       'error'
-        //       );
-        //       return;
-        // }
-        // if($scope.proposalDetails.Equipment__c == undefined || $scope.proposalDetails.Equipment__c == ""){
-        //     Swal.fire(
-        //         '',
-        //       'Please fill Proposal Equipment.',
-        //       'error'
-        //       );
-        //       return;
-        // }
+        // Validate Quotation for Equipment / Accessories is uploaded - Stage 2
+        if ($rootScope.stage === '2nd Stage' && $rootScope.mailingCountry === 'India') {
+            if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
+                swal({
+                    title: "Info",
+                    text: "Please upload Quotation for Equipment / Accessories - Stage 2 before saving.",
+                    icon: "info",
+                    button: "OK",
+                });
+                return;
+            }
+        }
 
-        // if(($scope.proposalDetails.Criteria_For_Abandoning_The_Project__c == undefined || $scope.proposalDetails.Criteria_For_Abandoning_The_Project__c == "") && $rootScope.secondStage == true)
-        //             {
-        //                 Swal.fire(
-        //                   '',
-        //                 'Please fill citeria for abandoning the project.',
-        //                 'error'
-        //                 );
-        //                     return;
-        //             }
-
-        // if(($scope.proposalDetails.Necessity_Of_Funding__c == undefined || $scope.proposalDetails.Necessity_Of_Funding__c == "") && $rootScope.secondStage == true)
-        // {
-        //     Swal.fire(
-        //         '',
-        //     'Tell us your necessity of funding..',
-        //     'error'
-        //     );
-        //         return;
-        // }
         $("#btnSubmit").html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...');
         ApplicantPortal_Contoller.insertProjectDetails($scope.proposalFieldsDetails, function (result, event) {
             $("#btnSubmit").html('<i class="fa-solid fa-check me-2"></i>Save and Next');
@@ -1928,50 +2128,49 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     }
                 }
             }
+            if (objData[i].title == undefined || objData[i].title == "") {
+                swal("Work Package Details", "Please Enter Title.", "info");
+                $("#title" + i + "").addClass('border-theme');
+                return;
+            }
             if (count <= 0) {
-                swal("Work Package Details", "Please Select Partners.");
+                swal("Work Package Details", "Please Select Partners.", "info");
                 $("#account" + i + "").addClass('border-theme');
                 return;
             }
-
             if (objData[i].trl_level == undefined || objData[i].trl_level == "") {
-                swal("Work Package Details", "Please Enter Start TRL Level.");
+                swal("Work Package Details", "Please Enter Start TRL Level.", "info");
                 $("#STL" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].end_trl_level == undefined || objData[i].end_trl_level == "") {
-                swal("Work Package Details", "Please Enter End TRL Level.");
+                swal("Work Package Details", "Please Enter End TRL Level.", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].trl_level < 3 || objData[i].trl_level > 9) {
-                swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9");
+                swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9", "info");
                 $("#STL" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].end_trl_level < 3 || objData[i].end_trl_level > 9) {
-                swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9");
+                swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].end_trl_level < objData[i].trl_level) {
-                swal("Work Package Details", "End TRL Level should be greater than Start TRL Level.");
+                swal("Work Package Details", "End TRL Level should be greater than Start TRL Level.", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
-            if (objData[i].title == undefined || objData[i].title == "") {
-                swal("Work Package Details", "Please Enter Title.");
-                $("#title" + i + "").addClass('border-theme');
-                return;
-            }
             if (objData[i].duration == undefined || objData[i].duration == "") {
-                swal("Work Package Details", "Please Enter Duration.");
+                swal("Work Package Details", "Please Enter Duration.", "info");
                 $("#duration" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].duration != undefined && objData[i].duration != "") {
                 if (Number(objData[i].duration) > Number($rootScope.maxDurationInMonths)) {
-                    swal("Work Package Details", "Max. Duration can be " + $rootScope.maxDurationInMonths + " months.");
+                    swal("Work Package Details", "Max. Duration can be " + $rootScope.maxDurationInMonths + " months.", "info");
                     $("#duration" + i + "").addClass('border-theme');
                     return;
                 }
@@ -2078,6 +2277,37 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         var objData = JSON.parse(JSON.stringify($scope.PIList));
 
+        // Validation
+        for (var i = 0; i < objData.length; i++) {
+            debugger;
+            var count = 0;
+            if (objData[i].AccountList) {
+                for (var k = 0; k < objData[i].AccountList.length; k++) {
+                    if (objData[i].AccountList[k].selected == true) {
+                        count = count + 1;
+                    }
+                }
+            }
+            if (objData[i].title == undefined || objData[i].title == "") {
+                swal("PI Deliverables Details", "Please Enter Title.", "info");
+                $("#title" + i + "").addClass('border-theme');
+                //if (callback) callback(false);
+                return;
+            }
+            if (count <= 0) {
+                swal("PI Deliverables Details", "Please Select Partners.", "info");
+                $("#partner" + i + "").addClass('border-theme');
+                //if (callback) callback(false);
+                return;
+            }
+            if (objData[i].Due_Date__c == undefined || objData[i].Due_Date__c == "") {
+                swal("PI Deliverables Details", "Please Enter Due Date.", "info");
+                $("#due" + i + "").addClass('border-theme');
+                //if (callback) callback(false);
+                return;
+            }
+        }
+
         // Prepare data for saving
         for (var i = 0; i < objData.length; i++) {
             if (objData[i].Due_Date__c != undefined && objData[i].Due_Date__c != "") {
@@ -2140,12 +2370,57 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.saveExistingGrantsInternal = function (callback) {
         debugger;
 
-        // Check if there are grants to save
-        if (!$scope.input || $scope.input.length === 0) {
-            console.log('No existing grants to save');
-            if (callback) callback(true);
-            return;
+        if ($rootScope.secondStage == true) {
+
+            // Check if there are grants to save
+            if (!$scope.input || $scope.input.length === 0) {
+                console.log('No existing grants to save');
+                if (callback) callback(true);
+                return;
+            }
+
+            // Validation
+            for (var i = 0; i < $scope.input.length; i++) {
+                for (var j = 0; j < $scope.input[i].Existing_Grants__r.length; j++) {
+
+                    if ($scope.input[i].Existing_Grants__r[j].Title__c == undefined || $scope.input[i].Existing_Grants__r[j].Title__c == "") {
+                        swal("Existing Grants", "Please Enter Title.", "info");
+                        // if (callback) callback(false);
+                        return;
+                    }
+
+                    if ($scope.input[i].Existing_Grants__r[j].Funding_Agency__c == undefined || $scope.input[i].Existing_Grants__r[j].Funding_Agency__c == "") {
+                        swal("Existing Grants", "Please Enter Funding Agency.", "info");
+                        // if (callback) callback(false);
+                        return;
+                    }
+                    if ($scope.input[i].Existing_Grants__r[j].Budget__c == undefined || $scope.input[i].Existing_Grants__r[j].Budget__c == "" || $scope.input[i].Existing_Grants__r[j].Budget__c <= 0) {
+                        swal("Existing Grants", "Please Enter Budget.", "info");
+                        // if (callback) callback(false);
+                        return;
+                    }
+
+
+                    var startDate = $scope.input[i].Existing_Grants__r[j].Starting_Date__c;
+
+                    if (!startDate || isNaN(new Date(startDate).getTime())) {
+                        swal("Existing Grants", "Please Enter Starting Date.", "info");
+                        return;
+                    }
+                    // if ($scope.input[i].Existing_Grants__r[j].Starting_Date__c == undefined || $scope.input[i].Existing_Grants__r[j].Starting_Date__c == "") {
+                    //     swal("Existing Grants", "Please Enter Starting Date.");
+                    //     // if (callback) callback(false);
+                    //     return;
+                    // }
+                    if ($scope.input[i].Existing_Grants__r[j].Duration__c == undefined || $scope.input[i].Existing_Grants__r[j].Duration__c == "" || $scope.input[i].Existing_Grants__r[j].Duration__c <= 0) {
+                        swal("Existing Grants", "Please Enter Duration(Number in months).", "info");
+                        // if (callback) callback(false);
+                        return;
+                    }
+                }
+            }
         }
+
 
         // Build grant list for saving
         var grantListToSave = [];
@@ -2213,10 +2488,8 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 if (callback) callback(false);
             }
         }, { escape: true });
+
     }
-
-
-
 
 
     $scope.uploadFileToUserDoc = function () {
@@ -2354,6 +2627,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.readCharacter = function (event, index, maxLimit) {
         try {
 
+            debugger;
+            console.log('event : ', event);
+            console.log('event : ', index);
+            console.log('event : ', maxLimit);
+
             // Initialize index if not exists
             if (!$scope.objRtf[index]) {
                 $scope.objRtf[index] = {
@@ -2470,7 +2748,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
         ApplicantPortal_Contoller.deleteDeliverables($scope.PIList[index].Id, function (result, event) {
             if (event.status) {
-                swal("PI Deliverables", "Your PI Deliverables detail has been deleted successfully.");
+                swal("PI Deliverables", "Your PI Deliverables detail has been deleted successfully.", "info");
                 $scope.PIList.splice(index, 1);
             }
             $scope.$applyAsync();
@@ -2563,17 +2841,17 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 }
             }
             if (count <= 0) {
-                swal("PI Deliverables Details", "Please Select Partners.");
+                swal("PI Deliverables Details", "Please Select Partners.", "info");
                 $("#partner" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].title == undefined || objData[i].title == "") {
-                swal("PI Deliverables Details", "Please Enter Title.");
+                swal("PI Deliverables Details", "Please Enter Title.", "info");
                 $("#title" + i + "").addClass('border-theme');
                 return;
             }
             if (objData[i].Due_Date__c == undefined || objData[i].Due_Date__c == "") {
-                swal("PI Deliverables Details", "Please Enter Due Date.");
+                swal("PI Deliverables Details", "Please Enter Due Date.", "info");
                 $("#due" + i + "").addClass('border-theme');
                 return;
             }
@@ -2618,7 +2896,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             debugger;
             console.log('Save deliverables result:', result);
             if (event.status) {
-                swal("PI Deliverables", "Your PI Deliverables detail has been saved successfully.");
+                swal("PI Deliverables", "Your PI Deliverables detail has been saved successfully.", "info");
                 //$scope.redirectPageURL('Network_Meeting');
             } else {
                 console.error('Error saving deliverables:', event.message);
@@ -2734,7 +3012,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         if ($scope.input[parentIndex].Existing_Grants__r.length > 1) {
             $scope.input[parentIndex].Existing_Grants__r.splice(childIndex, 1);
         } else {
-            swal("Info", "At least one grant record is required.");
+            swal("Info", "At least one grant record is required.", "info");
         }
     }
 
@@ -2743,19 +3021,19 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         for (var i = 0; i < $scope.input.length; i++) {
             for (var j = 0; j < $scope.input[i].Existing_Grants__r.length; j++) {
                 if ($scope.input[i].Existing_Grants__r[j].Funding_Agency__c == undefined || $scope.input[i].Existing_Grants__r[j].Funding_Agency__c == "") {
-                    swal("Existing Grants", "Please Enter Funding Agency.");
+                    swal("Existing Grants", "Please Enter Funding Agency.", "info");
                     return;
                 }
                 if ($scope.input[i].Existing_Grants__r[j].Budget__c == undefined || $scope.input[i].Existing_Grants__r[j].Budget__c == "") {
-                    swal("Existing Grants", "Please Enter Budget.");
+                    swal("Existing Grants", "Please Enter Budget.", "info");
                     return;
                 }
                 if ($scope.input[i].Existing_Grants__r[j].Starting_Date__c == undefined || $scope.input[i].Existing_Grants__r[j].Starting_Date__c == "") {
-                    swal("Existing Grants", "Please Enter Starting Date.");
+                    swal("Existing Grants", "Please Enter Starting Date.", "info");
                     return;
                 }
                 if ($scope.input[i].Existing_Grants__r[j].Duration__c == undefined || $scope.input[i].Existing_Grants__r[j].Duration__c == "") {
-                    swal("Existing Grants", "Please Enter Duration(Number in months).");
+                    swal("Existing Grants", "Please Enter Duration(Number in months).", "info");
                     return;
                 }
             }
@@ -2858,6 +3136,96 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
     };
 
+
+    $scope.checkCharLimit = function (obj, fieldName, limit) {
+        debugger;
+
+        if (!obj) return;
+
+        var targetObj;
+        var value;
+
+        // 🔹 Account field
+        if (obj.hasOwnProperty(fieldName)) {
+            targetObj = obj;
+            value = obj[fieldName];
+
+        }
+        // 🔹 Contact field
+        else if (
+            obj.Contacts &&
+            obj.Contacts.length > 0 &&
+            obj.Contacts[0].hasOwnProperty(fieldName)
+        ) {
+            targetObj = obj.Contacts[0];
+            value = obj.Contacts[0][fieldName];
+
+        } else {
+            return;
+        }
+
+        // Init error map
+        targetObj._charLimitMap = targetObj._charLimitMap || {};
+
+        if (!value) {
+            targetObj._charLimitMap[fieldName] = false;
+            return;
+        }
+
+        /* =====================================================
+           SPECIAL CASE: POSTAL / ZIP CODE
+           ===================================================== */
+        if (fieldName === 'BillingPostalCode') {
+
+            var country = obj.BillingCountry;
+            var cleanedValue = value.replace(/[^0-9]/g, '');
+
+            var maxLength;
+            var regex;
+
+            if (country === 'India') {
+                maxLength = 6;
+                regex = /^[0-9]{6}$/;
+            }
+            else if (country === 'Germany') {
+                maxLength = 5;
+                regex = /^[0-9]{5}$/;
+            }
+            else {
+                maxLength = limit; // fallback
+            }
+
+            // Length check
+            if (cleanedValue.length > maxLength) {
+                targetObj._charLimitMap[fieldName] = true;
+                console.log('❌ Postal code length exceeded for', country);
+                return;
+            }
+
+            // Pattern check (only when full length entered)
+            if (cleanedValue.length === maxLength) {
+                if (regex && !regex.test(cleanedValue)) {
+                    targetObj._charLimitMap[fieldName] = true;
+                    console.log('❌ Invalid Postal Code for', country);
+                    return;
+                }
+            }
+
+            targetObj._charLimitMap[fieldName] = false;
+            console.log('✅ Valid Postal Code for', country);
+            return;
+        }
+
+        /* =====================================================
+            DEFAULT CHAR LIMIT LOGIC (Website, Department, etc.)
+           ===================================================== */
+
+        if (value.length > limit) {
+            targetObj._charLimitMap[fieldName] = true;
+        } else {
+            targetObj._charLimitMap[fieldName] = false;
+        }
+    };
 
     // ----------------------------- Need to add afterwards -----------------------------
     // if ($scope.applicantDetails.Summary__c != undefined || $scope.applicantDetails.Summary__c != "") {
