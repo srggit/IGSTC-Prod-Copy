@@ -747,8 +747,10 @@
                                             <td ng-if="numberOfYears >= 3 && accList.BillingCountry == 'Germany'">{{contingencyTotal.Total_Year3_Expense__c || 0 | euroCurrency}}</td>
                                             <td ng-if="accList.BillingCountry == 'India'">{{contingencyTotal.Overall_Expense || 0 | inrCurrency}}</td>
                                             <td ng-if="accList.BillingCountry == 'Germany'">{{contingencyTotal.Overall_Expense || 0 | euroCurrency}}</td>
-                                            <td ng-show="contingency.length > 1 || !proposalStage">Actions</td>
-                                            <td ng-hide="contingency.length > 1 || proposalStage"></td>
+                                            <td ng-show="!proposalStage">Actions</td>
+                                            <!-- contingency.length > 1 || -->
+                                            <td ng-hide="proposalStage"></td>
+                                            <!-- contingency.length > 1 -->
                                         </tr>
 
                                         <!-- Contingency rows (India only) -->
@@ -782,12 +784,14 @@
                                             </td>
                                             <td ng-if="accList.BillingCountry == 'India'">{{con.Total_Expense__c || 0 | inrCurrency }}</td>
                                             <td ng-if="accList.BillingCountry == 'Germany'">{{con.Total_Expense__c || 0 | euroCurrency }}</td>
-                                            <td ng-show="contingency.length > 1 && !proposalStage">
+                                            <td ng-show="!proposalStage">
+                                                <!-- contingency.length > 1 && -->
                                                 <button class="delete-row-btn" ng-disabled="proposalStage" ng-click="deleteRowContingency($parent.$index,$index,con.Id)">
                                                     <i class="fa-solid fa-circle-xmark fa-2x text-danger"></i>
                                                 </button>
                                             </td>
-                                            <td ng-hide="contingency.length > 1 || proposalStage"></td>
+                                            <td ng-hide="proposalStage"></td>
+                                            <!-- contingency.length > 1 || -->
                                         </tr>
                                         <tr>
                                             <td colspan="{{numberOfYears + 4}}" style="text-align:left;" ng-show="proposalStage"> </td>
@@ -1835,7 +1839,7 @@
                                 </div> -->
                             </div>
 
-                            <div class="row mt-4 mb-4">
+                            <div class="row mt-4 mb-4" ng-if="!proposalStage">
                                 <!-- Condition removed for Submit and Next Button, because we were not able to save the data. -->
                                 <div class="col-md-12">
                                     <!-- <button type="button" class="blue-btn float-end ms-3" ng-click="redirectPageURL('Declartion_2plus2')">Save and Next</button> -->

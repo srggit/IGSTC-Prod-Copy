@@ -281,8 +281,7 @@
                 </div>
                 <div class="row mx-5">
                     <div class="col-md-6" ng-show="isCoordinatorr=='true'">
-                        <button class="blue-btn w-100" type="button" ng-click="setCurrentDiv('coordinator')">Coordinator o
-                            Details</button>
+                        <button class="blue-btn w-100" type="button" ng-click="setCurrentDiv('coordinator')">Coordinator Details</button>
                     </div>
                     <div class="col-md-6" ng-show="isCoordinatorr=='true'">
                         <button class="blue-btn w-100" type="button" ng-click="setCurrentDiv('partner')">Project Partner
