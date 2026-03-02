@@ -298,6 +298,44 @@
                             <i class="fa-solid fa-circle text-success me-3"></i>Only PDF files allowed. (Max. size 4 MB)</li>
                     </div>
                 </div>
+
+                <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-3" ng-show="stage === '1st Stage'">
+                    <div class="col-md-6">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="font-if mb-3">
+                                    <b>Undertaking Format of Grant Acceptance</b>
+                                    <br/> Click button to download the Undertaking Format of Grant Acceptance.
+                                </label>
+                                <div class="mt-3">
+                                    <a href="{!$Resource.Undertaking_Format_of_Grant_Acceptance}" download="Undertaking_Format_of_Grant_Acceptance.docx" class="blue-btn py-2 px-4 ms-2"
+                                        style="text-decoration: none; display: inline-block;" onclick="this.setAttribute('download', 'Undertaking_Format_of_Grant_Acceptance.docx'); return true;">
+                                        <i class="fa-solid fa-download me-2"></i>Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="font-if mb-3">
+                                    <b>Undertaking for Sensitivity Security Regulations</b>
+                                    <br/> Click button to download the Undertaking for Sensitivity Security Regulations.
+                                </label>
+                                <div class="mt-3">
+                                    <a href="{!$Resource.Undertaking_for_Sensitivity_Security_Regulations}" download="Undertaking_for_Sensitivity_Security_Regulations.docx"
+                                        class="blue-btn py-2 px-4 ms-2" style="text-decoration: none; display: inline-block;"
+                                        onclick="this.setAttribute('download', 'Undertaking_for_Sensitivity_Security_Regulations.docx'); return true;">
+                                        <i class="fa-solid fa-download me-2"></i>Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row box-shadow-2 mt-5 mx-5 mb-5">
                     <!-- <div class="accordion mt-5 mx-5" id="accordionExample">
                             <div class="accordion-item">
@@ -1697,6 +1735,7 @@
 
 
                     <!-- Financial Statement Report Upload Section (APA level) - Stage 1 -->
+                    <!--
                     <div class="row mt-5" ng-show="stage === '1st Stage' && (mailingCountry === 'India' || mailingCountry === 'Germany')">
                         <div class="col-md-6">
                             <div class="input-group ms-4">
@@ -1732,8 +1771,10 @@
                                 target="_blank">View</a>
                         </div>
                     </div>
+                    -->
 
                     <!-- Quotation for Equipment/Accessories Upload Section (APA level) - Stage 1 -->
+                    <!--
                     <div class="row mt-5" ng-show="stage === '1st Stage' && mailingCountry === 'India'">
                         <div class="col-md-6">
                             <div class="input-group ms-4">
@@ -1767,12 +1808,69 @@
                                 target="_blank">View</a>
                         </div>
                     </div>
+                    -->
+
+                    <!-- Undertaking Format of Grant Acceptance & Signing of Agreement Upload Section (APA level) - Stage 1 -->
+                    <div class="row mt-5" ng-show="stage === '1st Stage' && mailingCountry === 'India'">
+                        <div class="col-md-6">
+                            <div class="input-group ms-4">
+                                <label class="font-if">Upload Undertaking Format of Grant Acceptance
+                                    <span class="ms-2 text-danger">*</span>
+                                </label>
+                                <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingGrantAcceptanceUndertaking || currentProposalStage == 'Submitted'"
+                                    id="grantAcceptanceUndertakingFileStage1" />
+                                <span class="input-group-btn pt-3">
+                                    <button class="btn btn-success mt-4 py-3" ng-click="uploadGrantAcceptanceUndertaking()" type="button" ng-disabled="isUploadingGrantAcceptanceUndertaking || currentProposalStage == 'Submitted'">
+                                        <span ng-if="!isUploadingGrantAcceptanceUndertaking">Upload</span>
+                                        <span ng-if="isUploadingGrantAcceptanceUndertaking">
+                                            <i class="fa fa-spinner fa-spin"></i> Uploading...
+                                        </span>
+                                    </button>
+                                </span>
+                            </div>
+                            <div class="alert alert-success ms-4 mt-2 py-2" ng-if="grantAcceptanceUndertakingDoc && grantAcceptanceUndertakingDoc.userDocument && grantAcceptanceUndertakingDoc.userDocument.Status__c=='Uploaded' && !isUploadingGrantAcceptanceUndertaking">
+                                <i class="fa fa-check-circle"></i> Undertaking Format of Grant Acceptance - Uploaded successfully.
+                            </div>
+                        </div>
+                        <div class="col-md-2" ng-show="grantAcceptanceUndertakingDoc && grantAcceptanceUndertakingDoc.userDocument && grantAcceptanceUndertakingDoc.userDocument.Status__c=='Uploaded'">
+                            <a class="blue-btn float-end mt-5 py-3" ng-class="{'disabled': isUploadingGrantAcceptanceUndertaking}" href="{{grantAcceptanceUndertakingPreviewLink}}"
+                                target="_blank">View</a>
+                        </div>
+                    </div>
+
+                    <!-- Undertaking for Sensitivity Security Regulations Upload Section (APA level) - Stage 1 -->
+                    <div class="row mt-5" ng-show="stage === '1st Stage'">
+                        <div class="col-md-6">
+                            <div class="input-group ms-4">
+                                <label class="font-if">Upload Undertaking for Sensitivity Security Regulations
+                                    <span class="ms-2 text-danger">*</span>
+                                </label>
+                                <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingSensitivitySecurityUndertaking || currentProposalStage == 'Submitted'"
+                                    id="sensitivitySecurityUndertakingFileStage1" />
+                                <span class="input-group-btn pt-3">
+                                    <button class="btn btn-success mt-4 py-3" ng-click="uploadSensitivitySecurityUndertaking()" type="button" ng-disabled="isUploadingSensitivitySecurityUndertaking || currentProposalStage == 'Submitted'">
+                                        <span ng-if="!isUploadingSensitivitySecurityUndertaking">Upload</span>
+                                        <span ng-if="isUploadingSensitivitySecurityUndertaking">
+                                            <i class="fa fa-spinner fa-spin"></i> Uploading...
+                                        </span>
+                                    </button>
+                                </span>
+                            </div>
+                            <div class="alert alert-success ms-4 mt-2 py-2" ng-if="sensitivitySecurityUndertakingDoc && sensitivitySecurityUndertakingDoc.userDocument && sensitivitySecurityUndertakingDoc.userDocument.Status__c=='Uploaded' && !isUploadingSensitivitySecurityUndertaking">
+                                <i class="fa fa-check-circle"></i> Undertaking for Sensitivity Security Regulations - Uploaded successfully.
+                            </div>
+                        </div>
+                        <div class="col-md-2" ng-show="sensitivitySecurityUndertakingDoc && sensitivitySecurityUndertakingDoc.userDocument && sensitivitySecurityUndertakingDoc.userDocument.Status__c=='Uploaded'">
+                            <a class="blue-btn float-end mt-5 py-3" ng-class="{'disabled': isUploadingSensitivitySecurityUndertaking}" href="{{sensitivitySecurityUndertakingPreviewLink}}"
+                                target="_blank">View</a>
+                        </div>
+                    </div>
 
                     <!-- Financial Statement Report Upload Section (APA level) - Stage 2 -->
                     <div class="row mt-5" ng-show="stage === '2nd Stage' && (mailingCountry === 'India' || mailingCountry === 'Germany')">
                         <div class="col-md-6">
                             <div class="input-group ms-4">
-                                <label class="font-if">Upload Financial Statement Report - Stage 2
+                                <label class="font-if">Upload Budget Report - Stage 2
                                     <span ng-if="mailingCountry === 'India'" class="ms-2 text-danger">*</span>
                                 </label>
                                 <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingFinancialStatement || currentProposalStage == 'Submitted'"
@@ -1794,7 +1892,7 @@
                             </div>
                             <div ng-if="auditedFinancialDoc && auditedFinancialDoc.userDocument && auditedFinancialDoc.userDocument.Status__c=='Uploaded' && !isUploadingFinancialStatement"
                                 class="alert alert-success ms-4 mt-2 py-2">
-                                <i class="fa fa-check-circle"></i> Financial Statement Report - Stage 2 uploaded successfully.
+                                <i class="fa fa-check-circle"></i> Budget Report - Stage 2 uploaded successfully.
 
                             </div>
                         </div>
@@ -1803,8 +1901,6 @@
                                 target="_blank">View</a>
                         </div>
                     </div>
-
-
 
                     <!-- Quotation for Equipment/Accessories Upload Section (APA level) - Stage 2 -->
                     <div class="row mt-5" ng-show="stage === '2nd Stage' && mailingCountry === 'India'">

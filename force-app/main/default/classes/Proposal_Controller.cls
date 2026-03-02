@@ -7532,6 +7532,8 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
         }
     }
     
+    // Method updated by Saurabh on 01-03-2026 (To Update the Applicant Status Field on APA - For Partial Submission)
+    /*
     public static String submit2plus2(Contact conDetails, Integer year, Integer month, Integer day, String proposalId){
         try {
             // Set date if provided
@@ -7599,7 +7601,78 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
             return e.getMessage() + ' Line: ' + e.getLineNumber();
         }
     }
-    
+    */
+    public static String submit2plus2(Contact conDetails, Integer year, Integer month, Integer day, String proposalId) {
+        try {
+            // Set date if provided
+            if (!(year == 0 && month == 0 && day == 0)) {
+                Date newDate = Date.newInstance(year, month, day);
+                conDetails.Declaration_Sign_Date__c = newDate;
+            }
+
+            System.debug('Inside submit2plus2');
+
+            // STEP 1: Get all APAs linked to this Proposal
+            List<Applicant_Proposal_Association__c> apaList = [
+                SELECT Id, Contact__c, Applicant_Status__c, Is_Coordinator__c
+                FROM Applicant_Proposal_Association__c
+                WHERE Proposals__c = :proposalId
+            ];
+
+            Applicant_Proposal_Association__c currentAPA = null;
+
+            // STEP 2: Identify current APA
+            for (Applicant_Proposal_Association__c apa : apaList) {
+                if (apa.Contact__c == conDetails.Id) {
+                    currentAPA = apa;
+                    break;
+                }
+            }
+
+            if (currentAPA == null) {
+                return 'Current APA not found';
+            }
+
+            // ✅ ALWAYS update current user's status
+            currentAPA.Applicant_Status__c = 'Submitted';
+            update currentAPA;
+
+            // STEP 3: Re-check all partners after update
+            Boolean allSubmitted = true;
+
+            for (Applicant_Proposal_Association__c apa : apaList) {
+                // use updated value for current user
+                if (apa.Id == currentAPA.Id) continue;
+
+                if (apa.Applicant_Status__c != 'Submitted') {
+                    allSubmitted = false;
+                    break;
+                }
+            }
+
+            // STEP 4: Update proposal only if all submitted
+            if (allSubmitted) {
+                System.debug('All partners submitted');
+
+                Application_Proposal__c prop = new Application_Proposal__c(Id = proposalId);
+                prop.Proposal_Stages__c = 'Submitted';
+                prop.Submitted__c = true;
+                update prop;
+
+                update conDetails;
+
+                return 'Success';
+            } else {
+                System.debug('Partial submit');
+
+                update conDetails;
+                return 'Partial Success';
+            }
+
+        } catch (Exception e) {
+            return e.getMessage() + ' Line: ' + e.getLineNumber();
+        }
+    }
     
     
     

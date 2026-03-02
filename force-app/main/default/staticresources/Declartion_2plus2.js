@@ -381,93 +381,99 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         }
 
 
+        console.log('$rootScope.expenseDetailsSubmitted : ', $rootScope.expenseDetailsSubmitted);
+        console.log('$rootScope.secondStage : ', $rootScope.secondStage);
+        console.log('$rootScope.isCoordinator : ', $rootScope.isCoordinator);
 
-        if ($rootScope.expenseDetailsSubmitted) {
-            swal({
-                title: "Are you sure?",
-                text: "Once submitted, you will not be able to update proposal!",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        // ApplicantPortal_Contoller.submit2plus2($scope.decDetails,year,month,day,$rootScope.projectId, function(result,event){
-                        ApplicantPortal_Contoller.submit2plus2($scope.decDetails, year, month, day, $rootScope.proposalId, function (result, event) {
-                            if (event.status) {
-                                debugger;
-                                if (result == "Success") {
-                                    $rootScope.proposalStage = true;
-                                    CKEDITOR.config.readOnly = true;
-                                    $scope.$apply();
-
-                                    // Swal.fire(
-                                    //     'Success',
-                                    //     'Your application has been Submitted successfully.',
-                                    //     'success'
-                                    // );
-
-                                    swal(
-                                        'Success',
-                                        'Your application has been Submitted successfully.',
-                                        'success'
-                                    ).then(function () {
-
-                                        setTimeout(function () {
-                                            $scope.redirectPageURL('Home');
-                                            $scope.$apply();
-                                        }, 1500);
-
-                                    });
-                                }
-                                else {
-
-                                    swal(
-                                        'Success',
-                                        'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
-                                        'warning'
-                                    ).then(function () {
-
-                                        setTimeout(function () {
-                                            $scope.redirectPageURL('Home');
-                                            $scope.$apply();
-                                        }, 500);
-
-                                    });
-                                }
-
-                                // } else {
-                                //     // Swal.fire(
-                                //     //     'Success',
-                                //     //     'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
-                                //     //     'info'
-                                //     // );
-
-                                //     swal(
-                                //         'Success',
-                                //         'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
-                                //         'warning'
-                                //     );
-                                // }
-
-                                //$scope.redirectPageURL('Home');
-                                // $scope.redirectPageURL('Home&campaign=2plus2');    
-                            }
-                        },
-                            { escape: true }
-                        )
-                    } else {
-                        return;
-                    }
-                });
-        }
-        else {
+        if (
+            $rootScope.secondStage &&
+            !$rootScope.expenseDetailsSubmitted
+        ) {
             swal(
                 'Info',
                 'Please submit Expense Details before submitting the application.',
                 'info'
-            )
+            );
+            return;
         }
+
+        swal({
+            title: "Are you sure?",
+            text: "Once submitted, you will not be able to update proposal!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    // ApplicantPortal_Contoller.submit2plus2($scope.decDetails,year,month,day,$rootScope.projectId, function(result,event){
+                    ApplicantPortal_Contoller.submit2plus2($scope.decDetails, year, month, day, $rootScope.proposalId, function (result, event) {
+                        if (event.status) {
+                            debugger;
+                            if (result == "Success") {
+                                $rootScope.proposalStage = true;
+                                CKEDITOR.config.readOnly = true;
+                                $scope.$apply();
+
+                                // Swal.fire(
+                                //     'Success',
+                                //     'Your application has been Submitted successfully.',
+                                //     'success'
+                                // );
+
+                                swal(
+                                    'Success',
+                                    'Your application has been Submitted successfully.',
+                                    'success'
+                                ).then(function () {
+
+                                    setTimeout(function () {
+                                        $scope.redirectPageURL('Home');
+                                        $scope.$apply();
+                                    }, 1500);
+
+                                });
+                            }
+                            else {
+
+                                swal(
+                                    'Success',
+                                    'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
+                                    'warning'
+                                ).then(function () {
+
+                                    setTimeout(function () {
+                                        $scope.redirectPageURL('Home');
+                                        $scope.$apply();
+                                    }, 500);
+
+                                });
+                            }
+
+                            // } else {
+                            //     // Swal.fire(
+                            //     //     'Success',
+                            //     //     'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
+                            //     //     'info'
+                            //     // );
+
+                            //     swal(
+                            //         'Success',
+                            //         'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
+                            //         'warning'
+                            //     );
+                            // }
+
+                            //$scope.redirectPageURL('Home');
+                            // $scope.redirectPageURL('Home&campaign=2plus2');    
+                        }
+                    },
+                        { escape: true }
+                    )
+                } else {
+                    return;
+                }
+            });
     }
 
     $scope.saveDetails = function () {

@@ -13,6 +13,19 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
     $scope.proposalStatusData = false;
     $scope.isSecondStage = false;
 
+    $scope.isUploadingAFRYear1 = false;
+    $scope.isUploadingAFRYear2 = false;
+    $scope.isUploadingAFRYear3 = false;
+
+    var maxStringSize = 6821208;
+    var chunkSize = 750000;
+    var attachment = '';
+    var attachmentName = '';
+    var fileSize = 0;
+    var positionIndex = 0;
+    var doneUploading = false;
+    var maxFileSize = 0;
+
     console.log('$scope.proposalStage : ', $scope.proposalStage);
     console.log('$scope.secondstage : ', $scope.secondstage);
 
@@ -133,17 +146,34 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
     }
     $scope.getProjectdetils();
 
+    var setUploadingFlagForType = function (type, isUploading) {
+        if (type === 'Annual Financial Report - Year 1') {
+            $scope.isUploadingAFRYear1 = isUploading;
+        } else if (type === 'Annual Financial Report - Year 2') {
+            $scope.isUploadingAFRYear2 = isUploading;
+        } else if (type === 'Annual Financial Report - Year 3') {
+            $scope.isUploadingAFRYear3 = isUploading;
+        }
+    };
+
     $scope.uploadFile = function (type, userDocId, fileId, maxSize, minFileSize) {
         debugger;
-        $scope.showSpinnereditProf = true;
+        setUploadingFlagForType(type, true);
         var file;
 
         file = document.getElementById(type).files[0];
+        if (!file) {
+            swal('info', 'You must choose a file before trying to upload it', 'info');
+            setUploadingFlagForType(type, false);
+            return;
+        }
+
         fileName = file.name;
         var typeOfFile = fileName.split(".");
         lengthOfType = typeOfFile.length;
         if (typeOfFile[lengthOfType - 1] != "pdf") {
             swal('info', 'Please choose pdf file only.', 'info');
+            setUploadingFlagForType(type, false);
             return;
         }
         console.log(file);
@@ -158,7 +188,6 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                     attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
                     positionIndex = 0;
                     fileSize = attachment.length;
-                    $scope.showSpinnereditProf = false;
                     console.log("Total Attachment Length: " + fileSize);
                     doneUploading = false;
                     debugger;
@@ -166,16 +195,19 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                         $scope.uploadAttachment(type, userDocId, null);
                     } else {
                         swal('info', 'Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".', 'info');
+                        setUploadingFlagForType(type, false);
                         return;
                     }
 
                 }
                 fileReader.onerror = function (e) {
                     swal('info', 'There was an error reading the file.  Please try again.', 'info');
+                    setUploadingFlagForType(type, false);
                     return;
                 }
                 fileReader.onabort = function (e) {
                     swal('info', 'There was an error reading the file.  Please try again.', 'info');
+                    setUploadingFlagForType(type, false);
                     return;
                 }
 
@@ -183,20 +215,19 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
 
             } else {
                 swal('info', 'Your file is too large.  Please try again.', 'info');
+                setUploadingFlagForType(type, false);
                 return;
-                $scope.showSpinnereditProf = false;
             }
         } else {
             swal('info', 'You must choose a file before trying to upload it', 'info');
+            setUploadingFlagForType(type, false);
             return;
-            $scope.showSpinnereditProf = false;
         }
     }
 
     $scope.uploadAttachment = function (type, userDocId, fileId) {
         debugger;
         var attachmentBody = "";
-        var chunkSize = 750000;
         // if (fileId == undefined) {
         //     fileId = " ";
         // }
@@ -215,6 +246,8 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                 if (event.type === 'exception') {
                     console.log("exception");
                     console.log(event);
+                    swal('Error', (event.message || 'Upload failed. Please try again.'), 'error');
+                    setUploadingFlagForType(type, false);
                 } else if (event.status) {
                     if (doneUploading == true) {
                         $scope.getProjectdetils();
@@ -226,6 +259,7 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                         )
                         $scope.getProjectdetils();
                         // $scope.disableSubmit = false;
+                        setUploadingFlagForType(type, false);
 
                     }
                     // $scope.getCandidateDetails();\
@@ -235,6 +269,9 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                         $scope.uploadAttachment(type, userDocId, result);
                     }
                     $scope.showUplaodUserDoc = false;
+                } else {
+                    swal('Error', (event.message || 'Upload failed. Please try again.'), 'error');
+                    setUploadingFlagForType(type, false);
                 }
             },
 
@@ -440,7 +477,7 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                 return;
             }
 
-            if ($scope.mailingCountry == 'India') {
+            if ($scope.mailingCountry == 'India' && $scope.proposalStage) {
                 if (!$scope.docAFR1 || $scope.docAFR1.userDocument.Status__c != 'Uploaded') {
                     swal("Address Details", "Please upload Annual Financial Report - Year 1.", "info");
                     return;
@@ -453,7 +490,7 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                     swal("Address Details", "Please upload Annual Financial Report - Year 3.", "info");
                     return;
                 }
-            } else if ($scope.mailingCountry == 'Germany') {
+            } else if ($scope.mailingCountry == 'Germany' && $scope.proposalStage) {
                 if (!$scope.docAFR1 || $scope.docAFR1.userDocument.Status__c != 'Uploaded') {
                     swal("Address Details", "Please upload Annual Financial Report - Year 1.", "info");
                     return;

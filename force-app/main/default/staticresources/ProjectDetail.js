@@ -69,6 +69,8 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.isUploadingFinancialStatement = false;
     $scope.isUploadingQuotation = false;
     $scope.isUploadingLetterOfConsent = false;
+    $scope.isUploadingGrantAcceptanceUndertaking = false;
+    $scope.isUploadingSensitivitySecurityUndertaking = false;
 
     $scope.previewFileLink = '';
 
@@ -79,6 +81,10 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.quotationEquipmentPreviewLink = '';
     $scope.letterOfConsentDoc = null;
     $scope.letterOfConsentPreviewLink = '';
+    $scope.grantAcceptanceUndertakingDoc = null;
+    $scope.grantAcceptanceUndertakingPreviewLink = '';
+    $scope.sensitivitySecurityUndertakingDoc = null;
+    $scope.sensitivitySecurityUndertakingPreviewLink = '';
 
     // if(proposalStage=="Draft" && isCoordinator == "true"){
     //     $scope.uploadDisable = false;
@@ -710,6 +716,10 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 $scope.auditedFinancialPreviewLink = '';
                 $scope.quotationEquipmentDoc = null;
                 $scope.quotationEquipmentPreviewLink = '';
+                $scope.grantAcceptanceUndertakingDoc = null;
+                $scope.grantAcceptanceUndertakingPreviewLink = '';
+                $scope.sensitivitySecurityUndertakingDoc = null;
+                $scope.sensitivitySecurityUndertakingPreviewLink = '';
 
                 // Decide expected document names based on stage
                 var expectedFinancialDocName = $rootScope.secondStage
@@ -720,8 +730,13 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     ? 'Quotation For Equipment - Stage 2'
                     : 'Quotation For Equipment - Stage 1';
 
+                var expectedGrantAcceptanceUndertakingDocName = 'Undertaking Format of Grant Acceptance';
+                var expectedSensitivitySecurityUndertakingDocName = 'Undertaking for Sensitivity Security Regulations';
+
                 console.log('Expected Financial Doc Name: ', expectedFinancialDocName);
                 console.log('Expected Quotation Doc Name: ', expectedQuotationDocName);
+                console.log('Expected Grant Acceptance Undertaking Doc Name: ', expectedGrantAcceptanceUndertakingDocName);
+                console.log('Expected Sensitivity Security Undertaking Doc Name: ', expectedSensitivitySecurityUndertakingDocName);
 
                 var uploadCount = 0;
                 for (var i = 0; i < $scope.apaUserDocs.length; i++) {
@@ -748,6 +763,34 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                             // Attachments[0] is the latest attachment since Apex orders by CreatedDate DESC
                             var fileId = $scope.apaUserDocs[i].userDocument.Attachments[0].Id;
                             $scope.quotationEquipmentPreviewLink = '/ApplicantDashboard/servlet/servlet.FileDownload?file=' + fileId;
+                        }
+                        if ($scope.apaUserDocs[i].userDocument.Status__c == 'Uploaded') {
+                            uploadCount = uploadCount + 1;
+                        }
+                    }
+                    // Undertaking Format of Grant Acceptance & Signing of Agreement (APA level) - Stage 1 only
+                    else if (!$rootScope.secondStage && docName === expectedGrantAcceptanceUndertakingDocName) {
+                        $scope.grantAcceptanceUndertakingDoc = $scope.apaUserDocs[i];
+                        if (
+                            $scope.apaUserDocs[i].userDocument.Attachments &&
+                            $scope.apaUserDocs[i].userDocument.Attachments.length > 0
+                        ) {
+                            var fileId = $scope.apaUserDocs[i].userDocument.Attachments[0].Id;
+                            $scope.grantAcceptanceUndertakingPreviewLink = '/ApplicantDashboard/servlet/servlet.FileDownload?file=' + fileId;
+                        }
+                        if ($scope.apaUserDocs[i].userDocument.Status__c == 'Uploaded') {
+                            uploadCount = uploadCount + 1;
+                        }
+                    }
+                    // Undertaking for Sensitivity Security Regulations (APA level) - Stage 1 only
+                    else if (!$rootScope.secondStage && docName === expectedSensitivitySecurityUndertakingDocName) {
+                        $scope.sensitivitySecurityUndertakingDoc = $scope.apaUserDocs[i];
+                        if (
+                            $scope.apaUserDocs[i].userDocument.Attachments &&
+                            $scope.apaUserDocs[i].userDocument.Attachments.length > 0
+                        ) {
+                            var fileId = $scope.apaUserDocs[i].userDocument.Attachments[0].Id;
+                            $scope.sensitivitySecurityUndertakingPreviewLink = '/ApplicantDashboard/servlet/servlet.FileDownload?file=' + fileId;
                         }
                         if ($scope.apaUserDocs[i].userDocument.Status__c == 'Uploaded') {
                             uploadCount = uploadCount + 1;
@@ -1102,7 +1145,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     }
 
     // ----------------------------- AUDITED FINANCIAL STATEMENT UPLOAD - OLD FUNCTIONALITY ----------------------------- //
-    /*
+
     $scope.uploadAuditedFinancial = function () {
         debugger;
 
@@ -1197,7 +1240,225 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         fileReader.readAsBinaryString(file);
     }
-    */
+
+    // ----------------------------- GRANT ACCEPTANCE UNDERTAKING UPLOAD (STAGE 1 ONLY) ----------------------------- //
+    $scope.uploadGrantAcceptanceUndertaking = function () {
+        debugger;
+
+        if ($rootScope.secondStage || $rootScope.mailingCountry !== 'India') {
+            return;
+        }
+
+        $scope.uploadProgress = 0;
+        $scope.showProgressBar = true;
+        $scope.isUploadingGrantAcceptanceUndertaking = true;
+        $scope.showSpinnereditProf = true;
+
+        var file;
+        var maxFileSize = 5191680;
+        var inputId = 'grantAcceptanceUndertakingFileStage1';
+        file = document.getElementById(inputId).files[0];
+
+        if (!file) {
+            swal("info", "You must choose a file before trying to upload it", "info");
+            $scope.isUploadingGrantAcceptanceUndertaking = false;
+            $scope.showSpinnereditProf = false;
+            $scope.showProgressBar = false;
+            return;
+        }
+
+        var fileName = file.name;
+        var typeOfFile = fileName.split(".");
+        var lengthOfType = typeOfFile.length;
+
+        if (typeOfFile[lengthOfType - 1].toLowerCase() !== "pdf") {
+            $scope.isUploadingGrantAcceptanceUndertaking = false;
+            $scope.showSpinnereditProf = false;
+            $scope.showProgressBar = false;
+            swal('info', 'Please choose PDF file only.', 'info');
+            return;
+        }
+
+        if (file.size > maxFileSize) {
+            $scope.isUploadingGrantAcceptanceUndertaking = false;
+            $scope.showSpinnereditProf = false;
+            $scope.showProgressBar = false;
+            swal("info", "File must be under 5 MB in size.", "info");
+            return;
+        }
+
+        var fileReader = new FileReader();
+        fileReader.onloadend = function (e) {
+            var attachmentData = window.btoa(this.result);
+
+            swal({
+                title: "Confirm Upload",
+                text: "Are you sure you want to upload the Undertaking Format of Grant Acceptance & Signing of Agreement?",
+                icon: "warning",
+                buttons: {
+                    cancel: "Cancel",
+                    confirm: { text: "Upload", value: true }
+                }
+            }).then((willUpload) => {
+                if (willUpload) {
+                    var userDocId = $scope.grantAcceptanceUndertakingDoc ? $scope.grantAcceptanceUndertakingDoc.userDocument.Id : '';
+
+                    if (!userDocId) {
+                        swal('Error', 'User Document not found. Please refresh the page and try again.', 'error');
+                        $scope.isUploadingGrantAcceptanceUndertaking = false;
+                        $scope.showSpinnereditProf = false;
+                        $scope.showProgressBar = false;
+                        document.getElementById(inputId).value = "";
+                        $scope.$applyAsync();
+                        return;
+                    }
+
+                    ApplicantPortal_Contoller.doCUploadAttachmentAa(
+                        attachmentData, fileName, null, userDocId,
+                        function (result, event) {
+                            if (event.status) {
+                                swal('Success', 'Grant acceptance uploaded successfully!', 'success');
+                                $scope.loadAPAUserDocs();
+                            } else {
+                                swal('Error', 'Error uploading file. Please try again.', 'error');
+                            }
+                            $scope.isUploadingGrantAcceptanceUndertaking = false;
+                            $scope.showSpinnereditProf = false;
+                            $scope.showProgressBar = false;
+                            document.getElementById(inputId).value = "";
+                            $scope.$applyAsync();
+                        },
+                        { buffer: true, escape: true, timeout: 120000 }
+                    );
+                } else {
+                    $scope.isUploadingGrantAcceptanceUndertaking = false;
+                    $scope.showSpinnereditProf = false;
+                    $scope.showProgressBar = false;
+                    document.getElementById(inputId).value = "";
+                    $scope.$applyAsync();
+                }
+            });
+        };
+
+        fileReader.onerror = function (e) {
+            $scope.isUploadingGrantAcceptanceUndertaking = false;
+            $scope.showSpinnereditProf = false;
+            $scope.showProgressBar = false;
+            swal("Error", "Error reading file. Please try again.", "error");
+        };
+
+        fileReader.readAsBinaryString(file);
+    }
+
+    // ----------------------------- SENSITIVITY / SECURITY UNDERTAKING UPLOAD (STAGE 1 ONLY) ----------------------------- //
+    $scope.uploadSensitivitySecurityUndertaking = function () {
+        debugger;
+
+        if ($rootScope.secondStage) {
+            return;
+        }
+
+        $scope.uploadProgress = 0;
+        $scope.showProgressBar = true;
+        $scope.isUploadingSensitivitySecurityUndertaking = true;
+        $scope.showSpinnereditProf = true;
+
+        var file;
+        var maxFileSize = 5191680;
+        var inputId = 'sensitivitySecurityUndertakingFileStage1';
+        file = document.getElementById(inputId).files[0];
+
+        if (!file) {
+            swal("info", "You must choose a file before trying to upload it", "info");
+            $scope.isUploadingSensitivitySecurityUndertaking = false;
+            $scope.showSpinnereditProf = false;
+            $scope.showProgressBar = false;
+            return;
+        }
+
+        var fileName = file.name;
+        var typeOfFile = fileName.split(".");
+        var lengthOfType = typeOfFile.length;
+
+        if (typeOfFile[lengthOfType - 1].toLowerCase() !== "pdf") {
+            $scope.isUploadingSensitivitySecurityUndertaking = false;
+            $scope.showSpinnereditProf = false;
+            $scope.showProgressBar = false;
+            swal('info', 'Please choose PDF file only.', 'info');
+            return;
+        }
+
+        if (file.size > maxFileSize) {
+            $scope.isUploadingSensitivitySecurityUndertaking = false;
+            $scope.showSpinnereditProf = false;
+            $scope.showProgressBar = false;
+            swal("info", "File must be under 5 MB in size.", "info");
+            return;
+        }
+
+        var fileReader = new FileReader();
+        fileReader.onloadend = function (e) {
+            var attachmentData = window.btoa(this.result);
+
+            swal({
+                title: "Confirm Upload",
+                text: "Are you sure you want to upload the Undertaking for Sensitivity Security Regulations?",
+                icon: "warning",
+                buttons: {
+                    cancel: "Cancel",
+                    confirm: { text: "Upload", value: true }
+                }
+            }).then((willUpload) => {
+                if (willUpload) {
+                    var userDocId = $scope.sensitivitySecurityUndertakingDoc ? $scope.sensitivitySecurityUndertakingDoc.userDocument.Id : '';
+
+                    if (!userDocId) {
+                        swal('Error', 'User Document not found. Please refresh the page and try again.', 'error');
+                        $scope.isUploadingSensitivitySecurityUndertaking = false;
+                        $scope.showSpinnereditProf = false;
+                        $scope.showProgressBar = false;
+                        document.getElementById(inputId).value = "";
+                        $scope.$applyAsync();
+                        return;
+                    }
+
+                    ApplicantPortal_Contoller.doCUploadAttachmentAa(
+                        attachmentData, fileName, null, userDocId,
+                        function (result, event) {
+                            if (event.status) {
+                                swal('Success', 'Sensitivity security undertaking uploaded successfully!', 'success');
+                                $scope.loadAPAUserDocs();
+                            } else {
+                                swal('Error', 'Error uploading file. Please try again.', 'error');
+                            }
+                            $scope.isUploadingSensitivitySecurityUndertaking = false;
+                            $scope.showSpinnereditProf = false;
+                            $scope.showProgressBar = false;
+                            document.getElementById(inputId).value = "";
+                            $scope.$applyAsync();
+                        },
+                        { buffer: true, escape: true, timeout: 120000 }
+                    );
+                } else {
+                    $scope.isUploadingSensitivitySecurityUndertaking = false;
+                    $scope.showSpinnereditProf = false;
+                    $scope.showProgressBar = false;
+                    document.getElementById(inputId).value = "";
+                    $scope.$applyAsync();
+                }
+            });
+        };
+
+        fileReader.onerror = function (e) {
+            $scope.isUploadingSensitivitySecurityUndertaking = false;
+            $scope.showSpinnereditProf = false;
+            $scope.showProgressBar = false;
+            swal("Error", "Error reading file. Please try again.", "error");
+        };
+
+        fileReader.readAsBinaryString(file);
+    }
+
 
     $scope.uploadAuditedFinancial = function () {
         debugger;
@@ -1739,6 +2000,41 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             return;
         }
 
+        if (
+            $rootScope.mailingCountry === 'India'
+            && !$rootScope.secondStage
+            && !(
+                $scope.grantAcceptanceUndertakingDoc
+                && $scope.grantAcceptanceUndertakingDoc.userDocument
+                && $scope.grantAcceptanceUndertakingDoc.userDocument.Status__c === 'Uploaded'
+            )
+        ) {
+            swal({
+                title: "Info",
+                text: "Please upload Undertaking Format of Grant Acceptance before saving.",
+                icon: "info",
+                button: "OK",
+            });
+            return;
+        }
+
+        if (
+            !$rootScope.secondStage
+            && !(
+                $scope.sensitivitySecurityUndertakingDoc
+                && $scope.sensitivitySecurityUndertakingDoc.userDocument
+                && $scope.sensitivitySecurityUndertakingDoc.userDocument.Status__c === 'Uploaded'
+            )
+        ) {
+            swal({
+                title: "Info",
+                text: "Please upload Undertaking for Sensitivity Security Regulations before saving.",
+                icon: "info",
+                button: "OK",
+            });
+            return;
+        }
+
 
         // ---------------------- FIELD REQUIRED VALIDATION ---------------------------- //
 
@@ -2065,12 +2361,12 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         ? `Project Details have been saved successfully.
 
                         Next Step:
-                        Please fill in the Expense Declaration Info.`
+                        Please fill in the Expense Table Info.`
                         : `Project Details have been saved successfully.
 
                         Next Step:
-                        Please fill in the Declaration Info.`;
-
+                        Please upload signature in Declaration Page.`;
+                    // Please fill in the Declaration Info.
                     swal({
                         title: "Success",
                         text: messageText,
@@ -2627,10 +2923,10 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.readCharacter = function (event, index, maxLimit) {
         try {
 
-            debugger;
-            console.log('event : ', event);
-            console.log('event : ', index);
-            console.log('event : ', maxLimit);
+            // debugger;
+            // console.log('event : ', event);
+            // console.log('event : ', index);
+            // console.log('event : ', maxLimit);
 
             // Initialize index if not exists
             if (!$scope.objRtf[index]) {

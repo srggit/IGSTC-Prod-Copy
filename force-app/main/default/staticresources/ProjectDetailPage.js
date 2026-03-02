@@ -36,6 +36,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
     $scope.startDate = false;
     $scope.bulletCondition = $rootScope.secondStage && $rootScope.isPrimaryContact == "true" ? true : false;
     $scope.proposalStage = $rootScope.proposalStage ? true : ($rootScope.isPrimaryContact == "false" ? false : true);
+    $scope.isPartner = false;
     CKEDITOR.config.readOnly = $scope.proposalStage;
     $scope.getApplicantDetail = function () {
         console.log('Inside getApplicantDetail=======================> ');
@@ -55,8 +56,10 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                     let proposal = result.proposal;
                     $rootScope.apaId = result.apa?.Id;
                     // Get coordinator status from APA
-                    $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c == true ? 'true' : 'false';
-                    if ($rootScope.isCoordinator == 'true') {
+                    // $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c == true ? 'true' : 'false';
+                    $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c === true;
+
+                    if ($rootScope.isCoordinator) {
                         if (proposal.Proposal_Stages__c == 'Draft' && proposal.Stage__c == '1st Stage') {
                             $scope.proposalStage = false;
                         } else if (proposal.Proposal_Stages__c == 'Submitted' && proposal.Stage__c == '2nd Stage') {
@@ -66,8 +69,10 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                         } else {
                             $scope.proposalStage = true;
                         }
-                    } else {
+                    }
+                    else {
                         $scope.proposalStage = true;
+                        $scope.isPartner = true;
                     }
                     if (proposal.Summary__c != undefined || proposal.Summary__c != "") {
                         proposal.Summary__c = proposal.Summary__c ? proposal.Summary__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replace(/&#39;/g, '\'').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : proposal.Summary__c;

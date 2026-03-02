@@ -272,6 +272,48 @@
                 </div>
                 <!-- </div> -->
 
+                <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-3 bg-color-list">
+                    <div class="col-md-6">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="font-if mb-3">
+                                    <b>Stage 1 Documents</b>
+                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> DSIR
+                                        Certificate</li>
+                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> Project
+                                        Proposal - Stage 1</li>
+                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> Undertaking
+                                        for Sensitivity-Security Regulations</li>
+                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> Undertaking
+                                        format towards acceptance of Grant conditions and signing of
+                                        Agreement</li>
+                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> Signature</li>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <label class="font-if mb-3">
+                                    <b>Stage 2 Documents</b>
+                                    <br /> Project Proposal - Stage 2
+                                    <br /> Letter of Consent
+                                    <br />Budget Report
+                                    <br />Quotation for Equipment / Accessories
+                                    <br />
+                                    <b>(For Industry) </b>
+                                    <br />Annual Financial Report - Year 1
+                                    <br />Annual Financial Report - Year 2
+                                    <br />Annual Financial Report - Year 3
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <form name="formPrjDet">
                     <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-5">
                         <div class="col-md-6 mt-5">
@@ -456,6 +498,15 @@
                                     ng-click="redirectToApplicantPortal()" type="button">
                                     <i class="fa-solid fa-arrow-left me-2"></i>Back
                                 </button>
+                            </div>
+                        </div>
+                        <!-- IF PARTNER THEN SHOW NEXT BUTTON-->
+                        <div class="row mt-3 mb-3" ng-if="isPartner">
+                            <div class="col-md-12">
+
+                                <button class="blue-btn float-end" id="btnPreview" ng-click="saveApplication()"
+                                    type="button">
+                                    <i class="fa-solid fa-check me-2"></i>Next</button>
                             </div>
                         </div>
                     </div>
