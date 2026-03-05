@@ -409,7 +409,7 @@
                                                 </button> -->
                                             </td>
                                             <!-- <td colspan="8" style="text-align:left;" ng-show="!proposalStage"> -->
-                                            <td colspan="{{numberOfYears + 4}}" style="text-align:left;" ng-show="!proposalStage">
+                                            <td colspan="{{numberOfYears + 5}}" style="text-align:left;" ng-show="!proposalStage">
 
                                                 <button class="add-row-btn " ng-disabled="proposalStage " ng-click="addRow($parent.$index,$index) ">
                                                     <i class="fa-solid fa-plus "></i>Add Manpower Row
@@ -747,9 +747,11 @@
                                             <td ng-if="numberOfYears >= 3 && accList.BillingCountry == 'Germany'">{{contingencyTotal.Total_Year3_Expense__c || 0 | euroCurrency}}</td>
                                             <td ng-if="accList.BillingCountry == 'India'">{{contingencyTotal.Overall_Expense || 0 | inrCurrency}}</td>
                                             <td ng-if="accList.BillingCountry == 'Germany'">{{contingencyTotal.Overall_Expense || 0 | euroCurrency}}</td>
-                                            <td ng-show="!proposalStage">Actions</td>
-                                            <!-- contingency.length > 1 || -->
                                             <td ng-hide="proposalStage"></td>
+                                            <!-- <td ng-show="!proposalStage">Actions</td> -->
+                                            <!-- contingency.length > 1 || -->
+                                            <!-- <td></td> -->
+                                            <!-- <td ng-hide="proposalStage"></td> -->
                                             <!-- contingency.length > 1 -->
                                         </tr>
 
@@ -784,13 +786,15 @@
                                             </td>
                                             <td ng-if="accList.BillingCountry == 'India'">{{con.Total_Expense__c || 0 | inrCurrency }}</td>
                                             <td ng-if="accList.BillingCountry == 'Germany'">{{con.Total_Expense__c || 0 | euroCurrency }}</td>
-                                            <td ng-show="!proposalStage">
-                                                <!-- contingency.length > 1 && -->
+                                            <td ng-hide="proposalStage"></td>
+                                            <!-- <td ng-show="!proposalStage">
+                                                <!-- contingency.length > 1 &&
                                                 <button class="delete-row-btn" ng-disabled="proposalStage" ng-click="deleteRowContingency($parent.$index,$index,con.Id)">
                                                     <i class="fa-solid fa-circle-xmark fa-2x text-danger"></i>
                                                 </button>
-                                            </td>
-                                            <td ng-hide="proposalStage"></td>
+                                            </td> -->
+                                            <!-- <td ng-hide="proposalStage"></td> -->
+                                            <!-- <td></td> -->
                                             <!-- contingency.length > 1 || -->
                                         </tr>
                                         <tr>
@@ -867,7 +871,7 @@
                                         </tr>
 
                                         <tr ng-if="accList.BillingCountry != 'Germany'" class="sub-header">
-                                            <td></td>
+                                            <td>Description</td>
                                             <td></td>
                                             <td></td>
                                             <td ng-if="numberOfYears >= 1 && accList.BillingCountry == 'India'">{{patentFiling.Total_Year1_Expense__c || 0 | inrCurrency}}</td>
@@ -885,7 +889,7 @@
                                         <!-- Patent Filing rows -->
                                         <tr ng-if="accList.BillingCountry != 'Germany'" class="input-row" ng-repeat="con in patentFilingRecords">
                                             <td>
-                                                <!-- <input ng-disabled="proposalStage" type="text" ng-model="con.Description__c" /> -->
+                                                <input ng-disabled="proposalStage" type="text" ng-model="con.Description__c" />
                                             </td>
                                             <td>
                                                 <!-- <input ng-disabled="proposalStage" type="text" ng-model="con.Number__c" placeholder="Quantity" /> -->
@@ -1839,7 +1843,7 @@
                                 </div> -->
                             </div>
 
-                            <div class="row mt-4 mb-4" ng-if="!proposalStage">
+                            <div class="row mt-4 mb-4">
                                 <!-- Condition removed for Submit and Next Button, because we were not able to save the data. -->
                                 <div class="col-md-12">
                                     <!-- <button type="button" class="blue-btn float-end ms-3" ng-click="redirectPageURL('Declartion_2plus2')">Save and Next</button> -->

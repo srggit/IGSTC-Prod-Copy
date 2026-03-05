@@ -38,6 +38,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
     $scope.proposalStage = $rootScope.proposalStage ? true : ($rootScope.isPrimaryContact == "false" ? false : true);
     $scope.isPartner = false;
     CKEDITOR.config.readOnly = $scope.proposalStage;
+
     $scope.getApplicantDetail = function () {
         console.log('Inside getApplicantDetail=======================> ');
         console.log('$rootScope.userId====================>' + $rootScope.userId);
@@ -58,22 +59,39 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                     // Get coordinator status from APA
                     // $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c == true ? 'true' : 'false';
                     $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c === true;
+                    console.log('$rootScope.isCoordinator ===> ', $rootScope.isCoordinator);
 
                     if ($rootScope.isCoordinator) {
+                        console.log('----------Coordinator----------', $rootScope.isCoordinator);
+
                         if (proposal.Proposal_Stages__c == 'Draft' && proposal.Stage__c == '1st Stage') {
+                            console.log('----------Draft 1st Stage----------');
                             $scope.proposalStage = false;
+                            CKEDITOR.config.readOnly = false;
                         } else if (proposal.Proposal_Stages__c == 'Submitted' && proposal.Stage__c == '2nd Stage') {
+                            console.log('----------Submitted 2nd Stage----------');
                             $scope.proposalStage = true;
+                            CKEDITOR.config.readOnly = true;
                         } else if (proposal.Proposal_Stages__c == 'Draft' && proposal.Stage__c == '2nd Stage') { // New Condition added to remove path redirect
+                            console.log('----------Draft 2nd Stage----------');
                             $scope.proposalStage = false;
+                            CKEDITOR.config.readOnly = false;
+                            $scope.isPartner = false;
                         } else {
+                            console.log('----------else----------');
                             $scope.proposalStage = true;
+                            CKEDITOR.config.readOnly = false;
                         }
                     }
                     else {
+                        console.log('----------Partner----------');
                         $scope.proposalStage = true;
                         $scope.isPartner = true;
+                        CKEDITOR.config.readOnly = $scope.proposalStage || $scope.isPartner;
                     }
+                    console.log('$scope.proposalStage ====>>>> ', $scope.proposalStage);
+                    console.log('CKEDITOR.config.readOnly ====>>>> ', CKEDITOR.config.readOnly);
+
                     if (proposal.Summary__c != undefined || proposal.Summary__c != "") {
                         proposal.Summary__c = proposal.Summary__c ? proposal.Summary__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replace(/&#39;/g, '\'').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : proposal.Summary__c;
                     }

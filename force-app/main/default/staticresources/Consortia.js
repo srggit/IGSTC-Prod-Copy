@@ -42,10 +42,10 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
         $scope.divCoordinator = true;
         $scope.divPartner = false;
     }
-    if($scope.isCoordinator == true){
-        $scope.isCoordinator='true';
-    }else{
-        $scope.isCoordinator='false';
+    if ($scope.isCoordinator == true) {
+        $scope.isCoordinator = 'true';
+    } else {
+        $scope.isCoordinator = 'false';
     }
     console.log('is coordinator ::=>' + $scope.isCoordinatorr);
     $scope.arrySaveStatus = [{ status: true }, { status: true }, { status: true }, { status: true }, { status: true }, { status: true }];
@@ -1503,8 +1503,11 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             debugger;
         }
 
+        console.log('$scope.emailCheck ----> ', $scope.emailCheck);
+        console.log('$scope.isCoordinator ----> ', $scope.isCoordinator);
+
         if ($scope.emailCheck == true && $scope.isCoordinator != 'false') {
-            swal('info', 'Contact Does Not Exist.', 'info');
+            swal('Info', 'Contact Does Not Exist.', 'info');
             //$("#email"+ind+"").addClass('border-theme');
             return;
         }
