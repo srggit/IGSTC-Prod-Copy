@@ -296,7 +296,7 @@
                                 placeholder="Enter email to search for existing contact" />
                         </div>
                         <div class="col-md-4 mt-4">
-                            <button type="button" ng-click="addAccount()" class="blue-btn" ng-disabled="proposalStage || !searchEmail || !searchEmail.trim()">
+                            <button type="button" ng-click="addAccount()" class="blue-btn" ng-disabled="proposalStage || !searchEmail || !searchEmail.trim() || disablePartnerEdit">
                                 <i class="fa-sharp fa-solid fa-plus me-2"></i>Add Partner
                             </button>
                         </div>
@@ -378,7 +378,7 @@
                                                 <select class="form-control" id="ddTitle"
                                                     ng-focus="removeClass('txtFirstName')"
                                                     ng-model='account.Contacts[0].Title'
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage">
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit" >
                                                     <option value="Prof." ng-selected="Mr">Prof.</option>
                                                     <option value="Dr.">Dr.</option>
                                                     <option value="Mr.">Mr.</option>
@@ -404,7 +404,7 @@
 
                                                 <input type="text" id="head{{$index}}"
                                                     ng-model="account.Contacts[0].FirstName" class="form-control"
-                                                    ng-disabled="proposalStage" ng-focus="removeClass('head',$index)"
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit" ng-focus="removeClass('head',$index)"
                                                     ng-change="checkCharLimit(account, 'FirstName', 40)" />
 
                                                 <!-- <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap &&
@@ -433,7 +433,7 @@
                                                     class="form-control"
                                                     ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" /> -->
                                                 <input type="text" ng-model="account.Contacts[0].LastName"
-                                                    class="form-control" ng-disabled="proposalStage"
+                                                    class="form-control" ng-disabled="proposalStage || disablePartnerEdit"
                                                     ng-change="checkCharLimit(account, 'LastName', 80)"
                                                     ng-focus="removeClass('head',$index)" />
 
@@ -464,7 +464,7 @@
                                                     ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" /> -->
 
                                                 <input type="text" ng-model="account.Contacts[0].Designation__c"
-                                                    class="form-control" ng-disabled="proposalStage"
+                                                    class="form-control" ng-disabled="proposalStage || disablePartnerEdit"
                                                     ng-focus="removeClass('dept',$index)"
                                                     ng-change="checkCharLimit(account, 'Designation__c', 80)" />
 
@@ -508,7 +508,7 @@
                                                         ng-click="industryAcademia('academia',$index)" type="radio"
                                                         ng-checked="account.Academia__c"
                                                         name="inlineRadioOptions{{$index}}"
-                                                        ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" />
+                                                        ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit" />
                                                     <label class="pb-3 color-theme px-3"
                                                         for="inlineRadio2">Academia</label>
                                                 </div>
@@ -527,7 +527,7 @@
                                                 <!-- <input type="text" ng-focus="removeClass('inst',$index)" id="inst{{$index}}" ng-model="account.Name" class="form-control" ng-disabled="proposalStage" /> -->
                                                 <input type="text" ng-focus="removeClass('inst',$index)"
                                                     id="inst{{$index}}" ng-model="account.Name" class="form-control"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" />
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit" />
                                             </div>
                                             <div class="col-md-4">
                                                 <label class="font-if">Department/Division (Max. chars 80)<span
@@ -536,7 +536,7 @@
                                                 <input type="text" ng-focus="removeClass('dept',$index)"
                                                     id="dept{{$index}}" ng-model="account.Contacts[0].Department"
                                                     class="form-control"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage"
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit"
                                                     ng-change="checkCharLimit(account, 'Department', 80)" />
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
@@ -572,7 +572,7 @@
 
                                                 <input type="text" id="home{{$index}}" ng-model="account.Website"
                                                     class="form-control" ng-focus="removeClass('home',$index)"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage"
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit"
                                                     ng-change="checkCharLimit(account, 'Website', 255)" />
 
                                                 <small class="text-danger"
@@ -590,7 +590,7 @@
                                                 <input type="email" ng-focus="removeClass('email',$index)"
                                                     id="email{{$index}}" ng-model="account.Contacts[0].Email"
                                                     class="form-control"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" />
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit" />
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="font-if">Phone (with Country Code) <span
@@ -599,7 +599,7 @@
                                                 <input type="tel" pattern="[0-9\+\-\*\#\(\)\/\.\,\s]+"
                                                     ng-focus="removeClass('phone',$index)" id="phone{{$index}}"
                                                     ng-model="account.Contacts[0].Phone" class="form-control"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" />
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit" />
                                             </div>
 
                                             <div class="col-md-3">
@@ -614,7 +614,7 @@
                                                     <select class="form-control" aria-label="Default select example"
                                                         ng-focus="removeClass('country',$index)" id="country{{$index}}"
                                                         ng-model="account.BillingCountry" required="true"
-                                                        ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage">
+                                                        ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit">
                                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                                     </select>
                                                 </div>
@@ -629,7 +629,7 @@
                                                     <select class="form-control" aria-label="Default select example"
                                                         ng-focus="removeClass('country',$index)" id="country{{$index}}"
                                                         ng-model="account.BillingCountry" required="true"
-                                                        ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage">
+                                                        ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit">
                                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                                     </select>
                                                 </div>

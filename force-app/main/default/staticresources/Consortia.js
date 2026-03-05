@@ -27,10 +27,12 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
     $scope.divPartner = false;
     $scope.stateList = [];
     $scope.searchEmail = '';
-    debugger
+    debugger;
     $scope.proposalStage = $scope.proposalStage ? true : ($scope.secondstage ? true : false);
     $scope.isCoordinatorr = $rootScope.isCoordinator;
     $scope.isCoordinator = $rootScope.isCoordinator;
+    $scope.disablePartnerEdit = false;
+
     // if($rootScope.isCoordinatorr=="true"){
     //     $("#divCoordinatorInfo").show();
     //     $("#divProjectPartnerInfo").hide();
@@ -1238,6 +1240,12 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                             console.log("after replace=>" + $scope.allCoordinatorDetails[i].Contacts[0].Department);
                             $scope.allCoordinatorDetails[i].Name = $scope.allCoordinatorDetails[i].Name.replace(/&amp;/g, '&').replace(/&#39;/g, '\'').replaceAll('&amp;amp;', '&').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'');
                         }
+                    }
+
+                    debugger;
+                    console.log("allCoordinatorDetails length: ======> ", $scope.allCoordinatorDetails.length);
+                    if ($scope.allCoordinatorDetails.length >= 4) {
+                        $scope.disablePartnerEdit = true;
                     }
                 }
                 // for(var i=0;i<$scope.allCoordinatorDetails.length;i++){

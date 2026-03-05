@@ -641,7 +641,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
 
     function isPastDate(dateTimeStr) {
-        // If no deadline → treat as expired (or change to false if you prefer)
+    // If no deadline → treat as expired (or change to false if you prefer)
         if (!dateTimeStr) return true;
 
         var deadline = new Date(dateTimeStr);
@@ -723,7 +723,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
                 //********* Applied programs with dynamic deadline and 2+2 specific disable logic *************// 
 
-                $scope.appliedPrograms = $scope.appliedCampaigns ? $scope.appliedCampaigns.map(item => {
+                $scope.appliedPrograms = $scope.appliedCampaigns? $scope.appliedCampaigns.map(item => {
 
                     const campaignName = item?.Proposals__r?.Campaign__r?.Name ?? "";
                     const proposalStage = item?.Proposals__r?.Proposal_Stages__c ?? "";
@@ -746,7 +746,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                     else {
                         disableEdit = new Date() > new Date(firstStageEnd);
                     }
-
+                    
                     // Format deadline
                     // const formattedDeadline = selectedDeadline ? new Date(selectedDeadline).toLocaleString('en-GB', {
                     //         day: '2-digit',
@@ -758,14 +758,14 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                     //     : 'Not mentioned';
 
                     const formattedDeadline = selectedDeadline ? new Date(selectedDeadline).toLocaleDateString('en-GB', {
-                        timeZone: 'Asia/Kolkata',
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true   // remove if you want AM/PM
-                    }).replace('am', 'AM').replace('pm', 'PM') + ' IST'
+                            timeZone: 'Asia/Kolkata',
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true   // remove if you want AM/PM
+                        }).replace('am', 'AM').replace('pm', 'PM') + ' IST'
                         : 'Not mentioned';
 
                     return {
@@ -790,7 +790,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                         disableEdit: disableEdit
                     };
                 })
-                    : [];
+                : [];
 
                 //********* Applied programs with dynamic deadline and 2+2 specific disable logic *************// 
 
@@ -807,16 +807,16 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                         //         year: 'numeric'
                         //     }) : 'Not mentioned',
                         deadline: rawDeadline ?
-                            new Date(rawDeadline).toLocaleString('en-GB', {
-                                timeZone: 'Asia/Kolkata',
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true   // remove if you want AM/PM
-                            }).replace('am', 'AM').replace('pm', 'PM') + ' IST'
-                            : 'Not mentioned',
+                        new Date(rawDeadline).toLocaleString('en-GB', {
+                            timeZone: 'Asia/Kolkata',
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true   // remove if you want AM/PM
+                        }).replace('am', 'AM').replace('pm', 'PM') + ' IST'
+                         : 'Not mentioned',
                         icon: item.Campaign__r?.Icon__c ?? "",
                         redirectUrl: item.Campaign__r?.RedirectPage__c ?? "",
                         campaignId: item.Campaign__r?.Id ?? "",
