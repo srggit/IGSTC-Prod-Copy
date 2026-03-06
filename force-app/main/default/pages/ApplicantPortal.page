@@ -1626,12 +1626,11 @@
                                     Edit
                                 </div> -->
 
-                                <div class="btn"
-                                    ng-if="p.proposalStage === 'Draft'"
-                                    ng-click="redirectToForm(p)" ng-disabled="p.disableEdit">
+                                <div class="btn" ng-if="p.proposalStage === 'Draft'" ng-click="redirectToForm(p)"
+                                    ng-disabled="p.disableEdit">
                                     Edit
                                 </div>
-                                
+
                                 <!--  && p.campaignId !== '7015j00000056SLAAY' -->
 
                                 <!-- VIEW : When NOT Draft -->
@@ -1685,7 +1684,14 @@
                             <div class="btn">Know More</div>
                         </div> -->
                             <div class="btn-container">
-                                <div class="btn apply-btn" ng-click="!p.isExpired && redirectToForm(p)"
+                                <!-- Old functionality before implementing Apply Pop-up -->
+                                <!-- <div class="btn apply-btn" ng-click="!p.isExpired && redirectToForm(p)"
+                                    ng-disabled="p.isExpired || (appliedPrograms && appliedPrograms.length > 0)">
+                                    Apply
+                                </div> -->
+
+                                <!-- New Requirement - To Open Popup on Apply Button Click -->
+                                <div class="btn apply-btn" ng-click="openDocumentPopup(p)"
                                     ng-disabled="p.isExpired || (appliedPrograms && appliedPrograms.length > 0)">
                                     Apply
                                 </div>
@@ -1699,6 +1705,65 @@
 
 
                         </div>
+                    </div>
+                </div>
+
+                <!-- Apply Popup Display -->
+                <div class="popup-overlay" ng-show="showDocumentPopup">
+                    <div class="popup-box">
+
+                        <h3>Required Documents</h3>
+
+                        <ul>
+                            <li> <b>Stage-1 Documents</b> </li>
+                            <li>1. DSIR Certificate</li>
+                            <li>2. Project Proposal - Stage 1</li>
+                            <li>
+                                3. Undertaking for Sensitivity-Security Regulations
+                                <a href="{!$Resource.Undertaking_for_Sensitivity_Security_Regulations}"
+                                    download="Undertaking_for_Sensitivity_Security_Regulations.docx"
+                                    style="margin-left:10px;"
+                                    onclick="this.setAttribute('download','Undertaking_for_Sensitivity_Security_Regulations.docx'); return true;">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </li>
+                            <li>
+                                4. Undertaking format towards acceptance of Grant &nbsp;&nbsp; &nbsp; conditions and
+                                signing of Agreement
+                                <a href="{!$Resource.Undertaking_Format_of_Grant_Acceptance}"
+                                    download="Undertaking_Format_of_Grant_Acceptance.docx" style="margin-left:10px;"
+                                    onclick="this.setAttribute('download','Undertaking_Format_of_Grant_Acceptance.docx'); return true;">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </li>
+                            <li>5. Signature</li>
+                        </ul>
+
+                        <ul>
+                            <li> <b>Stage-2 Documents</b> </li>
+                            <li>1. Project Proposal - Stage 2</li>
+                            <li>2. Letter of Consent</li>
+                            <li>3. Budget Report</li>
+                            <li>4. Quotation for Equipment / Accessories</li>
+                        </ul>
+
+                        <ul>
+                            <li> <b>(For Industry)</b></li>
+                            <li>1. Annual Financial Report - Year 1</li>
+                            <li>2. Annual Financial Report - Year 2</li>
+                            <li>3. Annual Financial Report - Year 3</li>
+                        </ul>
+
+                        <div class="popup-buttons">
+                            <button class="btn btn-primary" style="color: white;" ng-click="proceedApplication()">
+                                Proceed
+                            </button>
+
+                            <button class="btn btn-secondary" ng-click="closePopup()">
+                                Cancel
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 
