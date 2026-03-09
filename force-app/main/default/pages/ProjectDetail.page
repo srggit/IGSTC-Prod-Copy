@@ -1814,7 +1814,7 @@
                     <div class="row mt-5" ng-show="stage === '1st Stage' && mailingCountry === 'India'">
                         <div class="col-md-6">
                             <div class="input-group ms-4">
-                                <label class="font-if">Upload Undertaking Format of Grant Acceptance
+                                <label class="font-if">Upload Undertaking of Grant Acceptance (max 3.5 Mb)
                                     <span class="ms-2 text-danger">*</span>
                                 </label>
                                 <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingGrantAcceptanceUndertaking || currentProposalStage == 'Submitted'"
@@ -1842,7 +1842,7 @@
                     <div class="row mt-5" ng-show="stage === '1st Stage'">
                         <div class="col-md-6">
                             <div class="input-group ms-4">
-                                <label class="font-if">Upload Undertaking for Sensitivity Security Regulations
+                                <label class="font-if">Upload Undertaking for Sensitivity Security Regulations (max 3.5 Mb)
                                     <span class="ms-2 text-danger">*</span>
                                 </label>
                                 <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingSensitivitySecurityUndertaking || currentProposalStage == 'Submitted'"

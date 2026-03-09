@@ -991,7 +991,7 @@
                                             -->
                                             <div class="col-md-3">
                                                 <div ng-show="isCoordinator=='true'">
-                                                    <label class="font-if">Country<span
+                                                    <label class="font-if">Country <span
                                                             class="ms-2 text-danger">*</span></label>
                                                     <select class="form-control" aria-label="Default select example"
                                                         ng-change="setSaveStatus(account)"
@@ -1002,13 +1002,12 @@
                                                     </select>
                                                 </div>
                                                 <div ng-show="isCoordinator=='false'">
-                                                    <label class="font-if">Country<span
+                                                    <label class="font-if">Country <span
                                                             class="ms-2 text-danger">*</span></label>
                                                     <select class="form-control" aria-label="Default select example"
                                                         ng-change="setSaveStatus(account)"
                                                         ng-focus="removeClass('country',$index)" id="country{{$index}}"
-                                                        ng-model="account.BillingCountry" required="true"
-                                                        ng-disabled="true">
+                                                        ng-model="account.BillingCountry" required="true"> <!-- ng-disabled="true" -->
                                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                                     </select>
                                                 </div>

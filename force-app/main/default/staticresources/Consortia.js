@@ -1244,7 +1244,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
 
                     debugger;
                     console.log("allCoordinatorDetails length: ======> ", $scope.allCoordinatorDetails.length);
-                    if ($scope.allCoordinatorDetails.length >= 4) {
+                    if ($scope.allCoordinatorDetails.length >= 3) {
                         $scope.disablePartnerEdit = true;
                     }
                 }
@@ -1458,11 +1458,11 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             }
         }
         if ($scope.allPartners.length < 4 && isCoordinator == 'true') {
-            swal("Info", "Please add minimum four partners.", "info");
+            swal("Info", "Minimum four partners & Maximum 6 Partners can be added.", "info");
             return;
         }
         if ($scope.allPartners.length > 6) {
-            swal("Info", "maximum six partners are allowed.", "info");
+            swal("Info", "Maximum six partners are allowed.", "info");
             return;
         }
         if ($scope.allPartners.length == 4 && (IndianCount < 2 || IndianCount > 2) && isCoordinator == 'true') {
@@ -1629,24 +1629,79 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
     }
 
 
+    // $scope.checkEmail = function (flag) {
+    //     //         var coordinatiorStatus=false;
+    //     //         for(var i=0;i<$scope.allCoordinatorDetails.length;i++){
+    //     //                 if($scope.allCoordinatorDetails[i].Is_Coordinator__c){
+    //     //                     coordinatiorStatus=true;
+    //     //                 }
+    //     //          }
+    //     // if(!coordinatiorStatus){
+    //     //     swal('info','Please select coordinator.','info');
+    //     //     return;
+    //     // }
+    //     $scope.emailList = [];
+    //     debugger;
+    //     $scope.emailCheck = false;
+
+
+    //     for (var i = 0; i < $scope.allCoordinatorDetails.length; i++) {
+    //         if ($scope.allCoordinatorDetails[i].Contacts[0].Email != undefined) {
+    //             if ($scope.emailList.indexOf($scope.allCoordinatorDetails[i].Contacts[0].Email) != -1) {
+    //                 swal("info", "DUPLICATE Email, Please check.", "info");
+    //                 return;
+    //             }
+    //             else {
+    //                 $scope.emailList.push($scope.allCoordinatorDetails[i].Contacts[0].Email);
+    //             }
+    //             if ($scope.allCoordinatorDetails[i].Contacts[0].Id != undefined) {
+    //                 $scope.listOfIds.push($scope.allCoordinatorDetails[i].Contacts[0].Id);
+    //             }
+    //         }
+    //     }
+
+    //     swal({
+    //         title: "Warning",
+    //         text: "You will not be able to add or edit the partners details further, once clicked on OK",
+    //         icon: "warning",
+    //         buttons: {
+    //             cancel: "Cancel",
+    //             confirm: {
+    //                 text: "Upload",
+    //                 value: true,
+    //             },
+    //         },
+    //     }).then((willUpload) => {
+    //         ApplicantPortal_Contoller.checkBulkEmail($scope.emailList, $scope.listOfIds, function (result, event) {
+    //             debugger;
+    //             debugger;
+    //             if (event.status) {
+    //                 debugger;
+    //                 if (result.length > 0) {
+    //                     $scope.emailCheck = false;
+    //                 } else {
+    //                     $scope.emailCheck = true;
+    //                 }
+    //                 $scope.submitDetails(flag);
+    //                 $scope.$apply();
+    //             }
+    //         })
+    //     });;
+    // }
+
     $scope.checkEmail = function (flag) {
-        //         var coordinatiorStatus=false;
-        //         for(var i=0;i<$scope.allCoordinatorDetails.length;i++){
-        //                 if($scope.allCoordinatorDetails[i].Is_Coordinator__c){
-        //                     coordinatiorStatus=true;
-        //                 }
-        //          }
-        // if(!coordinatiorStatus){
-        //     swal('info','Please select coordinator.','info');
-        //     return;
-        // }
-        $scope.emailList = [];
         debugger;
+        console.log('$scope.allCoordinatorDetails.length === > ', $scope.allCoordinatorDetails.length);
+
+        $scope.emailList = [];
         $scope.emailCheck = false;
+        $scope.listOfIds = [];
 
 
         for (var i = 0; i < $scope.allCoordinatorDetails.length; i++) {
+
             if ($scope.allCoordinatorDetails[i].Contacts[0].Email != undefined) {
+
                 if ($scope.emailList.indexOf($scope.allCoordinatorDetails[i].Contacts[0].Email) != -1) {
                     swal("info", "DUPLICATE Email, Please check.", "info");
                     return;
@@ -1654,27 +1709,63 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                 else {
                     $scope.emailList.push($scope.allCoordinatorDetails[i].Contacts[0].Email);
                 }
+
                 if ($scope.allCoordinatorDetails[i].Contacts[0].Id != undefined) {
                     $scope.listOfIds.push($scope.allCoordinatorDetails[i].Contacts[0].Id);
                 }
             }
         }
-        ApplicantPortal_Contoller.checkBulkEmail($scope.emailList, $scope.listOfIds, function (result, event) {
-            debugger;
-            debugger;
-            if (event.status) {
-                debugger;
-                if (result.length > 0) {
-                    $scope.emailCheck = false;
-                } else {
-                    $scope.emailCheck = true;
-                }
-                $scope.submitDetails(flag);
-                $scope.$apply();
-            }
-        })
 
-    }
+        if ($scope.allCoordinatorDetails.length + 1 < 4) {
+
+            swal({
+                title: "Warning",
+                text: "You will not be able to add or edit the partners details further, once clicked on OK",
+                icon: "warning",
+                buttons: {
+                    cancel: "Cancel",
+                    confirm: {
+                        text: "OK",
+                        value: true,
+                    },
+                },
+            }).then((willUpload) => {
+
+                if (!willUpload) {
+                    return; // User clicked Cancel
+                }
+
+                callApex();
+
+            });
+
+        } else {
+
+            // Directly call apex without popup
+            callApex();
+
+        }
+
+        function callApex() {
+
+            ApplicantPortal_Contoller.checkBulkEmail($scope.emailList, $scope.listOfIds, function (result, event) {
+
+                if (event.status) {
+
+                    if (result.length > 0) {
+                        $scope.emailCheck = false;
+                    } else {
+                        $scope.emailCheck = true;
+                    }
+
+                    $scope.submitDetails(flag);
+                    $scope.$apply();
+                }
+            });
+
+        }
+
+    };
 
 
     $scope.checkCharLimit = function (obj, fieldName, limit) {

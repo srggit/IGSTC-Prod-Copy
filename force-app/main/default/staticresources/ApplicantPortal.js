@@ -159,19 +159,28 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     // ----------- Apply Button Popup Code - Start ------------ //
     $scope.showDocumentPopup = false;
     $scope.selectedProgram = null;
+    $rootScope.userSelectedRML = false;
+    $rootScope.userSelectedDSA = false;
 
     $scope.openDocumentPopup = function (p) {
+        debugger;
+        console.log(' ----------- openDocumentPopup ------------ : ', p)
         $scope.selectedProgram = p;
         $scope.showDocumentPopup = true;
     };
 
-    $scope.closePopup = function () {
-        $scope.showDocumentPopup = false;
+    $scope.dontShowAgain = function (p) {
+        $rootScope.userSelectedDSA = true;
+        localStorage.setItem('userPopupChoice', 'DSA');
+        //$scope.selectedProgram = p;
+        //$scope.showDocumentPopup = true;
         $scope.redirectToForm($scope.selectedProgram);
     };
 
-    $scope.proceedApplication = function () {
-        $scope.showDocumentPopup = false;
+    $scope.remindMeLater = function () {
+        $rootScope.userSelectedRML = true;
+        localStorage.setItem('userPopupChoice', 'RML');
+        //$scope.showDocumentPopup = false;
         $scope.redirectToForm($scope.selectedProgram);
     };
     // ----------- Apply Button Popup Code - Finish ------------ //

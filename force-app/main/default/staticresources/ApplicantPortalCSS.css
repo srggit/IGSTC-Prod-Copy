@@ -3466,16 +3466,24 @@ input[type=number] {
 .popup-buttons .btn-primary{
     background:#171347;
     border:none;
+    color: white;
 }
 
-.popup-buttons .btn-primary:hover{
+/* .popup-buttons .btn-primary:hover{
     background:#0e0b2e;
-}
+} */
+
 
 /* Cancel button */
 .popup-buttons .btn-secondary{
     background:#e0e0e0;
     border:none;
+    color:#0e0b2e;
+}
+
+.popup-buttons .btn-secondary:hover{
+    background:#d6d6d6;
+    color:#0e0b2e;
 }
 
 /* Popup animation */

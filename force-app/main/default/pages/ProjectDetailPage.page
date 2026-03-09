@@ -277,17 +277,12 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <label class="font-if mb-3">
-                                    <b>Stage 1 Documents</b>
-                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> DSIR
-                                        Certificate</li>
-                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> Project
-                                        Proposal - Stage 1</li>
-                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> Undertaking
-                                        for Sensitivity-Security Regulations</li>
-                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> Undertaking
-                                        format towards acceptance of Grant conditions and signing of
-                                        Agreement</li>
-                                    <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i> Signature</li>
+                                    <b>Stage 1 Documents Needed</b>
+                                        <br/>DSIR Certificate
+                                    <br />Project Proposal - Stage 1
+                                    <br />Undertaking for Sensitivity-Security Regulations
+                                    <br/>Undertaking format towards acceptance of Grant conditions and signing &nbsp; &nbsp; &nbsp; of Agreement
+                                    <br/>Signature
                                 </label>
                             </div>
                         </div>
@@ -297,7 +292,7 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <label class="font-if mb-3">
-                                    <b>Stage 2 Documents</b>
+                                    <b>Stage 2 Documents Needed</b>
                                     <br /> Project Proposal - Stage 2
                                     <br /> Letter of Consent
                                     <br />Budget Report

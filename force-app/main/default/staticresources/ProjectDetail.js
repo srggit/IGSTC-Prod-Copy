@@ -985,7 +985,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         // Add the info or warning message here after uploading
                         swal({
                             title: "Warning",
-                            text: "Once you upload the file, it cannot be uploaded again. Please ensure this is the correct file.",
+                            text: "Please ensure this is the correct file.",
                             icon: "warning",
                             buttons: {
                                 cancel: "Cancel",
@@ -1988,6 +1988,15 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.saveDetails = function () {
         debugger;
 
+        // if ($scope.proposalFieldsDetails) {
+        //     var popupChoice = localStorage.getItem('userPopupChoice');
+        //     console.log('popupChoice =================>  ', popupChoice);
+
+        //     if (popupChoice) {
+        //         $scope.proposalFieldsDetails.User_Popup_Choice__c = popupChoice;
+        //     }
+        // }
+
         if ($scope.doc.userDocument.Status__c !== 'Uploaded') {
             // console.log('File already uploaded !!');
             swal({
@@ -2309,17 +2318,17 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
 
         // Validate Quotation for Equipment / Accessories is uploaded - Stage 1
-        if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
-            if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
-                swal({
-                    title: "Info",
-                    text: "Please upload Quotation for Equipment / Accessories - Stage 1 before saving.",
-                    icon: "info",
-                    button: "OK",
-                });
-                return;
-            }
-        }
+        // if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
+        //     if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
+        //         swal({
+        //             title: "Info",
+        //             text: "Please upload Quotation for Equipment / Accessories - Stage 1 before saving.",
+        //             icon: "info",
+        //             button: "OK",
+        //         });
+        //         return;
+        //     }
+        // }
 
         // Validate Financial Statement Report is uploaded - Stage 2
         if ($rootScope.stage === '2nd Stage' && ($rootScope.mailingCountry === 'India')) {
@@ -2573,34 +2582,37 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         var objData = JSON.parse(JSON.stringify($scope.PIList));
 
-        // Validation
-        for (var i = 0; i < objData.length; i++) {
-            debugger;
-            var count = 0;
-            if (objData[i].AccountList) {
-                for (var k = 0; k < objData[i].AccountList.length; k++) {
-                    if (objData[i].AccountList[k].selected == true) {
-                        count = count + 1;
+        if ($rootScope.stage === '2nd Stage') {
+
+            // Validation
+            for (var i = 0; i < objData.length; i++) {
+                debugger;
+                var count = 0;
+                if (objData[i].AccountList) {
+                    for (var k = 0; k < objData[i].AccountList.length; k++) {
+                        if (objData[i].AccountList[k].selected == true) {
+                            count = count + 1;
+                        }
                     }
                 }
-            }
-            if (objData[i].title == undefined || objData[i].title == "") {
-                swal("PI Deliverables Details", "Please Enter Title.", "info");
-                $("#title" + i + "").addClass('border-theme');
-                //if (callback) callback(false);
-                return;
-            }
-            if (count <= 0) {
-                swal("PI Deliverables Details", "Please Select Partners.", "info");
-                $("#partner" + i + "").addClass('border-theme');
-                //if (callback) callback(false);
-                return;
-            }
-            if (objData[i].Due_Date__c == undefined || objData[i].Due_Date__c == "") {
-                swal("PI Deliverables Details", "Please Enter Due Date.", "info");
-                $("#due" + i + "").addClass('border-theme');
-                //if (callback) callback(false);
-                return;
+                if (objData[i].title == undefined || objData[i].title == "") {
+                    swal("PI Deliverables Details", "Please Enter Title.", "info");
+                    $("#title" + i + "").addClass('border-theme');
+                    //if (callback) callback(false);
+                    return;
+                }
+                if (count <= 0) {
+                    swal("PI Deliverables Details", "Please Select Partners.", "info");
+                    $("#partner" + i + "").addClass('border-theme');
+                    //if (callback) callback(false);
+                    return;
+                }
+                if (objData[i].Due_Date__c == undefined || objData[i].Due_Date__c == "") {
+                    swal("PI Deliverables Details", "Please Enter Due Date.", "info");
+                    $("#due" + i + "").addClass('border-theme');
+                    //if (callback) callback(false);
+                    return;
+                }
             }
         }
 

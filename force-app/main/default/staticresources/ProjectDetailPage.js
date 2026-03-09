@@ -231,6 +231,15 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         $scope.applicantDetails.Campaign__c = $rootScope.tagCampaignId;
         debugger;
 
+        if ($scope.applicantDetails) {
+            var popupChoice = localStorage.getItem('userPopupChoice');
+            console.log('popupChoice =================>  ', popupChoice);
+
+            if (popupChoice) {
+                $scope.applicantDetails.User_Popup_Choice__c = popupChoice;
+            }
+        }
+
         if ($scope.applicantDetails.Acronym__c == undefined || $scope.applicantDetails.Acronym__c == "") {
             swal("info", "Please Enter Project Acronym.", "info");
             $("#Acronym").addClass('border-theme');

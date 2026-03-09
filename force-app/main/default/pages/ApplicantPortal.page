@@ -1755,12 +1755,11 @@
                         </ul>
 
                         <div class="popup-buttons">
-                            <button class="btn btn-primary" style="color: white;" ng-click="proceedApplication()">
-                                Proceed
+                            <button class="btn btn-primary" ng-click="remindMeLater()">
+                                Remind me later
                             </button>
-
-                            <button class="btn btn-secondary" ng-click="closePopup()">
-                                Cancel
+                            <button class="btn btn-secondary" ng-click="dontShowAgain()">
+                                Don't show again
                             </button>
                         </div>
 

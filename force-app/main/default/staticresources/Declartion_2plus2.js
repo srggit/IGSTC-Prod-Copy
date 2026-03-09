@@ -195,6 +195,18 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         var file;
 
         file = document.getElementById('fileSignature').files[0];
+        if (!file) {
+            $scope.showSpinnereditProf = false;
+            swal("info", "You must choose a file before trying to upload it", "info");
+            return;
+        }
+
+        var maxFileSize = 1048576;
+        if (file.size > maxFileSize) {
+            $scope.showSpinnereditProf = false;
+            swal("info", "File must be under 1 Mb in size. Please try again.", "info");
+            return;
+        }
         fileName = file.name;
         var typeOfFile = fileName.split(".");
         lengthOfType = typeOfFile.length;
@@ -312,7 +324,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
                 } else if (event.status) {
                     if (doneUploading == true) {
                         swal(
-                            'success',
+                            'Success',
                             'Uploaded Successfully!',
                             'success'
                         )
@@ -351,29 +363,29 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
             }
         }
 
-        // Validate Quotation for Equipment / Accessories is uploaded - Stage 1
-        if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
-            if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
-                swal('info', 'Please upload Quotation for Equipment / Accessories - Stage 1 before submitting.', 'info');
-                return;
-            }
-        }
+        // // Validate Quotation for Equipment / Accessories is uploaded - Stage 1
+        // if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
+        //     if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
+        //         swal('info', 'Please upload Quotation for Equipment / Accessories - Stage 1 before submitting.', 'info');
+        //         return;
+        //     }
+        // }
 
-        // Validate Quotation for Equipment / Accessories is uploaded - Stage 2
-        if ($rootScope.stage === '2nd Stage' && $rootScope.mailingCountry === 'India') {
-            if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
-                swal('info', 'Please upload Quotation for Equipment / Accessories - Stage 2 before submitting.', 'info');
-                return;
-            }
-        }
+        // // Validate Quotation for Equipment / Accessories is uploaded - Stage 2
+        // if ($rootScope.stage === '2nd Stage' && $rootScope.mailingCountry === 'India') {
+        //     if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
+        //         swal('info', 'Please upload Quotation for Equipment / Accessories - Stage 2 before submitting.', 'info');
+        //         return;
+        //     }
+        // }
 
-        // Validate Financial Statement Report is uploaded - Stage 2
-        if ($rootScope.stage === '2nd Stage' && ($rootScope.mailingCountry === 'India')) {
-            if (!$scope.auditedFinancialDoc || !$scope.auditedFinancialDoc.userDocument || $scope.auditedFinancialDoc.userDocument.Status__c !== 'Uploaded') {
-                swal('info', 'Please upload Financial Statement Report - Stage 2 before submitting.', 'info');
-                return;
-            }
-        }
+        // // Validate Financial Statement Report is uploaded - Stage 2
+        // if ($rootScope.stage === '2nd Stage' && ($rootScope.mailingCountry === 'India')) {
+        //     if (!$scope.auditedFinancialDoc || !$scope.auditedFinancialDoc.userDocument || $scope.auditedFinancialDoc.userDocument.Status__c !== 'Uploaded') {
+        //         swal('info', 'Please upload Financial Statement Report - Stage 2 before submitting.', 'info');
+        //         return;
+        //     }
+        // }
         if ($scope.SignDate != undefined && $scope.SignDate != '') {
             year = $scope.SignDate.getUTCFullYear();
             month = $scope.SignDate.getUTCMonth() + 1;
