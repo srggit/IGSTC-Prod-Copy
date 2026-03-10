@@ -171,7 +171,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
     $scope.dontShowAgain = function (p) {
         $rootScope.userSelectedDSA = true;
-        localStorage.setItem('userPopupChoice', 'DSA');
+        localStorage.setItem('userPopupChoice', 'DAA');
         //$scope.selectedProgram = p;
         //$scope.showDocumentPopup = true;
         $scope.redirectToForm($scope.selectedProgram);
@@ -183,7 +183,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
         //$scope.showDocumentPopup = false;
         $scope.redirectToForm($scope.selectedProgram);
     };
-    // ----------- Apply Button Popup Code - Finish ------------ //
+    // ----------- Apply Button Popup Code - Finish ;------------ //
 
     // Toggle user dropdown menu
     $scope.toggleUserDropdown = function (event) {
@@ -964,8 +964,34 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     // =============================================================
 
     //************************************************************************************************** */
+
+    $scope.popupValue = '';
+    console.log(' 8888888888 $rootScope.proposalId ------> ', $rootScope.proposalId);
+    $scope.getPopupValue = function () {
+        ApplicantPortal_Contoller.getUserPopupChoiceFromProposal($rootScope.proposalId, function (result, event) {
+            if (event.status && result != null) {
+                console.log('&&&&&&&& popupValue : ', result.User_Popup_Choice__c);
+                $scope.popupValue = result.User_Popup_Choice__c;
+                console.log('**** $scope.popupValue **** : ', $scope.popupValue);
+            }
+        });
+    }
+    $scope.getPopupValue();
+
+    console.log('$scope.popupValue : =====> ', $scope.popupValue);
+
+    $scope.redirectToForm2 = function (val) {
+
+        if ($scope.popupValue === 'RML') {
+            $scope.openDocumentPopup(val);
+        } else {
+            $scope.redirectToForm(val);
+        }
+    }
+
     $scope.redirectToForm = function (val) {
         debugger;
+
         var redirectPage = val.redirectUrl;
         var isSecondStage = false;
 
@@ -975,14 +1001,15 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
             localStorage.setItem('apaId', val.apaId);
             const proposalData = $scope.proposalWrapperList.find(item => item.Id == val.proposalId);
 
+            $rootScope.proposalId = proposalData.Id;
+            console.log('$rootScope.proposalId : ========> ', $rootScope.proposalId);
+
             if (!proposalData) {
                 console.error('Proposal data not found for ID:', val.proposalId);
                 $rootScope.campaignId = val.campaignId;
                 $location.path('/' + redirectPage);
                 return;
             }
-
-            $rootScope.proposalId = proposalData.Id;
 
             // Determine if it's second stage
             if (proposalData.stage == "1st Stage") {

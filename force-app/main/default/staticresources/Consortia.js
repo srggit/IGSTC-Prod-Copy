@@ -27,10 +27,29 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
     $scope.divPartner = false;
     $scope.stateList = [];
     $scope.searchEmail = '';
+    $scope.isPartner = false;
+
     debugger;
+    console.log('$scope.proposalStage 1 : ', $scope.proposalStage);
+    console.log('$scope.secondstage 1 : ', $scope.secondstage);
     $scope.proposalStage = $scope.proposalStage ? true : ($scope.secondstage ? true : false);
+    console.log('$scope.proposalStage : ', $scope.proposalStage);
+    console.log('$scope.secondstage 2 : ', $scope.secondstage);
+
     $scope.isCoordinatorr = $rootScope.isCoordinator;
+    $scope.isCoordinatorr = $scope.isCoordinatorr === 'true' || $scope.isCoordinatorr === true;
+    console.log('typeOf($scope.isCoordinatorr) : ', typeof ($scope.isCoordinatorr));
+    console.log('typeOf($rootScope.isCoordinator) : ', typeof ($rootScope.isCoordinator));
+    console.log('$scope.isCoordinatorr : ', $scope.isCoordinatorr);
+
+    if ($scope.isCoordinatorr == false || $scope.isCoordinatorr == 'false') {
+        $scope.isPartner = true;
+    }
+    console.log('$scope.isPartner : ', $scope.isPartner);
+
     $scope.isCoordinator = $rootScope.isCoordinator;
+    $scope.isCoordinator = $scope.isCoordinator === 'true' || $scope.isCoordinator === true;
+    console.log('$scope.isCoordinator : ', $scope.isCoordinator);
     $scope.disablePartnerEdit = false;
 
     // if($rootScope.isCoordinatorr=="true"){
@@ -40,16 +59,13 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
     //     $("#divProjectPartnerInfo").show();
     //     $("#divCoordinatorInfo").hide();
     // }
-    if ($scope.isCoordinatorr == 'false' || $scope.isCoordinatorr === false) {
+    if (!$scope.isCoordinatorr) {
         $scope.divCoordinator = true;
         $scope.divPartner = false;
     }
-    if ($scope.isCoordinator == true) {
-        $scope.isCoordinator = 'true';
-    } else {
-        $scope.isCoordinator = 'false';
-    }
     console.log('is coordinator ::=>' + $scope.isCoordinatorr);
+    console.log('$scope.divCoordinator ::=>' + $scope.divCoordinator);
+
     $scope.arrySaveStatus = [{ status: true }, { status: true }, { status: true }, { status: true }, { status: true }, { status: true }];
 
     $scope.selectedFile;
@@ -1458,7 +1474,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             }
         }
         if ($scope.allPartners.length < 4 && isCoordinator == 'true') {
-            swal("Info", "Minimum four partners & Maximum 6 Partners can be added.", "info");
+            swal("Info", "Minimum four partners & Maximum six Partners can be added.", "info");
             return;
         }
         if ($scope.allPartners.length > 6) {
@@ -1514,11 +1530,12 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
         console.log('$scope.emailCheck ----> ', $scope.emailCheck);
         console.log('$scope.isCoordinator ----> ', $scope.isCoordinator);
 
-        if ($scope.emailCheck == true && $scope.isCoordinator != 'false') {
-            swal('Info', 'Contact Does Not Exist.', 'info');
-            //$("#email"+ind+"").addClass('border-theme');
-            return;
-        }
+        // if ($scope.emailCheck == true && $scope.isCoordinator != 'false') {
+        // // if ($scope.emailCheck == true && ($scope.isCoordinator != 'false' || $scope.isCoordinatorr)) {
+        //     swal('Info', 'Contact Does Not Exist.', 'info');
+        //     //$("#email"+ind+"").addClass('border-theme');
+        //     return;
+        // }
         debugger
         // for (let i = 0; i < $scope.allPartners.length; i++) {
         //     delete ($scope.allPartners[i]['Contacts']);
@@ -1716,7 +1733,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             }
         }
 
-        if ($scope.allCoordinatorDetails.length + 1 < 4) {
+        if ($scope.allCoordinatorDetails.length + 1 < 4 && $scope.isCoordinatorr) {
 
             swal({
                 title: "Warning",

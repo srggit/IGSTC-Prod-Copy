@@ -52,14 +52,14 @@ return proposalRecord;
         contact conRec = [select name,id,Proposals__c from contact where Login_Hash_Code__c =:applicantHashCode limit 1];
         Id twoPlusTwoRtId = [SELECT Id FROM RecordType WHERE SobjectType = 'Application_Proposal__c' AND DeveloperName = 'Two_Plus_Two' LIMIT 1].Id;
         if(!string.isBlank(apaId)){
-            applicant_proposal_association__c apaRec = [select id,proposals__c,is_coordinator__c from applicant_proposal_association__c where id = :apaId limit 1];
-            proposalRecord = [SELECT Id, Name, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c,Proposal_Stages__c,(SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id = :apaRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
+            applicant_proposal_association__c apaRec = [select id,proposals__c, proposals__r.User_Popup_Choice__c, is_coordinator__c from applicant_proposal_association__c where id = :apaId limit 1];
+            proposalRecord = [SELECT Id, Name, Acronym__c, User_Popup_Choice__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c,Proposal_Stages__c,(SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id = :apaRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
             datawrapper.proposal = proposalRecord;
             datawrapper.apa = apaRec;
             return datawrapper;
         }else{
             if(!string.isBlank(conRec.Proposals__c)){
-                proposalRecord = [SELECT Id, Name, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c,(SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id = :conRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
+                proposalRecord = [SELECT Id, Name, User_Popup_Choice__c, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c,(SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id = :conRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
                 return datawrapper;
             }
         }
@@ -69,13 +69,18 @@ return proposalRecord;
         
         if(!string.isBlank(conRec.Proposals__c)){
             // Option 1: Use direct lookup (if this is what you want)
-            proposalRecord = [SELECT Id, Name, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c,(SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id = :conRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
+            proposalRecord = [SELECT Id, Name, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, 
+            Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, 
+            Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c, User_Popup_Choice__c,
+            (SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) 
+            FROM Application_Proposal__c 
+            WHERE Id = :conRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
             
             system.debug('proposalRecord----'+proposalRecord);
             return datawrapper;
         } else {
             // Option 2: If no direct lookup, try junction object
-            List<Application_Proposal__c> proposalRecords = [SELECT Id, Name, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c,(SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id IN (SELECT Proposals__c FROM Applicant_Proposal_Association__c WHERE Contact__c = :conRec.Id) AND RecordTypeId = :twoPlusTwoRtId LIMIT 1];
+            List<Application_Proposal__c> proposalRecords = [SELECT Id, Name, User_Popup_Choice__c, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c,(SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id IN (SELECT Proposals__c FROM Applicant_Proposal_Association__c WHERE Contact__c = :conRec.Id) AND RecordTypeId = :twoPlusTwoRtId LIMIT 1];
             
             if(!proposalRecords.isEmpty()) {
                 return datawrapper;

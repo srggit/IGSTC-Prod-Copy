@@ -39,6 +39,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
     $scope.isPartner = false;
     CKEDITOR.config.readOnly = $scope.proposalStage;
 
+
     $scope.getApplicantDetail = function () {
         console.log('Inside getApplicantDetail=======================> ');
         console.log('$rootScope.userId====================>' + $rootScope.userId);
@@ -108,6 +109,8 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                         proposal.KeyWords__c = proposal.KeyWords__c ? proposal.KeyWords__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replace(/&#39;/g, '\'').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : proposal.KeyWords__c;
                     }
                     $scope.applicantDetails = proposal;
+                    console.log('#### $scope.applicantDetails : ', $scope.applicantDetails);
+
                     //$scope.applicantDetails.Duration_In_Months_Max_36__c = Math.round($scope.applicantDetails.Duration_In_Months_Max_36__c);
                     if ($scope.applicantDetails.Application_Thematic_Area__r != undefined) {
                         $scope.thematicAreaToDisplay = [];
@@ -120,11 +123,33 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                                   $scope.thematicAreaToDisplay.push({"Id":$scope.applicantDetails.Application_Thematic_Area__r[i].Id,"Name":$scope.applicantDetails.Application_Thematic_Area__r[i].Thematic_Area_Name__c	,"checked":false});
                               }*/
                         }
+                        console.log('#### thematicAreaId : ', thematicAreaId);
+
+                        thematicAreaId = thematicAreaId.map(function (name) {
+                            return name ? name.replace(/&amp;/g, '&') : name;
+                        });
+
                         for (var i = 0; i < $scope.thematicAreaList.length; i++) {
-                            if (thematicAreaId.includes($scope.thematicAreaList[i].Name)) {
-                                $scope.thematicAreaToDisplay.push({ "Id": $scope.thematicAreaList[i].Id, "Name": $scope.thematicAreaList[i].Name, "checked": true });
+
+                            var name = $scope.thematicAreaList[i].Name
+                                ? $scope.thematicAreaList[i].Name.replace(/&amp;/g, '&')
+                                : '';
+
+                            if (thematicAreaId.includes(name)) {
+
+                                $scope.thematicAreaToDisplay.push({
+                                    Id: $scope.thematicAreaList[i].Id,
+                                    Name: name,
+                                    checked: true
+                                });
+
                             } else {
-                                $scope.thematicAreaToDisplay.push({ "Id": $scope.thematicAreaList[i].Id, "Name": $scope.thematicAreaList[i].Name, "checked": false });
+
+                                $scope.thematicAreaToDisplay.push({
+                                    Id: $scope.thematicAreaList[i].Id,
+                                    Name: name,
+                                    checked: false
+                                });
                             }
                         }
                     } else {
@@ -139,6 +164,8 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                         $scope.thematicAreaToDisplay.push({ "Id": $scope.thematicAreaList[i].Id, "Name": $scope.thematicAreaList[i].Name, "checked": false });
                     }
                 }
+                console.log('thematicAreaToDisplay : ', $scope.thematicAreaToDisplay);
+
                 if ($scope.applicantDetails.KeyWords__c != undefined && $scope.applicantDetails.KeyWords__c != '') {
                     var keyword = $scope.applicantDetails.KeyWords__c.split(';');
                     $scope.objKeyword.splice(0, 1);

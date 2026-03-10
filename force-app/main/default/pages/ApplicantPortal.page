@@ -1626,7 +1626,12 @@
                                     Edit
                                 </div> -->
 
-                                <div class="btn" ng-if="p.proposalStage === 'Draft'" ng-click="redirectToForm(p)"
+                                <!-- <div class="btn" ng-if="p.proposalStage === 'Draft'" ng-click="redirectToForm(p)"
+                                    ng-disabled="p.disableEdit">
+                                    Edit
+                                </div> -->
+
+                                <div class="btn" ng-if="p.proposalStage === 'Draft'" ng-click="redirectToForm2(p)"
                                     ng-disabled="p.disableEdit">
                                     Edit
                                 </div>

@@ -252,7 +252,7 @@
 
                 <div class="row mt-5 mx-5" ng-if="!proposalStage">
                     <div class="col-md-12">
-                        <div ng-show="isCoordinatorr=='true'">
+                        <div ng-show="isCoordinatorr">
                             <div class="alert bg-color-list font-if" role="alert">
                                 <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i>Kindly add details
                                     of other project partners for satisfying the 2+2 mode of partnership.</li>
@@ -269,7 +269,7 @@
                                     filled by the Partners on CV Details page.</li>
                             </div>
                         </div>
-                        <div ng-hide="isCoordinatorr=='true'">
+                        <div ng-hide="isCoordinatorr">
                             <div class="alert bg-color-list font-if" role="alert">
                                 <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i>Kindly note that
                                     you need to fill your respective details.</li>
@@ -280,23 +280,25 @@
                     </div>
                 </div>
                 <div class="row mx-5">
-                    <div class="col-md-6" ng-show="isCoordinatorr=='true'">
-                        <button class="blue-btn w-100" type="button" ng-click="setCurrentDiv('coordinator')">Coordinator Details</button>
+                    <div class="col-md-6" ng-show="isCoordinatorr">
+                        <button class="blue-btn w-100" type="button" ng-click="setCurrentDiv('coordinator')">Coordinator
+                            Details</button>
                     </div>
-                    <div class="col-md-6" ng-show="isCoordinatorr=='true'">
+                    <div class="col-md-6" ng-show="isCoordinatorr">
                         <button class="blue-btn w-100" type="button" ng-click="setCurrentDiv('partner')">Project Partner
                             Details</button>
                     </div>
                 </div>
                 <div ng-show="divPartner">
-                    <div class="row mx-5 mt-3" ng-show="isCoordinatorr=='true'">
+                    <div class="row mx-5 mt-3" ng-show="isCoordinatorr">
                         <div class="col-md-8">
                             <label class="font-if">Search Partner by Email</label>
                             <input type="email" ng-model="searchEmail" class="form-control"
                                 placeholder="Enter email to search for existing contact" />
                         </div>
                         <div class="col-md-4 mt-4">
-                            <button type="button" ng-click="addAccount()" class="blue-btn" ng-disabled="proposalStage || !searchEmail || !searchEmail.trim() || disablePartnerEdit">
+                            <button type="button" ng-click="addAccount()" class="blue-btn"
+                                ng-disabled="proposalStage || !searchEmail || !searchEmail.trim() || disablePartnerEdit">
                                 <i class="fa-sharp fa-solid fa-plus me-2"></i>Add Partner
                             </button>
                         </div>
@@ -304,7 +306,7 @@
                     <div class="row mt-5 mx-5" ng-cloak="true" ng-repeat="account in allCoordinatorDetails">
                         <div class="accordion" stle="background-color: white !important"
                             id="accordionPanelsStayOpenExample{{$index}}">
-                            <div class="" style="">
+                            <div class="">
                                 <div class="col-md-12 box-shadow-1 mb-5 accordion-header"
                                     id="panelsStayOpen-heading{{$index}}" style="padding: none !important;">
                                     <button class="accordion-button"
@@ -330,7 +332,7 @@
                                     aria-labelledby="panelsStayOpen-heading{{$index}}">
                                     <!-- <div class=" mt-3 p-3"> -->
                                     <div class="row box-shadow-2 mx-1">
-                                        <div class="row ms-3" ng-show="isCoordinator=='true'">
+                                        <div class="row ms-3" ng-show="isCoordinatorr">
                                             <div class="col-md-12 mt-5 float-end">
                                                 <!-- <div class="col-md-8"> -->
                                                 <!-- <button type="button" ng-cloak="true" class="btn btn-danger float-end" ng-click="removeAccount($index,account.Id)" ng-disabled="proposalStage"> -->
@@ -378,7 +380,7 @@
                                                 <select class="form-control" id="ddTitle"
                                                     ng-focus="removeClass('txtFirstName')"
                                                     ng-model='account.Contacts[0].Title'
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit" >
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit">
                                                     <option value="Prof." ng-selected="Mr">Prof.</option>
                                                     <option value="Dr.">Dr.</option>
                                                     <option value="Mr.">Mr.</option>
@@ -404,7 +406,8 @@
 
                                                 <input type="text" id="head{{$index}}"
                                                     ng-model="account.Contacts[0].FirstName" class="form-control"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit" ng-focus="removeClass('head',$index)"
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || disablePartnerEdit"
+                                                    ng-focus="removeClass('head',$index)"
                                                     ng-change="checkCharLimit(account, 'FirstName', 40)" />
 
                                                 <!-- <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap &&
@@ -433,7 +436,8 @@
                                                     class="form-control"
                                                     ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" /> -->
                                                 <input type="text" ng-model="account.Contacts[0].LastName"
-                                                    class="form-control" ng-disabled="proposalStage || disablePartnerEdit"
+                                                    class="form-control"
+                                                    ng-disabled="proposalStage || disablePartnerEdit"
                                                     ng-change="checkCharLimit(account, 'LastName', 80)"
                                                     ng-focus="removeClass('head',$index)" />
 
@@ -464,7 +468,8 @@
                                                     ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" /> -->
 
                                                 <input type="text" ng-model="account.Contacts[0].Designation__c"
-                                                    class="form-control" ng-disabled="proposalStage || disablePartnerEdit"
+                                                    class="form-control"
+                                                    ng-disabled="proposalStage || disablePartnerEdit"
                                                     ng-focus="removeClass('dept',$index)"
                                                     ng-change="checkCharLimit(account, 'Designation__c', 80)" />
 
@@ -603,7 +608,7 @@
                                             </div>
 
                                             <div class="col-md-3">
-                                                <div ng-show="isCoordinator=='true'">
+                                                <div ng-show="isCoordinator=='true' || isCoordinatorr==true">
                                                     <label class="font-if">Country<span
                                                             class="ms-2 text-danger">*</span></label>
                                                     <!--
@@ -618,7 +623,7 @@
                                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                                     </select>
                                                 </div>
-                                                <div ng-show="isCoordinator=='false'">
+                                                <div ng-show="isCoordinator=='false' || isCoordinatorr==false">
                                                     <label class="font-if">Country<span
                                                             class="ms-2 text-danger">*</span></label>
                                                     <!-- 
@@ -649,7 +654,7 @@
                     </div>
                 </div> -->
                 </div>
-                <div ng-show="divCoordinator==true && isCoordinatorr=='true'">
+                <div ng-show="divCoordinator==true && isCoordinatorr">
                     <!-- <div class="row mt-5 mx-5">
                 <div class="col-md-12 pt-4 ps-5">
                     <h4>
@@ -666,7 +671,7 @@
                     <div class="row mt-5 mx-5" ng-cloak="true" ng-repeat="account in CoordinatorDetails">
                         <div class="accordion" stle="background-color: white !important"
                             id="accordionPanelsStayOpenExample{{$index}}">
-                            <div class="" style="">
+                            <div class="">
                                 <div class="col-md-12 box-shadow-1 mb-5 accordion-header"
                                     id="panelsStayOpen-heading{{$index}}" style="padding: none !important;">
                                     <button class="accordion-button"
@@ -990,7 +995,7 @@
                                             </div>
                                             -->
                                             <div class="col-md-3">
-                                                <div ng-show="isCoordinator=='true'">
+                                                <div ng-show="isCoordinator=='true' || isCoordinatorr==true">
                                                     <label class="font-if">Country <span
                                                             class="ms-2 text-danger">*</span></label>
                                                     <select class="form-control" aria-label="Default select example"
@@ -1001,13 +1006,14 @@
                                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                                     </select>
                                                 </div>
-                                                <div ng-show="isCoordinator=='false'">
+                                                <div ng-show="isCoordinator=='false'|| isCoordinatorr==false">
                                                     <label class="font-if">Country <span
                                                             class="ms-2 text-danger">*</span></label>
                                                     <select class="form-control" aria-label="Default select example"
                                                         ng-change="setSaveStatus(account)"
                                                         ng-focus="removeClass('country',$index)" id="country{{$index}}"
-                                                        ng-model="account.BillingCountry" required="true"> <!-- ng-disabled="true" -->
+                                                        ng-model="account.BillingCountry" required="true">
+                                                        <!-- ng-disabled="true" -->
                                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                                     </select>
                                                 </div>
@@ -1041,35 +1047,32 @@
                                                     <option ng-repeat="staff in stateList">{{staff}}</option>
                                                 </select>
                                             </div>
-                                    <div class="col-md-6">
-    <label class="font-if">Postal/Zip Code<span class="ms-2 text-danger">*</span></label>
-    <input ng-focus="removeClass2('IPcode')" 
-           id="IPcode" 
-           type="text"
-           ng-model="account.BillingPostalCode" 
-           class="form-control"
-           ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage"
-           ng-change="checkCharLimit(account, 'BillingPostalCode', 6)" 
-           maxlength="6"
-           />
-           <!-- ng-change="checkPostalCodeValidation(account)" -->
-        
-           <small class="text-danger"
-                ng-if="account._charLimitMap.BillingPostalCode">
-                Invalid Postal / Zip Code
-            </small>
-    <!-- Germany: 5 digits validation error -->
-    <!-- <small class="text-danger" 
+                                            <div class="col-md-6">
+                                                <label class="font-if">Postal/Zip Code<span
+                                                        class="ms-2 text-danger">*</span></label>
+                                                <input ng-focus="removeClass2('IPcode')" id="IPcode" type="text"
+                                                    ng-model="account.BillingPostalCode" class="form-control"
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage"
+                                                    ng-change="checkCharLimit(account, 'BillingPostalCode', 6)"
+                                                    maxlength="6" />
+                                                <!-- ng-change="checkPostalCodeValidation(account)" -->
+
+                                                <small class="text-danger"
+                                                    ng-if="account._charLimitMap.BillingPostalCode">
+                                                    Invalid Postal / Zip Code
+                                                </small>
+                                                <!-- Germany: 5 digits validation error -->
+                                                <!-- <small class="text-danger" 
            ng-if="account._charLimitMap && account._charLimitMap.BillingPostalCode && account.BillingCountry === 'Germany'">
         Germany postal code must be exactly 5 digits
     </small> -->
-    
-    <!-- India: 6 digits validation error -->
-    <!-- <small class="text-danger" 
+
+                                                <!-- India: 6 digits validation error -->
+                                                <!-- <small class="text-danger" 
            ng-if="account._charLimitMap && account._charLimitMap.BillingPostalCode && account.BillingCountry === 'India'">
         India postal code must be exactly 6 digits
     </small> -->
-</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1088,13 +1091,27 @@
                 <div class="row m-5" ng-if="!proposalStage">
                     <div class="col-md-12">
                         <button class="blue-btn float-end" id="btnPreview" ng-click="checkEmail('p')" type="button">
-                            <i class="fa-solid fa-check me-2"></i>Save and Next</button>
+                            <i class="fa-solid fa-check me-2"></i>
+                            {{ isPartner ? 'Next' : 'Save and Next' }}
+                        </button>
                         <button class="btn btn-secondary float-end me-2"
                             style="padding: 8px 20px !important;font-size: 16px !important;"
                             ng-click="redirectPageURL('ProjectDetailPage')" type="button">
                             <i class="fa-solid fa-arrow-left me-2"></i>Back</button>
                     </div>
                 </div>
+
+                <!-- <div class="row m-5" ng-if="isPartner">
+                    <div class="col-md-12">
+                        <button class="blue-btn float-end" id="btnPreview" ng-click="checkEmail('p')" type="button">
+                            <i class="fa-solid fa-check me-2"></i>Next
+                        </button>
+                        <button class="btn btn-secondary float-end me-2"
+                            style="padding: 8px 20px !important;font-size: 16px !important;"
+                            ng-click="redirectPageURL('ProjectDetailPage')" type="button">
+                            <i class="fa-solid fa-arrow-left me-2"></i>Back</button>
+                    </div>
+                </div> -->
 
             </div>
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

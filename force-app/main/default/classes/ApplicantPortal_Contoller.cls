@@ -4549,6 +4549,18 @@ public static void updateProposalStage(Id proposalId) {
             yearlyExpenses = new List<Yearly_Expense__c>();
         }
     }
+
+    @RemoteAction
+    public static Application_Proposal__c getUserPopupChoiceFromProposal(String proposalId) {
+
+        Application_Proposal__c proposal = [
+            SELECT  Id, User_Popup_Choice__c 
+            FROM Application_Proposal__c 
+            WHERE Id = :proposalId
+        ];
+        return proposal;
+     
+    }
     
     
     public static void firstTestMethod1(){
