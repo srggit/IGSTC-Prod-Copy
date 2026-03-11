@@ -1339,6 +1339,181 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
         Proposal_Controller.deleteDeliverables(deliverId);
     }
     
+    //************************************** NEW WP + Deliverables Combined Table **********************************************************
+    
+    @RemoteAction
+    public static List<Work_Package__c> getWPWithDeliverables(String proposalId, String proposalStage){
+        try{
+            List<Work_Package__c> workPackageList = [
+                SELECT Id, WP_Sequence__c, WP_Sequence_2__c, Title__c, TRL_Level__c, End_TRL_Level__c, Duration_Start_Month__c, Duration_End_Month__c, External_Id__c, Application__c,
+                       (SELECT Id, Name, Account_Name__c, Account__c FROM Account_Mapping__r),
+                       (SELECT Id, Account__c, Application__c, Due_Date__c, Deliverable_Sequence__c, Duration_Start_Month__c, Duration_End_Month__c, External_Id__c, Name, Title__c, Work_Package__c FROM PI_Deliverables__r ORDER BY Deliverable_Sequence__c)
+                FROM Work_Package__c 
+                WHERE Application__c = :proposalId
+                AND Proposal_Stage__c = :proposalStage
+                ORDER BY WP_Sequence_2__c
+            ];
+            return workPackageList;
+        }catch(Exception e){
+            System.debug('Error in getWPWithDeliverables: ' + e.getMessage() + ' Line: ' + e.getLineNumber());
+            return new List<Work_Package__c>();
+        }
+    }
+    
+    @RemoteAction
+    public static String saveWPWithDeliverables(List<WrapperWPWithDeliverables> wrapperList, String proposalId, String proposalStage){
+        try{
+            System.debug('saveWPWithDeliverables - wrapperList: ' + wrapperList);
+            
+            List<Work_Package__c> workPackagesToUpsert = new List<Work_Package__c>();
+            Map<String, List<IndustrialFellowshipHelper.AccountListWrapper>> wpExternalIdToAccountMap = new Map<String, List<IndustrialFellowshipHelper.AccountListWrapper>>();
+            Map<String, List<WrapperDeliverable>> wpExternalIdToDeliverablesMap = new Map<String, List<WrapperDeliverable>>();
+            
+            for(WrapperWPWithDeliverables wpWrapper : wrapperList){
+                Work_Package__c wp = new Work_Package__c();
+                
+                if(String.isNotBlank(wpWrapper.Id)){
+                    wp.Id = wpWrapper.Id;
+                }
+                
+                wp.WP_Sequence_2__c = wpWrapper.wpSequence;
+                wp.Title__c = wpWrapper.title;
+                wp.TRL_Level__c = Integer.valueOf(wpWrapper.trlFrom);
+                wp.End_TRL_Level__c = Integer.valueOf(wpWrapper.trlTo);
+                wp.Duration_Start_Month__c = Decimal.valueOf(wpWrapper.wpStartMonth);
+                wp.Duration_End_Month__c = Decimal.valueOf(wpWrapper.wpEndMonth);
+                wp.External_Id__c = wpWrapper.externalId;
+                wp.Application__c = proposalId;
+                wp.Proposal_Stage__c = proposalStage;
+                
+                workPackagesToUpsert.add(wp);
+                wpExternalIdToAccountMap.put(wpWrapper.externalId, wpWrapper.AccountListWrapper);
+                wpExternalIdToDeliverablesMap.put(wpWrapper.externalId, wpWrapper.deliverables);
+            }
+            
+            upsert workPackagesToUpsert;
+            
+            Map<String, String> externalIdToWPId = new Map<String, String>();
+            for(Work_Package__c wp : workPackagesToUpsert){
+                externalIdToWPId.put(wp.External_Id__c, wp.Id);
+            }
+            
+            List<Account_Mapping__c> accountMappingsToUpsert = new List<Account_Mapping__c>();
+            List<Account_Mapping__c> accountMappingsToDelete = new List<Account_Mapping__c>();
+            
+            for(String externalId : wpExternalIdToAccountMap.keySet()){
+                String wpId = externalIdToWPId.get(externalId);
+                for(IndustrialFellowshipHelper.AccountListWrapper accWrapper : wpExternalIdToAccountMap.get(externalId)){
+                    if(accWrapper.isSelected && String.isBlank(accWrapper.accountMappingId)){
+                        Account_Mapping__c accMapping = new Account_Mapping__c();
+                        accMapping.Account__c = accWrapper.accnt.Id;
+                        accMapping.Work_Package__c = wpId;
+                        accountMappingsToUpsert.add(accMapping);
+                    }else if(!accWrapper.isSelected && String.isNotBlank(accWrapper.accountMappingId)){
+                        accountMappingsToDelete.add(new Account_Mapping__c(Id = accWrapper.accountMappingId));
+                    }
+                }
+            }
+            
+            if(!accountMappingsToUpsert.isEmpty()){
+                upsert accountMappingsToUpsert;
+            }
+            if(!accountMappingsToDelete.isEmpty()){
+                delete accountMappingsToDelete;
+            }
+            
+            List<PI_Deliverables__c> deliverablesToUpsert = new List<PI_Deliverables__c>();
+            
+            for(String externalId : wpExternalIdToDeliverablesMap.keySet()){
+                String wpId = externalIdToWPId.get(externalId);
+                List<WrapperDeliverable> deliverables = wpExternalIdToDeliverablesMap.get(externalId);
+                
+                if(deliverables != null && !deliverables.isEmpty()){
+                    for(WrapperDeliverable delivWrapper : deliverables){
+                        PI_Deliverables__c deliv = new PI_Deliverables__c();
+                        
+                        if(String.isNotBlank(delivWrapper.Id)){
+                            deliv.Id = delivWrapper.Id;
+                        }
+                        
+                        deliv.Deliverable_Sequence__c = delivWrapper.deliverableSequence;
+                        deliv.Title__c = delivWrapper.title;
+                        deliv.Duration_Start_Month__c = Decimal.valueOf(delivWrapper.startMonth);
+                        deliv.Duration_End_Month__c = Decimal.valueOf(delivWrapper.endMonth);
+                        deliv.External_Id__c = delivWrapper.externalId;
+                        deliv.Work_Package__c = wpId;
+                        
+                        deliverablesToUpsert.add(deliv);
+                    }
+                }
+            }
+            
+            if(!deliverablesToUpsert.isEmpty()){
+                upsert deliverablesToUpsert;
+            }
+            
+            return 'success';
+        }catch(Exception e){
+            System.debug('Error in saveWPWithDeliverables: ' + e.getMessage() + ' Line: ' + e.getLineNumber());
+            return 'Error: ' + e.getMessage();
+        }
+    }
+    
+    @RemoteAction
+    public static String deleteWorkPackageWithDeliverables(String workPackageId){
+        try{
+            List<PI_Deliverables__c> deliverables = [SELECT Id FROM PI_Deliverables__c WHERE Work_Package__c = :workPackageId];
+            if(!deliverables.isEmpty()){
+                delete deliverables;
+            }
+            
+            List<Account_Mapping__c> accountMappings = [SELECT Id FROM Account_Mapping__c WHERE Work_Package__c = :workPackageId];
+            if(!accountMappings.isEmpty()){
+                delete accountMappings;
+            }
+            
+            delete new Work_Package__c(Id = workPackageId);
+            
+            return 'Success';
+        }catch(Exception e){
+            System.debug('Error in deleteWorkPackageWithDeliverables: ' + e.getMessage() + ' Line: ' + e.getLineNumber());
+            return 'Error: ' + e.getMessage();
+        }
+    }
+    
+    @RemoteAction
+    public static String deleteDeliverableNew(String deliverableId){
+        try{
+            delete new PI_Deliverables__c(Id = deliverableId);
+            return 'Success';
+        }catch(Exception e){
+            System.debug('Error in deleteDeliverableNew: ' + e.getMessage() + ' Line: ' + e.getLineNumber());
+            return 'Error: ' + e.getMessage();
+        }
+    }
+    
+    public class WrapperWPWithDeliverables {
+        public String Id;
+        public String wpSequence;
+        public String title;
+        public String trlFrom;
+        public String trlTo;
+        public String wpStartMonth;
+        public String wpEndMonth;
+        public String externalId;
+        public List<IndustrialFellowshipHelper.AccountListWrapper> AccountListWrapper;
+        public List<WrapperDeliverable> deliverables;
+    }
+    
+    public class WrapperDeliverable {
+        public String Id;
+        public String deliverableSequence;
+        public String title;
+        public String startMonth;
+        public String endMonth;
+        public String externalId;
+    }
+    
     //************************************** Network Meeting **********************************************************
     
     // @RemoteAction

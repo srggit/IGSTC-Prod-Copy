@@ -1215,6 +1215,219 @@
                             </div>
                         </div>
 
+                        <!-- ==================== NEW WORK PACKAGE + DELIVERABLES COMBINED TABLE ==================== -->
+                        <div class="mt-5">
+                            <div class="col-md-12">
+                                <h4>
+                                    <b>Work Package (WP) with Deliverables (D)</b>
+                                </h4>
+                            </div>
+
+                            <div class="col-md-12 mt-3">
+                                <button type="button" class="btn btn-primary" ng-click="addNewWP()" ng-if="!proposalStage">
+                                    <i class="fas fa-plus-circle me-2"></i>Add Work Package
+                                </button>
+                                <button type="button" class="btn btn-success float-end" ng-click="saveWPDeliverablesData()" ng-if="!proposalStage">
+                                    <i class="fa-solid fa-save me-2"></i>Save All
+                                </button>
+                            </div>
+
+                            <!-- Debug: Show count -->
+                            <div class="col-md-12 mt-2">
+                                <small class="text-muted">Total Work Packages: {{wpDeliverablesTableList.length}}</small>
+                            </div>
+
+                            <div class="col-md-12 mt-4" ng-repeat="wp in wpDeliverablesTableList">
+                                <div class="card mb-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <div class="row">
+                                            <div class="col-md-11">
+                                                <h5 class="mb-0">{{wp.wpSequence}}: {{wp.title || 'New Work Package'}}</h5>
+                                            </div>
+                                            <div class="col-md-1 text-end">
+                                                <i class="fa-sharp fa-solid fa-circle-xmark fa-2x text-white" ng-click="removeWP($index)" ng-if="!proposalStage" style="cursor:pointer;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width:8%">WP Id</th>
+                                                    <th style="width:20%">WP Title
+                                                        <span class="text-danger">*</span>
+                                                    </th>
+                                                    <th style="width:15%">TRL Progression
+                                                        <span class="text-danger">*</span>
+                                                    </th>
+                                                    <th style="width:17%">Responsible Partners
+                                                        <span class="text-danger">*</span>
+                                                    </th>
+                                                    <th style="width:10%">WP Start Month
+                                                        <span class="text-danger">*</span>
+                                                    </th>
+                                                    <th style="width:10%">WP End Month
+                                                        <span class="text-danger">*</span>
+                                                    </th>
+                                                    <th style="width:4%">Add</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center align-middle">
+                                                        <strong>{{wp.wpSequence}}</strong>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" ng-model="wp.title" ng-disabled="proposalStage" placeholder="Enter WP title" />
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <select class="form-control me-1" ng-model="wp.trlFrom" ng-disabled="proposalStage" ng-options="option for option in trlOptions">
+                                                                <option value="">From</option>
+                                                            </select>
+                                                            <span class="mx-1">to</span>
+                                                            <select class="form-control ms-1" ng-model="wp.trlTo" ng-disabled="proposalStage" ng-options="option for option in trlOptions">
+                                                                <option value="">To</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-default dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false" ng-disabled="proposalStage">
+                                                                Select Partners
+                                                            </button>
+                                                            <ul class="dropdown-menu" style="max-height:200px;overflow-y:auto;">
+                                                                <li class="dropdown-item" ng-repeat="acc in wp.AccountList">
+                                                                    <label class="form-control">
+                                                                        <input type="checkbox" ng-model="acc.selected" ng-disabled="proposalStage" />
+                                                                        <span class="ms-2">{{acc.Name}}</span>
+                                                                    </label>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control" ng-model="wp.wpStartMonth" ng-disabled="proposalStage" placeholder="Month" min="1"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control" ng-model="wp.wpEndMonth" ng-disabled="proposalStage" placeholder="Month" min="1"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-success" ng-click="addNewDeliverable($index)" ng-if="!proposalStage">
+                                                            <i class="fas fa-plus me-1"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+
+                                                <tr ng-repeat="deliv in wp.deliverables" ng-if="wp.deliverables.length > 0">
+                                                    <td class="text-center align-middle"> > </td>
+                                                    <td class="text-center align-middle">
+                                                        <strong>{{deliv.deliverableSequence}}</strong>
+                                                    </td>
+                                                    <!-- Merge TRL Progression + Responsible Partners -->
+                                                    <td colspan="2">
+                                                        <input type="text" class="form-control form-control-sm" ng-model="deliv.title" ng-disabled="proposalStage" placeholder="Enter deliverable description"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control form-control-sm" ng-model="deliv.startMonth" ng-disabled="proposalStage" ng-change="validateDeliverableMonths(wp, deliv)"
+                                                            ng-class="{'border-danger': deliv.startMonthError}" placeholder="Start Month"
+                                                            min="1" />
+                                                        <small class="text-danger" ng-if="deliv.startMonthError">
+                                                            Must be &gt;= {{wp.wpStartMonth}}
+                                                        </small>
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control form-control-sm" ng-model="deliv.endMonth" ng-disabled="proposalStage" ng-change="validateDeliverableMonths(wp, deliv)"
+                                                            ng-class="{'border-danger': deliv.endMonthError}" placeholder="End Month"
+                                                            min="1" />
+                                                        <small class="text-danger" ng-if="deliv.endMonthError">
+                                                            Must be &lt;= {{wp.wpEndMonth}}
+                                                        </small>
+                                                    </td>
+                                                    <td class="text-center" ng-if="!proposalStage">
+                                                        <i class="fas fa-times-circle text-danger" ng-click="removeDeliverable($parent.$index, $index)" style="cursor:pointer;"></i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <!-- Deliverables Section -->
+
+                                        <div class="mt-3">
+                                            <!--
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="mb-0">
+                                                    <strong>Deliverables under {{wp.wpSequence}}</strong>
+                                                </h6>
+                                                <button type="button" class="btn btn-sm btn-success" ng-click="addNewDeliverable($index)" ng-if="!proposalStage">
+                                                    <i class="fas fa-plus me-1"></i>Add Deliverable
+                                                </button>
+                                            </div>
+
+                                            <table class="table table-sm" ng-if="wp.deliverables.length > 0">
+
+                                                <thead class="table-secondary">
+                                                    <tr>
+                                                        <th style="width:10%">D. Id</th>
+                                                        <th style="width:40%">Description of Deliverables
+                                                            <span class="text-danger">*</span>
+                                                        </th>
+                                                        <th style="width:15%">Start Month
+                                                            <span class="text-danger">*</span>
+                                                        </th>
+                                                        <th style="width:15%">End Month
+                                                            <span class="text-danger">*</span>
+                                                        </th>
+                                                        <th style="width:5%" ng-if="!proposalStage"></th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr ng-repeat="deliv in wp.deliverables">
+                                                        <td class="text-center align-middle">
+                                                            <strong>{{deliv.deliverableSequence}}</strong>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control form-control-sm" ng-model="deliv.title" ng-disabled="proposalStage" placeholder="Enter deliverable description"
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" class="form-control form-control-sm" ng-model="deliv.startMonth" ng-disabled="proposalStage" ng-change="validateDeliverableMonths(wp, deliv)"
+                                                                ng-class="{'border-danger': deliv.startMonthError}" placeholder="Start Month"
+                                                                min="1" />
+                                                            <small class="text-danger" ng-if="deliv.startMonthError">
+                                                                Must be &gt;= {{wp.wpStartMonth}}
+                                                            </small>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" class="form-control form-control-sm" ng-model="deliv.endMonth" ng-disabled="proposalStage" ng-change="validateDeliverableMonths(wp, deliv)"
+                                                                ng-class="{'border-danger': deliv.endMonthError}" placeholder="End Month"
+                                                                min="1" />
+                                                            <small class="text-danger" ng-if="deliv.endMonthError">
+                                                                Must be &lt;= {{wp.wpEndMonth}}
+                                                            </small>
+                                                        </td>
+                                                        <td class="text-center" ng-if="!proposalStage">
+                                                            <i class="fas fa-times-circle text-danger" ng-click="removeDeliverable($parent.$index, $index)" style="cursor:pointer;"></i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            -->
+                                            <div ng-if="wp.deliverables.length === 0" class="alert alert-info">
+                                                No deliverables added yet. Click "Add Deliverable" to add one.
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ==================== END NEW TABLE ==================== -->
+
                         <div class="col-md-12 mt-5 ">
                             <label class="pb-3 color-theme ">
                                 <b>Risk assessment &amp; mitigation strategy and Criteria for abandoning the project (max. chars

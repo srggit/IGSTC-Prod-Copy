@@ -3238,7 +3238,8 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                 // Year 1 line item
                 let year1LineItem = {
                     Index__c: 1,
-                    Description__c: 'No. of Positions|Y1Total:' + year1Total + '|Y2Total:' + year2Total + '|Y3Total:' + year3Total,
+                    // Description__c: 'No. of Positions|Y1Total:' + year1Total + '|Y2Total:' + year2Total + '|Y3Total:' + year3Total,
+                    Description__c: 'No. of Positions',
                     Number__c: staff.positionsYear1 || 0,
                     Year1_Expense__c: staff.positionsYear1 || 0,
                     Year2_Expense__c: 0,
@@ -3257,7 +3258,8 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                 if ($rootScope.proposalDurationMonths >= 24) {
                     let year2LineItem = {
                         Index__c: 1,
-                        Description__c: 'No. of Positions|Y1Total:' + year1Total + '|Y2Total:' + year2Total + '|Y3Total:' + year3Total,
+                        //Description__c: 'No. of Positions|Y1Total:' + year1Total + '|Y2Total:' + year2Total + '|Y3Total:' + year3Total,
+                        Description__c: 'No. of Positions',
                         Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c
                         Number__c: staff.positionsYear2 || 0,
                         Year1_Expense__c: 0,
@@ -3277,7 +3279,8 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                 if ($rootScope.proposalDurationMonths === 36) {
                     let year3LineItem = {
                         Index__c: 1,
-                        Description__c: 'No. of Positions|Y1Total:' + year1Total + '|Y2Total:' + year2Total + '|Y3Total:' + year3Total,
+                        //Description__c: 'No. of Positions|Y1Total:' + year1Total + '|Y2Total:' + year2Total + '|Y3Total:' + year3Total,
+                        Description__c: 'No. of Positions',
                         Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c
                         Number__c: staff.positionsYear3 || 0,
                         Year1_Expense__c: 0,
@@ -3739,32 +3742,135 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                                         headIds[2] || null
                                     ];
 
-                                    // Add Expense_Head__c updates with description for newly created heads
+                                    // Add Expense_Head__c updates with description and total amounts for newly created heads
                                     // CRITICAL: Always update description if it exists, even for first-time creation
+                                    console.log('=== DEBUG: Research Staff Data ===');
+                                    console.log('Research Staff Type:', researchStaffType);
+                                    console.log('Staff data:', staff);
+                                    console.log('Staff totals:', {
+                                        totalYear1: staff.totalYear1,
+                                        totalYear2: staff.totalYear2,
+                                        totalYear3: staff.totalYear3,
+                                        totalAmount: staff.totalAmount
+                                    });
+                                    console.log('Head IDs:', headIds);
+                                    console.log('=== END DEBUG ===');
+
                                     if (staff.description && staff.description !== null && staff.description !== undefined && staff.description !== '') {
                                         if (headIds[0] && headIds[0] !== 'null' && headIds[0] !== 'undefined' && headIds[0] !== null) {
                                             finalExpenseHeadUpdates.push({
                                                 Id: headIds[0],
-                                                Description__c: staff.description
+                                                Description__c: staff.description,
+                                                Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                                Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                                Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                                Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                                Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                                Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                                Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                                Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                                Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                                Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
                                             });
-                                            console.log('Added description update for Year 1 head:', headIds[0]);
+                                            console.log('Added all total fields update for Year 1 head:', headIds[0]);
                                         }
                                         if (headIds[1] && headIds[1] !== 'null' && headIds[1] !== 'undefined' && headIds[1] !== null) {
                                             finalExpenseHeadUpdates.push({
                                                 Id: headIds[1],
-                                                Description__c: staff.description
+                                                Description__c: staff.description,
+                                                Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                                Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                                Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                                Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                                Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                                Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                                Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                                Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                                Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                                Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
                                             });
-                                            console.log('Added description update for Year 2 head:', headIds[1]);
+                                            console.log('Added all total fields update for Year 2 head:', headIds[1]);
                                         }
                                         if (headIds[2] && headIds[2] !== 'null' && headIds[2] !== 'undefined' && headIds[2] !== null) {
                                             finalExpenseHeadUpdates.push({
                                                 Id: headIds[2],
-                                                Description__c: staff.description
+                                                Description__c: staff.description,
+                                                Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                                Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                                Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                                Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                                Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                                Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                                Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                                Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                                Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                                Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
                                             });
-                                            console.log('Added description update for Year 3 head:', headIds[2]);
+                                            console.log('Added all total fields update for Year 3 head:', headIds[2]);
                                         }
                                     } else {
                                         console.log('No description to update for Research Staff:', researchStaffType);
+                                        // Still update total amounts even if no description
+                                        if (headIds[0] && headIds[0] !== 'null' && headIds[0] !== 'undefined' && headIds[0] !== null) {
+                                            finalExpenseHeadUpdates.push({
+                                                Id: headIds[0],
+                                                Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                                Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                                Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                                Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                                Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                                Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                                Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                                Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                                Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                                Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
+                                            });
+                                            console.log('Added all total fields update (no description) for Year 1 head:', headIds[0]);
+                                        }
+                                        if (headIds[1] && headIds[1] !== 'null' && headIds[1] !== 'undefined' && headIds[1] !== null) {
+                                            finalExpenseHeadUpdates.push({
+                                                Id: headIds[1],
+                                                Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                                Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                                Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                                Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                                Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                                Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                                Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                                Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                                Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                                Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
+                                            });
+                                            console.log('Added all total fields update (no description) for Year 2 head:', headIds[1]);
+                                        }
+                                        if (headIds[2] && headIds[2] !== 'null' && headIds[2] !== 'undefined' && headIds[2] !== null) {
+                                            finalExpenseHeadUpdates.push({
+                                                Id: headIds[2],
+                                                Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                                Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                                Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                                Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                                Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                                Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                                Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                                Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                                Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                                Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                                Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
+                                            });
+                                            console.log('Added all total fields update (no description) for Year 3 head:', headIds[2]);
+                                        }
                                     }
                                 } else {
                                     console.warn('Could not find Expense_Head__c IDs for Research Staff:', researchStaffType, 'in save result:', saveResult.researchStaffHeadIds);
@@ -3778,15 +3884,171 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                     let allExpenseHeadUpdatesMap = new Map();
 
                     // Add existing updates first
+                    console.log('=== DEBUG: Processing expenseHeadUpdates ===');
+                    console.log('expenseHeadUpdates length:', expenseHeadUpdates ? expenseHeadUpdates.length : 0);
                     if (expenseHeadUpdates && expenseHeadUpdates.length > 0) {
                         for (let i = 0; i < expenseHeadUpdates.length; i++) {
+                            console.log('expenseHeadUpdates[' + i + ']:', expenseHeadUpdates[i]);
                             if (expenseHeadUpdates[i].Id) {
                                 allExpenseHeadUpdatesMap.set(expenseHeadUpdates[i].Id, expenseHeadUpdates[i]);
                             }
                         }
                     }
+                    console.log('=== END DEBUG ===');
+
+                    // Update existing Research Staff Expense Heads with total amounts
+                    console.log('=== DEBUG: Updating Existing Research Staff Heads ===');
+                    if ($scope.budgetResearchStaffList && $scope.budgetResearchStaffList.length > 0) {
+                        for (let i = 0; i < $scope.budgetResearchStaffList.length; i++) {
+                            let staff = $scope.budgetResearchStaffList[i];
+                            let researchStaffType = staff.researchStaffType;
+
+                            console.log('Processing existing Research Staff:', researchStaffType);
+                            console.log('Staff totals:', {
+                                totalYear1: staff.totalYear1,
+                                totalYear2: staff.totalYear2,
+                                totalYear3: staff.totalYear3,
+                                totalAmount: staff.totalAmount
+                            });
+
+                            if (staff.expenseHeadIds && Array.isArray(staff.expenseHeadIds)) {
+                                // Update Year 1 Expense Head
+                                if (staff.expenseHeadIds[0] && staff.expenseHeadIds[0] !== 'null' && staff.expenseHeadIds[0] !== 'undefined' && staff.expenseHeadIds[0] !== null) {
+                                    let existingUpdate = allExpenseHeadUpdatesMap.get(staff.expenseHeadIds[0]);
+                                    if (existingUpdate) {
+                                        // Add Amount_For_Research_Staff fields to existing update
+                                        existingUpdate.Amount_For_Research_Staff_Year_1__c = staff.totalYear1 || 0;
+                                        existingUpdate.Amount_For_Research_Staff_Year_2__c = staff.totalYear2 || 0;
+                                        existingUpdate.Amount_For_Research_Staff_Year_3__c = staff.totalYear3 || 0;
+                                        existingUpdate.Amount_For_Research_Staff__c = staff.totalAmount || 0;
+                                        // Add Total_Amount_for_All_Research_Staff fields to existing update
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y1__c = $scope.budgetResearchStaff.totalYear1 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y2__c = $scope.budgetResearchStaff.totalYear2 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y3__c = $scope.budgetResearchStaff.totalYear3 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff__c = $scope.budgetResearchStaff.totalAmount || 0;
+                                        // Add Total_Research_Heads fields to existing update
+                                        existingUpdate.Total_Research_Heads_Year_1__c = $scope.totalResearchHeads.year1 || 0;
+                                        existingUpdate.Total_Research_Heads_Year_2__c = $scope.totalResearchHeads.year2 || 0;
+                                        existingUpdate.Total_Research_Heads_Year_3__c = $scope.totalResearchHeads.year3 || 0;
+                                        existingUpdate.Total_Research_Heads__c = $scope.totalResearchHeads.total || 0;
+                                        console.log('Added all total fields to existing Year 1 head:', staff.expenseHeadIds[0]);
+                                    } else {
+                                        // Create new update for this Expense Head
+                                        allExpenseHeadUpdatesMap.set(staff.expenseHeadIds[0], {
+                                            Id: staff.expenseHeadIds[0],
+                                            Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                            Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                            Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                            Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                            Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                            Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                            Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                            Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                            Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                            Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                            Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                            Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
+                                        });
+                                        console.log('Created new all total fields update for Year 1 head:', staff.expenseHeadIds[0]);
+                                    }
+                                }
+
+                                // Update Year 2 Expense Head
+                                if (staff.expenseHeadIds[1] && staff.expenseHeadIds[1] !== 'null' && staff.expenseHeadIds[1] !== 'undefined' && staff.expenseHeadIds[1] !== null) {
+                                    let existingUpdate = allExpenseHeadUpdatesMap.get(staff.expenseHeadIds[1]);
+                                    if (existingUpdate) {
+                                        // Add Amount_For_Research_Staff fields to existing update
+                                        existingUpdate.Amount_For_Research_Staff_Year_1__c = staff.totalYear1 || 0;
+                                        existingUpdate.Amount_For_Research_Staff_Year_2__c = staff.totalYear2 || 0;
+                                        existingUpdate.Amount_For_Research_Staff_Year_3__c = staff.totalYear3 || 0;
+                                        existingUpdate.Amount_For_Research_Staff__c = staff.totalAmount || 0;
+                                        // Add Total_Amount_for_All_Research_Staff fields to existing update
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y1__c = $scope.budgetResearchStaff.totalYear1 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y2__c = $scope.budgetResearchStaff.totalYear2 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y3__c = $scope.budgetResearchStaff.totalYear3 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff__c = $scope.budgetResearchStaff.totalAmount || 0;
+                                        // Add Total_Research_Heads fields to existing update
+                                        existingUpdate.Total_Research_Heads_Year_1__c = $scope.totalResearchHeads.year1 || 0;
+                                        existingUpdate.Total_Research_Heads_Year_2__c = $scope.totalResearchHeads.year2 || 0;
+                                        existingUpdate.Total_Research_Heads_Year_3__c = $scope.totalResearchHeads.year3 || 0;
+                                        existingUpdate.Total_Research_Heads__c = $scope.totalResearchHeads.total || 0;
+                                        console.log('Added all total fields to existing Year 2 head:', staff.expenseHeadIds[1]);
+                                    } else {
+                                        // Create new update for this Expense Head
+                                        allExpenseHeadUpdatesMap.set(staff.expenseHeadIds[1], {
+                                            Id: staff.expenseHeadIds[1],
+                                            Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                            Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                            Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                            Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                            Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                            Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                            Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                            Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                            Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                            Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                            Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                            Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
+                                        });
+                                        console.log('Created new all total fields update for Year 2 head:', staff.expenseHeadIds[1]);
+                                    }
+                                }
+
+                                // Update Year 3 Expense Head
+                                if (staff.expenseHeadIds[2] && staff.expenseHeadIds[2] !== 'null' && staff.expenseHeadIds[2] !== 'undefined' && staff.expenseHeadIds[2] !== null) {
+                                    let existingUpdate = allExpenseHeadUpdatesMap.get(staff.expenseHeadIds[2]);
+                                    if (existingUpdate) {
+                                        // Add Amount_For_Research_Staff fields to existing update
+                                        existingUpdate.Amount_For_Research_Staff_Year_1__c = staff.totalYear1 || 0;
+                                        existingUpdate.Amount_For_Research_Staff_Year_2__c = staff.totalYear2 || 0;
+                                        existingUpdate.Amount_For_Research_Staff_Year_3__c = staff.totalYear3 || 0;
+                                        existingUpdate.Amount_For_Research_Staff__c = staff.totalAmount || 0;
+                                        // Add Total_Amount_for_All_Research_Staff fields to existing update
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y1__c = $scope.budgetResearchStaff.totalYear1 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y2__c = $scope.budgetResearchStaff.totalYear2 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff_Y3__c = $scope.budgetResearchStaff.totalYear3 || 0;
+                                        existingUpdate.Total_Amount_for_All_Research_Staff__c = $scope.budgetResearchStaff.totalAmount || 0;
+                                        // Add Total_Research_Heads fields to existing update
+                                        existingUpdate.Total_Research_Heads_Year_1__c = $scope.totalResearchHeads.year1 || 0;
+                                        existingUpdate.Total_Research_Heads_Year_2__c = $scope.totalResearchHeads.year2 || 0;
+                                        existingUpdate.Total_Research_Heads_Year_3__c = $scope.totalResearchHeads.year3 || 0;
+                                        existingUpdate.Total_Research_Heads__c = $scope.totalResearchHeads.total || 0;
+                                        console.log('Added all total fields to existing Year 3 head:', staff.expenseHeadIds[2]);
+                                    } else {
+                                        // Create new update for this Expense Head
+                                        allExpenseHeadUpdatesMap.set(staff.expenseHeadIds[2], {
+                                            Id: staff.expenseHeadIds[2],
+                                            Amount_For_Research_Staff_Year_1__c: staff.totalYear1 || 0,
+                                            Amount_For_Research_Staff_Year_2__c: staff.totalYear2 || 0,
+                                            Amount_For_Research_Staff_Year_3__c: staff.totalYear3 || 0,
+                                            Amount_For_Research_Staff__c: staff.totalAmount || 0,
+                                            Total_Amount_for_All_Research_Staff_Y1__c: $scope.budgetResearchStaff.totalYear1 || 0,
+                                            Total_Amount_for_All_Research_Staff_Y2__c: $scope.budgetResearchStaff.totalYear2 || 0,
+                                            Total_Amount_for_All_Research_Staff_Y3__c: $scope.budgetResearchStaff.totalYear3 || 0,
+                                            Total_Amount_for_All_Research_Staff__c: $scope.budgetResearchStaff.totalAmount || 0,
+                                            Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                            Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                            Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                            Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
+                                        });
+                                        console.log('Created new all total fields update for Year 3 head:', staff.expenseHeadIds[2]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    console.log('=== END DEBUG ===');
 
                     // Add final updates (will overwrite if same Id exists)
+                    console.log('=== DEBUG: Before Merging Final Updates ===');
+                    console.log('finalExpenseHeadUpdates length:', finalExpenseHeadUpdates ? finalExpenseHeadUpdates.length : 0);
+                    if (finalExpenseHeadUpdates && finalExpenseHeadUpdates.length > 0) {
+                        for (let i = 0; i < finalExpenseHeadUpdates.length; i++) {
+                            console.log('Final update ' + (i + 1) + ':', finalExpenseHeadUpdates[i]);
+                        }
+                    }
+                    console.log('=== END DEBUG ===');
+
                     if (finalExpenseHeadUpdates && finalExpenseHeadUpdates.length > 0) {
                         for (let i = 0; i < finalExpenseHeadUpdates.length; i++) {
                             if (finalExpenseHeadUpdates[i].Id) {
@@ -3798,19 +4060,272 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                     // Convert map back to array
                     let allExpenseHeadUpdates = Array.from(allExpenseHeadUpdatesMap.values());
 
-                    // Update Expense_Head__c records with descriptions
+                    // Add Total_Research_Heads fields to ALL Expense Head records
+                    console.log('=== DEBUG: Adding Total_Research_Heads to ALL Expense Heads ===');
+                    console.log('allExpenseHeadUpdates length before adding missing heads:', allExpenseHeadUpdates.length);
+
+                    // Also add ALL existing Expense Head records that might not be in the updates array
+                    // This ensures Travel, Consumables, Minor equipment, Contingency, etc. are included
+                    if ($scope.expenseHeadIds) {
+                        for (let expenseType in $scope.expenseHeadIds) {
+                            if (expenseType !== 'Research stay' && expenseType !== 'Overhead') { // Skip ones already handled
+                                let expenseTypeIds = $scope.expenseHeadIds[expenseType];
+                                console.log('Processing expense type:', expenseType, 'IDs:', expenseTypeIds);
+
+                                if (expenseTypeIds.year1 && expenseTypeIds.year1 !== 'null' && expenseTypeIds.year1 !== 'undefined' && expenseTypeIds.year1 !== null) {
+                                    if (!allExpenseHeadUpdatesMap.has(expenseTypeIds.year1)) {
+                                        allExpenseHeadUpdatesMap.set(expenseTypeIds.year1, { Id: expenseTypeIds.year1 });
+                                        console.log('Added missing Expense Head to updates:', expenseTypeIds.year1);
+                                    }
+                                }
+                                if (expenseTypeIds.year2 && expenseTypeIds.year2 !== 'null' && expenseTypeIds.year2 !== 'undefined' && expenseTypeIds.year2 !== null) {
+                                    if (!allExpenseHeadUpdatesMap.has(expenseTypeIds.year2)) {
+                                        allExpenseHeadUpdatesMap.set(expenseTypeIds.year2, { Id: expenseTypeIds.year2 });
+                                        console.log('Added missing Expense Head to updates:', expenseTypeIds.year2);
+                                    }
+                                }
+                                if (expenseTypeIds.year3 && expenseTypeIds.year3 !== 'null' && expenseTypeIds.year3 !== 'undefined' && expenseTypeIds.year3 !== null) {
+                                    if (!allExpenseHeadUpdatesMap.has(expenseTypeIds.year3)) {
+                                        allExpenseHeadUpdatesMap.set(expenseTypeIds.year3, { Id: expenseTypeIds.year3 });
+                                        console.log('Added missing Expense Head to updates:', expenseTypeIds.year3);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Convert map back to array again to include newly added Expense Heads
+                    allExpenseHeadUpdates = Array.from(allExpenseHeadUpdatesMap.values());
+                    console.log('allExpenseHeadUpdates length after adding missing heads:', allExpenseHeadUpdates.length);
+
+                    for (let i = 0; i < allExpenseHeadUpdates.length; i++) {
+                        let expenseHead = allExpenseHeadUpdates[i];
+                        console.log('Adding Total_Research_Heads to Expense Head:', expenseHead.Id);
+
+                        // Add Total_Research_Heads fields to every Expense Head record
+                        expenseHead.Total_Research_Heads_Year_1__c = $scope.totalResearchHeads.year1 || 0;
+                        expenseHead.Total_Research_Heads_Year_2__c = $scope.totalResearchHeads.year2 || 0;
+                        expenseHead.Total_Research_Heads_Year_3__c = $scope.totalResearchHeads.year3 || 0;
+                        expenseHead.Total_Research_Heads__c = $scope.totalResearchHeads.total || 0;
+                    }
+                    console.log('=== END DEBUG ===');
+
+                    // Add researchStayTravelTotal data to ALL Research Stay Expense Head records (Year 1, 2, 3)
+                    // Find all Research Stay Expense Head IDs and add the total fields to each
+                    let researchStayHeadIds = [];
+                    if ($scope.expenseHeadIds && $scope.expenseHeadIds['Research stay']) {
+                        if ($scope.expenseHeadIds['Research stay'].year1) {
+                            researchStayHeadIds.push($scope.expenseHeadIds['Research stay'].year1);
+                        }
+                        if ($scope.expenseHeadIds['Research stay'].year2) {
+                            researchStayHeadIds.push($scope.expenseHeadIds['Research stay'].year2);
+                        }
+                        if ($scope.expenseHeadIds['Research stay'].year3) {
+                            researchStayHeadIds.push($scope.expenseHeadIds['Research stay'].year3);
+                        }
+                    }
+
+                    // Update ALL Research Stay Expense Heads with researchStayTravelTotal and totalResearchAmount
+                    for (let i = 0; i < researchStayHeadIds.length; i++) {
+                        let headId = researchStayHeadIds[i];
+                        if (headId && headId !== 'null' && headId !== 'undefined') {
+                            // Check if this head is already in the updates array
+                            let existingUpdate = allExpenseHeadUpdates.find(update => update.Id === headId);
+                            if (existingUpdate) {
+                                // Add researchStayTravelTotal fields to existing update
+                                existingUpdate.Research_Stay_Travel_Total_Year_1__c = $scope.researchStayTravelTotal.year1 || 0;
+                                existingUpdate.Research_Stay_Travel_Total_Year_2__c = $scope.researchStayTravelTotal.year2 || 0;
+                                existingUpdate.Research_Stay_Travel_Total_Year_3__c = $scope.researchStayTravelTotal.year3 || 0;
+                                existingUpdate.Research_Stay_Travel_Total__c = $scope.researchStayTravelTotal.total || 0;
+                                // Add totalResearchAmount fields to existing update
+                                existingUpdate.Total_Research_Amount_Remaining_Year_1__c = $scope.totalResearchAmount.year1 || 0;
+                                existingUpdate.Total_Research_Amount_Remaining_Year_2__c = $scope.totalResearchAmount.year2 || 0;
+                                existingUpdate.Total_Research_Amount_Remaining_Year_3__c = $scope.totalResearchAmount.year3 || 0;
+                                existingUpdate.Total_Research_Amount__c = $scope.totalResearchAmount.total || 0;
+                                // Add Total_Research_Heads fields to existing update
+                                existingUpdate.Total_Research_Heads_Year_1__c = $scope.totalResearchHeads.year1 || 0;
+                                existingUpdate.Total_Research_Heads_Year_2__c = $scope.totalResearchHeads.year2 || 0;
+                                existingUpdate.Total_Research_Heads_Year_3__c = $scope.totalResearchHeads.year3 || 0;
+                                existingUpdate.Total_Research_Heads__c = $scope.totalResearchHeads.total || 0;
+                            } else {
+                                // Create new update for researchStayTravelTotal, totalResearchAmount, and Total_Research_Heads fields
+                                allExpenseHeadUpdates.push({
+                                    Id: headId,
+                                    Research_Stay_Travel_Total_Year_1__c: $scope.researchStayTravelTotal.year1 || 0,
+                                    Research_Stay_Travel_Total_Year_2__c: $scope.researchStayTravelTotal.year2 || 0,
+                                    Research_Stay_Travel_Total_Year_3__c: $scope.researchStayTravelTotal.year3 || 0,
+                                    Research_Stay_Travel_Total__c: $scope.researchStayTravelTotal.total || 0,
+                                    Total_Research_Amount_Remaining_Year_1__c: $scope.totalResearchAmount.year1 || 0,
+                                    Total_Research_Amount_Remaining_Year_2__c: $scope.totalResearchAmount.year2 || 0,
+                                    Total_Research_Amount_Remaining_Year_3__c: $scope.totalResearchAmount.year3 || 0,
+                                    Total_Research_Amount__c: $scope.totalResearchAmount.total || 0,
+                                    Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                    Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                    Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                    Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
+                                });
+                            }
+                            console.log('Added researchStayTravelTotal, totalResearchAmount, and Total_Research_Heads to Research Stay Expense Head:', headId, {
+                                researchStayTravelTotal: {
+                                    year1: $scope.researchStayTravelTotal.year1,
+                                    year2: $scope.researchStayTravelTotal.year2,
+                                    year3: $scope.researchStayTravelTotal.year3,
+                                    total: $scope.researchStayTravelTotal.total
+                                },
+                                totalResearchAmount: {
+                                    year1: $scope.totalResearchAmount.year1,
+                                    year2: $scope.totalResearchAmount.year2,
+                                    year3: $scope.totalResearchAmount.year3,
+                                    total: $scope.totalResearchAmount.total
+                                },
+                                totalResearchHeads: {
+                                    year1: $scope.totalResearchHeads.year1,
+                                    year2: $scope.totalResearchHeads.year2,
+                                    year3: $scope.totalResearchHeads.year3,
+                                    total: $scope.totalResearchHeads.total
+                                }
+                            });
+                        }
+                    }
+
+                    if (researchStayHeadIds.length === 0) {
+                        console.warn('Could not find Research Stay Expense Head ID to store researchStayTravelTotal and totalResearchAmount');
+                    }
+
+                    // Add budgetOverhead data to ALL Overhead Expense Head records (Year 1, 2, 3)
+                    // Find all Overhead Expense Head IDs and add the total fields to each
+                    let overheadHeadIds = [];
+                    if ($scope.expenseHeadIds && $scope.expenseHeadIds['Overhead']) {
+                        if ($scope.expenseHeadIds['Overhead'].year1) {
+                            overheadHeadIds.push($scope.expenseHeadIds['Overhead'].year1);
+                        }
+                        if ($scope.expenseHeadIds['Overhead'].year2) {
+                            overheadHeadIds.push($scope.expenseHeadIds['Overhead'].year2);
+                        }
+                        if ($scope.expenseHeadIds['Overhead'].year3) {
+                            overheadHeadIds.push($scope.expenseHeadIds['Overhead'].year3);
+                        }
+                    }
+
+                    // Update ALL Overhead Expense Heads with budgetOverhead amounts
+                    for (let i = 0; i < overheadHeadIds.length; i++) {
+                        let headId = overheadHeadIds[i];
+                        if (headId && headId !== 'null' && headId !== 'undefined') {
+                            // Check if this head is already in the updates array
+                            let existingOverheadUpdate = allExpenseHeadUpdates.find(update => update.Id === headId);
+                            if (existingOverheadUpdate) {
+                                // Add budgetOverhead amount fields to existing update
+                                existingOverheadUpdate.Overhead_Amount_Year_1__c = $scope.budgetOverhead.amountYear1 || 0;
+                                existingOverheadUpdate.Overhead_Amount_Year_2__c = $scope.budgetOverhead.amountYear2 || 0;
+                                existingOverheadUpdate.Overhead_Amount_Year_3__c = $scope.budgetOverhead.amountYear3 || 0;
+                                existingOverheadUpdate.Overhead_Amount_Total__c = $scope.budgetOverhead.totalAmount || 0;
+                                // Add remainingForResearch fields to existing update
+                                existingOverheadUpdate.Remaining_Amount_for_Research_Heads_Y1__c = $scope.remainingForResearch.year1 || 0;
+                                existingOverheadUpdate.Remaining_Amount_for_Research_Heads_Y2__c = $scope.remainingForResearch.year2 || 0;
+                                existingOverheadUpdate.Remaining_Amount_for_Research_Heads_Y3__c = $scope.remainingForResearch.year3 || 0;
+                                existingOverheadUpdate.Remaining_Amount_for_Research_Heads__c = $scope.remainingForResearch.total || 0;
+                                // Add Total_Research_Heads fields to existing update
+                                existingOverheadUpdate.Total_Research_Heads_Year_1__c = $scope.totalResearchHeads.year1 || 0;
+                                existingOverheadUpdate.Total_Research_Heads_Year_2__c = $scope.totalResearchHeads.year2 || 0;
+                                existingOverheadUpdate.Total_Research_Heads_Year_3__c = $scope.totalResearchHeads.year3 || 0;
+                                existingOverheadUpdate.Total_Research_Heads__c = $scope.totalResearchHeads.total || 0;
+                            } else {
+                                // Create new update for budgetOverhead, remainingForResearch, and Total_Research_Heads fields
+                                allExpenseHeadUpdates.push({
+                                    Id: headId,
+                                    Overhead_Amount_Year_1__c: $scope.budgetOverhead.amountYear1 || 0,
+                                    Overhead_Amount_Year_2__c: $scope.budgetOverhead.amountYear2 || 0,
+                                    Overhead_Amount_Year_3__c: $scope.budgetOverhead.amountYear3 || 0,
+                                    Overhead_Amount_Total__c: $scope.budgetOverhead.totalAmount || 0,
+                                    Remaining_Amount_for_Research_Heads_Y1__c: $scope.remainingForResearch.year1 || 0,
+                                    Remaining_Amount_for_Research_Heads_Y2__c: $scope.remainingForResearch.year2 || 0,
+                                    Remaining_Amount_for_Research_Heads_Y3__c: $scope.remainingForResearch.year3 || 0,
+                                    Remaining_Amount_for_Research_Heads__c: $scope.remainingForResearch.total || 0,
+                                    Total_Research_Heads_Year_1__c: $scope.totalResearchHeads.year1 || 0,
+                                    Total_Research_Heads_Year_2__c: $scope.totalResearchHeads.year2 || 0,
+                                    Total_Research_Heads_Year_3__c: $scope.totalResearchHeads.year3 || 0,
+                                    Total_Research_Heads__c: $scope.totalResearchHeads.total || 0
+                                });
+                            }
+                            console.log('Added budgetOverhead amounts, remainingForResearch, and Total_Research_Heads to Overhead Expense Head:', headId, {
+                                budgetOverhead: {
+                                    amountYear1: $scope.budgetOverhead.amountYear1,
+                                    amountYear2: $scope.budgetOverhead.amountYear2,
+                                    amountYear3: $scope.budgetOverhead.amountYear3,
+                                    totalAmount: $scope.budgetOverhead.totalAmount
+                                },
+                                remainingForResearch: {
+                                    year1: $scope.remainingForResearch.year1,
+                                    year2: $scope.remainingForResearch.year2,
+                                    year3: $scope.remainingForResearch.year3,
+                                    total: $scope.remainingForResearch.total
+                                },
+                                totalResearchHeads: {
+                                    year1: $scope.totalResearchHeads.year1,
+                                    year2: $scope.totalResearchHeads.year2,
+                                    year3: $scope.totalResearchHeads.year3,
+                                    total: $scope.totalResearchHeads.total
+                                }
+                            });
+                        }
+                    }
+
+                    if (overheadHeadIds.length === 0) {
+                        console.warn('Could not find Overhead Expense Head ID to store budgetOverhead amounts');
+                    }
+
+                    // Update Expense_Head__c records with descriptions and researchStayTravelTotal
                     if (allExpenseHeadUpdates.length > 0) {
-                        console.log('Updating Expense Head descriptions:', allExpenseHeadUpdates);
+                        console.log('=== DEBUG: Final Expense Head Updates ===');
+                        console.log('Number of Expense Head records to update:', allExpenseHeadUpdates.length);
+
+                        // Log each record individually for better debugging
+                        for (let i = 0; i < allExpenseHeadUpdates.length; i++) {
+                            console.log('Expense Head Update ' + (i + 1) + ':', {
+                                Id: allExpenseHeadUpdates[i].Id,
+                                Description__c: allExpenseHeadUpdates[i].Description__c,
+                                Amount_For_Research_Staff_Year_1__c: allExpenseHeadUpdates[i].Amount_For_Research_Staff_Year_1__c,
+                                Amount_For_Research_Staff_Year_2__c: allExpenseHeadUpdates[i].Amount_For_Research_Staff_Year_2__c,
+                                Amount_For_Research_Staff_Year_3__c: allExpenseHeadUpdates[i].Amount_For_Research_Staff_Year_3__c,
+                                Amount_For_Research_Staff__c: allExpenseHeadUpdates[i].Amount_For_Research_Staff__c,
+                                Research_Stay_Travel_Total_Year_1__c: allExpenseHeadUpdates[i].Research_Stay_Travel_Total_Year_1__c,
+                                Research_Stay_Travel_Total_Year_2__c: allExpenseHeadUpdates[i].Research_Stay_Travel_Total_Year_2__c,
+                                Research_Stay_Travel_Total_Year_3__c: allExpenseHeadUpdates[i].Research_Stay_Travel_Total_Year_3__c,
+                                Research_Stay_Travel_Total__c: allExpenseHeadUpdates[i].Research_Stay_Travel_Total__c,
+                                Total_Research_Amount_Remaining_Year_1__c: allExpenseHeadUpdates[i].Total_Research_Amount_Remaining_Year_1__c,
+                                Total_Research_Amount_Remaining_Year_2__c: allExpenseHeadUpdates[i].Total_Research_Amount_Remaining_Year_2__c,
+                                Total_Research_Amount_Remaining_Year_3__c: allExpenseHeadUpdates[i].Total_Research_Amount_Remaining_Year_3__c,
+                                Total_Research_Amount__c: allExpenseHeadUpdates[i].Total_Research_Amount__c,
+                                Overhead_Amount_Year_1__c: allExpenseHeadUpdates[i].Overhead_Amount_Year_1__c,
+                                Overhead_Amount_Year_2__c: allExpenseHeadUpdates[i].Overhead_Amount_Year_2__c,
+                                Overhead_Amount_Year_3__c: allExpenseHeadUpdates[i].Overhead_Amount_Year_3__c,
+                                Overhead_Amount_Total__c: allExpenseHeadUpdates[i].Overhead_Amount_Total__c,
+                                Remaining_Amount_for_Research_Heads_Y1__c: allExpenseHeadUpdates[i].Remaining_Amount_for_Research_Heads_Y1__c,
+                                Remaining_Amount_for_Research_Heads_Y2__c: allExpenseHeadUpdates[i].Remaining_Amount_for_Research_Heads_Y2__c,
+                                Remaining_Amount_for_Research_Heads_Y3__c: allExpenseHeadUpdates[i].Remaining_Amount_for_Research_Heads_Y3__c,
+                                Remaining_Amount_for_Research_Heads__c: allExpenseHeadUpdates[i].Remaining_Amount_for_Research_Heads__c
+                            });
+                        }
+
+                        console.log('Full update data:', JSON.stringify(allExpenseHeadUpdates, null, 2));
+                        console.log('=== END DEBUG ===');
+
                         // Update Expense_Head__c records
                         ApplicantPortal_Contoller.updateExpenseHeadDescriptions(allExpenseHeadUpdates, function (updateResult, updateEvent) {
+                            console.log('=== DEBUG: Update Result ===');
+                            console.log('updateResult:', updateResult);
+                            console.log('updateEvent:', updateEvent);
+                            console.log('updateEvent.status:', updateEvent ? updateEvent.status : 'undefined');
+                            console.log('=== END DEBUG ===');
+
                             if (updateEvent && updateEvent.status) {
-                                console.log('Expense Head descriptions updated successfully');
+                                console.log('Expense Head records (including researchStayTravelTotal) updated successfully');
                             } else {
-                                console.error('Failed to update Expense Head descriptions:', updateResult, updateEvent);
+                                console.error('Failed to update Expense Head records:', updateResult, updateEvent);
                             }
                         });
                     } else {
-                        console.log('No Expense Head descriptions to update');
+                        console.log('No Expense Head records to update');
                     }
 
                     // Show success message
