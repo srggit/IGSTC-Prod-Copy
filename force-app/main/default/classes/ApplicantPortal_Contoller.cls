@@ -1441,7 +1441,11 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
                         deliv.Duration_Start_Month__c = Decimal.valueOf(delivWrapper.startMonth);
                         deliv.Duration_End_Month__c = Decimal.valueOf(delivWrapper.endMonth);
                         deliv.External_Id__c = delivWrapper.externalId;
-                        deliv.Work_Package__c = wpId;
+                        
+                        // Only set Work_Package__c for new records (when Id is blank)
+                        if(String.isBlank(delivWrapper.Id)){
+                            deliv.Work_Package__c = wpId;
+                        }
                         
                         deliverablesToUpsert.add(deliv);
                     }
@@ -4728,13 +4732,35 @@ public static void updateProposalStage(Id proposalId) {
     @RemoteAction
     public static Application_Proposal__c getUserPopupChoiceFromProposal(String proposalId) {
 
-        Application_Proposal__c proposal = [
-            SELECT  Id, User_Popup_Choice__c 
-            FROM Application_Proposal__c 
-            WHERE Id = :proposalId
-        ];
-        return proposal;
+        if(String.isNotBlank(proposalId)){
+            Application_Proposal__c proposal = [
+                SELECT  Id, User_Popup_Choice__c 
+                FROM Application_Proposal__c 
+                WHERE Id = :proposalId
+            ];
+            return proposal;
+        }
+        
+        return null;
      
+    }
+
+    @RemoteAction
+    public static Boolean saveUserPopupChoice(String proposalId, String popupChoice) {
+        try {
+            if(String.isNotBlank(proposalId) && String.isNotBlank(popupChoice)){
+                Application_Proposal__c proposal = new Application_Proposal__c(
+                    Id = proposalId,
+                    User_Popup_Choice__c = popupChoice
+                );
+                update proposal;
+                return true;
+            }
+            return false;
+        } catch(Exception e) {
+            System.debug('Error saving user popup choice: ' + e.getMessage());
+            return false;
+        }
     }
     
     

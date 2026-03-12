@@ -172,8 +172,16 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     $scope.dontShowAgain = function (p) {
         $rootScope.userSelectedDSA = true;
         localStorage.setItem('userPopupChoice', 'DAA');
-        //$scope.selectedProgram = p;
-        //$scope.showDocumentPopup = true;
+
+        // Save the choice to the proposal
+        ApplicantPortal_Contoller.saveUserPopupChoice($rootScope.proposalId, 'DAA', function (result, event) {
+            if (event.status && result) {
+                console.log('Popup choice DAA saved successfully');
+            } else {
+                console.error('Failed to save popup choice DAA');
+            }
+        });
+
         $scope.redirectToForm($scope.selectedProgram);
     };
 
@@ -181,6 +189,15 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
         $rootScope.userSelectedRML = true;
         localStorage.setItem('userPopupChoice', 'RML');
         //$scope.showDocumentPopup = false;
+
+        // Save the choice to the proposal
+        ApplicantPortal_Contoller.saveUserPopupChoice($rootScope.proposalId, 'RML', function (result, event) {
+            if (event.status && result) {
+                console.log('Popup choice RML saved successfully');
+            } else {
+                console.error('Failed to save popup choice RML');
+            }
+        });
         $scope.redirectToForm($scope.selectedProgram);
     };
     // ----------- Apply Button Popup Code - Finish ;------------ //
@@ -721,6 +738,8 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                 $scope.allCamapigns = (result.campaignList && Array.isArray(result.campaignList)) ? result.campaignList : []; // Campaigns in this YearlyCall__c 
                 $scope.appliedCampaigns = result.appliedCampaign;
 
+                console.log('$scope.appliedCampaigns =====> ', $scope.appliedCampaigns);
+
 
 
                 // Applied programs 
@@ -966,27 +985,54 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     //************************************************************************************************** */
 
     $scope.popupValue = '';
-    console.log(' 8888888888 $rootScope.proposalId ------> ', $rootScope.proposalId);
-    $scope.getPopupValue = function () {
+
+    $scope.redirectToForm2 = function (val) {
+        debugger;
+        console.log('val in redirectToForm2() ===> ', val);
+        console.log('val.campaignName ===> ', val.campaignName);
+        console.log('val.name : ===> ', val.name);
+
+        // Ensure proposalId is available before making controller call
+        if (val.proposalId && val.proposalId !== '') {
+            $rootScope.proposalId = val.proposalId;
+        }
+
+        // Check if proposalId is available
+        if (!$rootScope.proposalId || $rootScope.proposalId === '') {
+            console.error('Proposal ID is not available');
+            $scope.redirectToForm(val);
+            return;
+        }
+
+        // Reset popupValue for fresh call
+        $scope.popupValue = '';
+
         ApplicantPortal_Contoller.getUserPopupChoiceFromProposal($rootScope.proposalId, function (result, event) {
             if (event.status && result != null) {
                 console.log('&&&&&&&& popupValue : ', result.User_Popup_Choice__c);
                 $scope.popupValue = result.User_Popup_Choice__c;
                 console.log('**** $scope.popupValue **** : ', $scope.popupValue);
+
+                // Use $apply to ensure Angular updates the scope
+                $scope.$apply(function () {
+                    // Process after getting popup value
+                    if (val.name === '2+2 Call') {
+                        if ($scope.popupValue === 'RML') {
+                            $scope.openDocumentPopup(val);
+                        } else {
+                            $scope.redirectToForm(val);
+                        }
+                    } else {
+                        $scope.redirectToForm(val);
+                    }
+                });
+            } else {
+                console.error('Failed to get popup choice, redirecting to form');
+                $scope.$apply(function () {
+                    $scope.redirectToForm(val);
+                });
             }
         });
-    }
-    $scope.getPopupValue();
-
-    console.log('$scope.popupValue : =====> ', $scope.popupValue);
-
-    $scope.redirectToForm2 = function (val) {
-
-        if ($scope.popupValue === 'RML') {
-            $scope.openDocumentPopup(val);
-        } else {
-            $scope.redirectToForm(val);
-        }
     }
 
     $scope.redirectToForm = function (val) {
@@ -1477,7 +1523,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
             $scope.$apply();
         });
     };
-   */
+    */
         $scope.isLoading = true;
         ApplicantPortal_Contoller.LogoutApplicant($rootScope.candidateId, function (result, event) {
             debugger;

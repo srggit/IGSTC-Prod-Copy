@@ -397,6 +397,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     /**
      * Saves work package details
      */
+    /*
     $scope.saveWorkPackageDet = function () {
         debugger;
         var objData = JSON.parse(JSON.stringify($scope.workPackList));
@@ -533,6 +534,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             }
         });
     }
+    */
 
     $scope.getProjectdetils = function () {
         debugger;
@@ -2405,6 +2407,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     /**
      * Internal function to save work package details (called from saveDetails)
      */
+
     $scope.saveWorkPackageDetailsInternal = function (callback) {
         debugger;
 
@@ -2412,14 +2415,9 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         if (!$scope.workPackList || $scope.workPackList.length === 0) {
             console.log('No work packages to save');
             // Still need to save deliverables and grants even if no work packages
-            $scope.saveDeliverablesInternal(function (deliverablesSuccess) {
-                if (deliverablesSuccess) {
-                    console.log('Deliverables saved successfully (no work packages)');
-                } else {
-                    console.error('Error saving deliverables');
-                }
-                if (callback) callback(true);
-            });
+            $scope.saveWPDeliverablesData();
+            console.log('WP and Deliverables saved successfully (no work packages)');
+            if (callback) callback(true);
             return;
         }
 
@@ -2435,6 +2433,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     }
                 }
             }
+            /*
             if (objData[i].title == undefined || objData[i].title == "") {
                 swal("Work Package Details", "Please Enter Title.", "info");
                 $("#title" + i + "").addClass('border-theme');
@@ -2482,6 +2481,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     return;
                 }
             }
+            */
 
         }
         // === END VALIDATIONS ===
@@ -2545,15 +2545,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             if (event.status && result === 'success') {
                 console.log('Work packages saved successfully');
                 // Save deliverables after work packages
-                $scope.saveDeliverablesInternal(function (deliverablesSuccess) {
-                    if (deliverablesSuccess) {
-                        console.log('Deliverables saved successfully');
-                    } else {
-                        console.error('Error saving deliverables');
-                    }
-                    // Call callback after both are done
-                    if (callback) callback(true);
-                });
+                // Save WP and Deliverables using the new combined method
+                $scope.saveWPDeliverablesData();
+                console.log('WP and Deliverables saved successfully');
+                // Call callback after both are done
+                if (callback) callback(true);
             } else {
                 console.error('Error saving work packages:', event.message || result);
                 if (callback) callback(false);
@@ -2561,9 +2557,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         });
     }
 
+
     /**
      * Internal function to save deliverables (called from saveDetails)
      */
+
     $scope.saveDeliverablesInternal = function (callback) {
         debugger;
 
@@ -2584,6 +2582,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         var objData = JSON.parse(JSON.stringify($scope.PIList));
 
+        /*
         if ($rootScope.stage === '2nd Stage') {
 
             // Validation
@@ -2617,7 +2616,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 }
             }
         }
-
+        */
         // Prepare data for saving
         for (var i = 0; i < objData.length; i++) {
             if (objData[i].Due_Date__c != undefined && objData[i].Due_Date__c != "") {
@@ -2673,6 +2672,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             }
         });
     }
+
 
     /**
      * Internal function to save existing grants (called from saveDeliverablesInternal)
@@ -3136,10 +3136,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     /**
      * Saves deliverables
      */
+    /*
     $scope.saveDeliverables = function () {
         debugger;
         var objData = JSON.parse(JSON.stringify($scope.PIList));
-
+ 
         // Validation
         for (var i = 0; i < objData.length; i++) {
             var count = 0;
@@ -3166,7 +3167,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 return;
             }
         }
-
+ 
         // Prepare data for saving
         for (var i = 0; i < objData.length; i++) {
             if (objData[i].Due_Date__c != undefined && objData[i].Due_Date__c != "") {
@@ -3180,7 +3181,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             delete objData[i]['durationErrorMsg'];
             delete objData[i]['minDurationError'];
             delete objData[i]['maxDurationError'];
-
+ 
             var accountWrapperList = [];
             if (objData[i].AccountList) {
                 for (var k = 0; k < objData[i].AccountList.length; k++) {
@@ -3199,9 +3200,9 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             delete objData[i]['AccountList'];
             delete objData[i]['Due_Date__c'];
         }
-
+ 
         console.log('Saving deliverables:', objData);
-
+ 
         ApplicantPortal_Contoller.saveDeliverables(objData, $rootScope.proposalId, function (result, event) {
             debugger;
             console.log('Save deliverables result:', result);
@@ -3215,7 +3216,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.$applyAsync();
         });
     }
-
+    */
     /**
      * Removes border theme class for deliverables
      */
@@ -3583,6 +3584,12 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
     $scope.addNewDeliverable = function (wpIndex) {
         var wp = $scope.wpDeliverablesTableList[wpIndex];
+
+        // Initialize deliverables array if it doesn't exist
+        if (!wp.deliverables) {
+            wp.deliverables = [];
+        }
+
         var delivIndex = wp.deliverables.length + 1;
         var newDeliverable = {
             Id: '',
@@ -3633,6 +3640,12 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
     $scope.removeDeliverable = function (wpIndex, delivIndex) {
         var wp = $scope.wpDeliverablesTableList[wpIndex];
+
+        // Check if deliverables array exists
+        if (!wp.deliverables || !wp.deliverables[delivIndex]) {
+            return;
+        }
+
         var deliverable = wp.deliverables[delivIndex];
         if (deliverable.Id && deliverable.Id !== '') {
             swal({
@@ -3864,7 +3877,6 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 deliverables: deliverablesList
             });
         }
-        console.log('Saving WP + Deliverables data:', dataToSend);
         ApplicantPortal_Contoller.saveWPWithDeliverables(dataToSend, $rootScope.proposalId, $rootScope.stage, function (result, event) {
             if (event.status) {
                 if (result === 'success') {

@@ -1227,17 +1227,21 @@
                                 <button type="button" class="btn btn-primary" ng-click="addNewWP()" ng-if="!proposalStage">
                                     <i class="fas fa-plus-circle me-2"></i>Add Work Package
                                 </button>
-                                <button type="button" class="btn btn-success float-end" ng-click="saveWPDeliverablesData()" ng-if="!proposalStage">
+                                <!-- Save All button hidden - WP and Deliverables are now saved automatically with Save and Next -->
+                                <!-- <button type="button" class="btn btn-success float-end" ng-click="saveWPDeliverablesData()" ng-if="!proposalStage">
                                     <i class="fa-solid fa-save me-2"></i>Save All
-                                </button>
+                                </button> -->
                             </div>
 
                             <!-- Debug: Show count -->
                             <div class="col-md-12 mt-2">
                                 <small class="text-muted">Total Work Packages: {{wpDeliverablesTableList.length}}</small>
+                                <small class="text-info ms-3">
+                                    <i class="fas fa-info-circle"></i> Work Packages and Deliverables are saved automatically when you click "Save and
+                                    Next"</small>
                             </div>
 
-                            <div class="col-md-12 mt-4" ng-repeat="wp in wpDeliverablesTableList">
+                            <div class="col-md-12 mt-4" ng-repeat="wp in wpDeliverablesTableList" ng-init="wpIndex = $index">
                                 <div class="card mb-4">
                                     <div class="card-header bg-primary text-white">
                                         <div class="row">
@@ -1245,7 +1249,7 @@
                                                 <h5 class="mb-0">{{wp.wpSequence}}: {{wp.title || 'New Work Package'}}</h5>
                                             </div>
                                             <div class="col-md-1 text-end">
-                                                <i class="fa-sharp fa-solid fa-circle-xmark fa-2x text-white" ng-click="removeWP($index)" ng-if="!proposalStage" style="cursor:pointer;"></i>
+                                                <i class="fa-sharp fa-solid fa-circle-xmark fa-2x text-white" ng-click="removeWP(wpIndex)" ng-if="!proposalStage" style="cursor:pointer;"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -1315,7 +1319,7 @@
                                                         />
                                                     </td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm btn-success" ng-click="addNewDeliverable($index)" ng-if="!proposalStage">
+                                                        <button type="button" class="btn btn-sm btn-success" ng-click="addNewDeliverable(wpIndex)" ng-if="!proposalStage">
                                                             <i class="fas fa-plus me-1"></i>
                                                         </button>
                                                     </td>
@@ -1348,7 +1352,7 @@
                                                         </small>
                                                     </td>
                                                     <td class="text-center" ng-if="!proposalStage">
-                                                        <i class="fas fa-times-circle text-danger" ng-click="removeDeliverable($parent.$index, $index)" style="cursor:pointer;"></i>
+                                                        <i class="fas fa-times-circle text-danger" ng-click="removeDeliverable(wpIndex, $index)" style="cursor:pointer;"></i>
                                                     </td>
                                                 </tr>
                                             </tbody>
