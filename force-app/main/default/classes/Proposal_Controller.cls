@@ -69,12 +69,7 @@ return proposalRecord;
         
         if(!string.isBlank(conRec.Proposals__c)){
             // Option 1: Use direct lookup (if this is what you want)
-            proposalRecord = [SELECT Id, Name, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, 
-            Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, 
-            Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c, User_Popup_Choice__c,
-            (SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) 
-            FROM Application_Proposal__c 
-            WHERE Id = :conRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
+            proposalRecord = [SELECT Id, Name, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c, User_Popup_Choice__c, (SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id = :conRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
             
             system.debug('proposalRecord----'+proposalRecord);
             return datawrapper;
@@ -4709,16 +4704,45 @@ return workPackageList;
                     staffHeadIds[2] = head.Id;
                 }
             }
+
+            // Build map of all Expense Head IDs to return (Research Stay, Travel, Overheads, etc.)
+            // Map: "Research stay" -> {"year1": "id1", "year2": "id2", "year3": "id3"}
+            Map<String, Map<String, String>> expenseHeadIdsMap = new Map<String, Map<String, String>>();
+            
+            // Re-query all Expense_Head__c records to get their IDs (including newly created ones)
+            List<Expense_Head__c> allExpenseHeads = [SELECT Id, Name, Yearly_Expense__c, Yearly_Expense__r.Year__c 
+                                                     FROM Expense_Head__c 
+                                                     WHERE Yearly_Expense__c IN :yearlyExpenseIds
+                                                     ORDER BY Name ASC, Yearly_Expense__r.Year__c ASC];
+            
+            for(Expense_Head__c head : allExpenseHeads) {
+                // Skip Research Staff as they are handled separately
+                if(head.Name != null && !head.Name.startsWith('Research staff')) {
+                    if(!expenseHeadIdsMap.containsKey(head.Name)) {
+                        expenseHeadIdsMap.put(head.Name, new Map<String, String>());
+                    }
+                    String year = head.Yearly_Expense__r != null ? head.Yearly_Expense__r.Year__c : null;
+                    Map<String, String> yearToHeadIdMap = expenseHeadIdsMap.get(head.Name);
+                    if(year == '1') {
+                        yearToHeadIdMap.put('year1', head.Id);
+                    } else if(year == '2') {
+                        yearToHeadIdMap.put('year2', head.Id);
+                    } else if(year == '3') {
+                        yearToHeadIdMap.put('year3', head.Id);
+                    }
+                }
+            }
             
             // Update APA with funding details
             if(updatedApa != null && updatedApa.Id != null) {
                 update updatedApa;
             }
             
-            // Return result with Research Staff Expense_Head__c IDs
+            // Return result with Research Staff and other Expense Head IDs
             SaveExpenseResultWrapper result = new SaveExpenseResultWrapper();
             result.status = 'success';
             result.researchStaffHeadIds = researchStaffHeadIdsMap;
+            result.expenseHeadIds = expenseHeadIdsMap;
             
             return JSON.serialize(result);
         } catch(Exception e) {
@@ -5091,10 +5115,12 @@ return wrapper;
     public class SaveExpenseResultWrapper {
         public String status;
         public Map<String, List<String>> researchStaffHeadIds; // Map: "Research staff 1" -> ["Year1HeadId", "Year2HeadId", "Year3HeadId"]
+        public Map<String, Map<String, String>> expenseHeadIds; // Map: "Research stay" -> {"year1": "id1", "year2": "id2", "year3": "id3"}
         
         public SaveExpenseResultWrapper() {
             status = 'success';
             researchStaffHeadIds = new Map<String, List<String>>();
+            expenseHeadIds = new Map<String, Map<String, String>>();
         }
     }
     //expense head logic - single - commented this code for year expense issue
@@ -7536,7 +7562,7 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
             return e.getMessage() + e.getLineNumber();
         }
     }
-    
+        
     // Method updated by Saurabh on 01-03-2026 (To Update the Applicant Status Field on APA - For Partial Submission)
     /*
     public static String submit2plus2(Contact conDetails, Integer year, Integer month, Integer day, String proposalId){
@@ -7678,7 +7704,6 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
             return e.getMessage() + ' Line: ' + e.getLineNumber();
         }
     }
-    
     
     
     /*    public static string submit2plus2(Contact conDetails,integer year,integer month,integer day, string proposalID){
