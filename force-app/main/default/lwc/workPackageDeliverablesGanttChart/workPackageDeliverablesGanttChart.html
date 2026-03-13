@@ -1,0 +1,87 @@
+<template>
+
+    <lightning-card title="Work Package & Deliverables Gantt Chart">
+
+        <div class="slds-p-around_medium">
+
+            <template if:true={isLoading}>
+                <lightning-spinner></lightning-spinner>
+            </template>
+
+            <template if:false={isLoading}>
+
+                <!-- 
+                <div class="slds-m-bottom_small">
+
+                    <lightning-button label="Show Gantt Chart" variant="brand" onclick={showGanttChart}
+                        if:false={showChart}>
+                    </lightning-button>
+
+                    <lightning-button label="Hide Gantt Chart" variant="destructive" onclick={hideGanttChart}
+                        if:true={showChart}>
+                    </lightning-button>
+
+                </div>
+                -->
+
+                <div class="gantt-container">
+
+                    <!-- Month header -->
+                    <div class="month-row" style={gridStyle}>
+                        <template for:each={months} for:item="m">
+                            <div key={m} class="month">{m}</div>
+                        </template>
+                    </div>
+
+                    <!-- Work Packages -->
+                    <template for:each={workPackages} for:item="wp">
+
+                        <div key={wp.id} class="wp-block">
+
+                            <!-- Work Package Row -->
+                            <div class="row wp-row" style={gridStyle}>
+
+                                <div class="wp-wrapper" style={wp.wpStyle}>
+
+                                    <div class="wp-title">
+                                        {wp.title}
+                                        <!-- Contact Initials Badges -->
+                                        <template for:each={wp.contactInitials} for:item="initials">
+                                            <span key={initials} class="contact-badges-inline contact-badge"
+                                                title={initials}>
+                                                {initials}
+                                            </span>
+                                        </template>
+                                    </div>
+
+                                    <div class="wp-bar"></div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- Deliverables -->
+                            <template for:each={wp.deliverables} for:item="d">
+
+                                <div key={d.id} class="row deliverable-row" style={gridStyle}>
+                                    <div class="deliverable-bar" style={d.style}>
+                                        {d.label}
+                                    </div>
+                                </div>
+
+                            </template>
+
+                        </div>
+
+                    </template>
+
+                </div>
+
+
+            </template>
+
+        </div>
+
+    </lightning-card>
+
+</template>

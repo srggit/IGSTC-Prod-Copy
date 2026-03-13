@@ -1,0 +1,117 @@
+<template>
+    <lightning-card title="Work Package & Deliverables Gantt Chart" icon-name="standard:task">
+        <div class="slds-p-around_medium">
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-around_large">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error Message -->
+            <template if:true={errorMessage}>
+                <div class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+                        <lightning-icon icon-name="utility:error" size="x-small"
+                            alternative-text="Error"></lightning-icon>
+                    </span>
+                    <h2>{errorMessage}</h2>
+                </div>
+            </template>
+
+            <!-- Gantt Chart Container -->
+            <template if:false={isLoading}>
+                <template if:false={errorMessage}>
+                    <!-- Chart Controls -->
+                    <div class="slds-grid slds-gutters_small slds-m-bottom_small">
+                        <div class="slds-col">
+                            <lightning-button label="Show Gantt Chart" onclick={showGanttChart} variant="brand"
+                                if:false={showChart}>
+                            </lightning-button>
+                            <lightning-button label="Hide Gantt Chart" onclick={hideGanttChart} variant="destructive"
+                                if:true={showChart}>
+                            </lightning-button>
+                        </div>
+                        <div class="slds-col slds-text-align_right">
+                            <span class="slds-text-body_small slds-text-color_weak">
+                                Total Duration: {maxDuration} months
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Gantt Chart -->
+                    <template if:true={showChart}>
+                        <div class="gantt-container">
+                            <!-- Month Headers -->
+                            <div class="gantt-header">
+                                <div class="gantt-label-column">Work Package / Deliverable</div>
+                                <div class="gantt-months-container">
+                                    <template for:each={monthHeaders} for:item="month">
+                                        <div key={month} class="gantt-month-header">{month}</div>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Work Packages and Deliverables -->
+                            <template for:each={ganttData} for:item="wp">
+                                <!-- Work Package Row -->
+                                <div key={wp.wpId} class="gantt-row gantt-wp-row">
+                                    <div class="gantt-label-column wp-label">
+                                        <div class="wp-name">{wp.wpName}</div>
+                                        <div class="wp-duration">Months {wp.startMonth}-{wp.endMonth}</div>
+                                    </div>
+                                    <div class="gantt-months-container">
+                                        <template for:each={wp.months} for:item="monthData">
+                                            <div key={monthData.month} class="gantt-month-cell">
+                                                <template if:true={monthData.isActive}>
+                                                    <div class="wp-bar"></div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- Deliverable Rows -->
+                                <template for:each={wp.deliverables} for:item="deliverable">
+                                    <div key={deliverable.deliverableId} class="gantt-row gantt-deliverable-row">
+                                        <div class="gantt-label-column deliverable-label">
+                                            <div class="deliverable-name">{deliverable.name}</div>
+                                            <div class="deliverable-duration">Months
+                                                {deliverable.startMonth}-{deliverable.endMonth}</div>
+                                        </div>
+                                        <div class="gantt-months-container">
+                                            <template for:each={deliverable.months} for:item="monthData">
+                                                <div key={monthData.month} class="gantt-month-cell">
+                                                    <template if:true={monthData.isActive}>
+                                                        <div class="deliverable-bar"></div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+
+                        <!-- Legend -->
+                        <div key="legend" class="slds-m-top_medium slds-grid slds-gutters_small">
+                            <div key="legend-wp" class="slds-col">
+                                <div class="legend-item">
+                                    <div class="legend-bar wp-bar"></div>
+                                    <span class="legend-text">Work Package Duration</span>
+                                </div>
+                            </div>
+                            <div key="legend-deliverable" class="slds-col">
+                                <div class="legend-item">
+                                    <div class="legend-bar deliverable-bar"></div>
+                                    <span class="legend-text">Deliverable Duration</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

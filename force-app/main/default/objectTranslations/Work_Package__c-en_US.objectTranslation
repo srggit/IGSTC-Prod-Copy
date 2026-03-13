@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>WP Deliverable Gantt Chart</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>WP Deliverable Gantt Charts</value>
+    </caseValues>
+    <fields>
+        <label><!-- Duration End Month --></label>
+        <name>Duration_End_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- Duration Start Month --></label>
+        <name>Duration_Start_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- Duration In Months Max 36 --></label>
+        <name>Duration_In_Months_Max_36__c</name>
+    </fields>
+    <fields>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- WP Sequence --></label>
+        <name>WP_Sequence__c</name>
+    </fields>
+    <gender>Feminine</gender>
+</CustomObjectTranslation>
