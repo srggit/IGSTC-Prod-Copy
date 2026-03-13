@@ -698,6 +698,7 @@
                         </div>
 
                         <!-- WORK PACKAGE FUNCTIONALITY -->
+                        <!--
                         <div class="mt-5">
                             <div>
                                 <div class="col-md-12 mt-5">
@@ -778,7 +779,7 @@
                                                         ng-disabled="proposalStage" required="true" ng-required="applicnt.duration"
                                                         ng-change="validateDuration(applicnt)" />
 
-                                                    <!-- Error message -->
+                                                    Error message
                                                     <small class="text-danger lh-1" ng-if="applicnt.durationError">
                                                         max duration {{maxDurationInMonths}} months
                                                     </small>
@@ -825,6 +826,7 @@
                                 </div>
                             </div>
                         </div>
+                        -->
 
 
                         <div class="col-md-12 mt-5 ">
@@ -1016,8 +1018,9 @@
                             </div>
                         </div>
 
+                        <!-- WORK PACKAGE FUNCTIONALITY -->
+                        <!--
                         <div class="mt-5">
-                            <!-- WORK PACKAGE FUNCTIONALITY -->
                             <div>
                                 <div class="col-md-12 mt-5">
                                     <h4>
@@ -1097,7 +1100,7 @@
                                                         ng-disabled="proposalStage" required="true" ng-required="applicnt.duration"
                                                         ng-change="validateDuration(applicnt)" />
 
-                                                    <!-- Error message -->
+                                                    Error message
                                                     <small class="text-danger lh-1" ng-if="applicnt.durationError">
                                                         max duration {{maxDurationInMonths}} months
                                                     </small>
@@ -1143,8 +1146,8 @@
                                     </table>
                                 </div>
                             </div>
-
-                            <!-- DELIVERABLES FUNCTIONALITY -->
+                            
+                            DELIVERABLES FUNCTIONALITY
                             <div class="mt-5">
                                 <div>
                                     <div class="col-md-12">
@@ -1214,31 +1217,37 @@
                                 </div>
                             </div>
                         </div>
+                        -->
 
                         <!-- ==================== NEW WORK PACKAGE + DELIVERABLES COMBINED TABLE ==================== -->
+
+                        <!--
                         <div class="mt-5">
-                            <div class="col-md-12">
-                                <h4>
+
+                            <div class="col-md-12 mt-4 d-flex justify-content-between align-items-center">
+
+                                <h4 class="mb-0">
                                     <b>Work Package (WP) with Deliverables (D)</b>
                                 </h4>
-                            </div>
 
-                            <div class="col-md-12 mt-3">
                                 <button type="button" class="btn btn-primary" ng-click="addNewWP()" ng-if="!proposalStage">
-                                    <i class="fas fa-plus-circle me-2"></i>Add Work Package
+                                    <i class="fas fa-plus-circle me-2"></i>
+                                    Add Work Package
                                 </button>
-                                <!-- Save All button hidden - WP and Deliverables are now saved automatically with Save and Next -->
+                                <!-- Save All button hidden - WP and Deliverables are now saved automatically with Save and Next
                                 <!-- <button type="button" class="btn btn-success float-end" ng-click="saveWPDeliverablesData()" ng-if="!proposalStage">
                                     <i class="fa-solid fa-save me-2"></i>Save All
-                                </button> -->
+                                </button>
+
                             </div>
 
-                            <!-- Debug: Show count -->
+                            <!-- Debug: Show count 
                             <div class="col-md-12 mt-2">
                                 <small class="text-muted">Total Work Packages: {{wpDeliverablesTableList.length}}</small>
                                 <small class="text-info ms-3">
                                     <i class="fas fa-info-circle"></i> Work Packages and Deliverables are saved automatically when you click "Save and
-                                    Next"</small>
+                                    Next"
+                                </small>
                             </div>
 
                             <div class="col-md-12 mt-4" ng-repeat="wp in wpDeliverablesTableList" ng-init="wpIndex = $index">
@@ -1330,7 +1339,7 @@
                                                     <td class="text-center align-middle">
                                                         <strong>{{deliv.deliverableSequence}}</strong>
                                                     </td>
-                                                    <!-- Merge TRL Progression + Responsible Partners -->
+                                                    <!-- Merge TRL Progression + Responsible Partners 
                                                     <td colspan="2">
                                                         <input type="text" class="form-control form-control-sm" ng-model="deliv.title" ng-disabled="proposalStage" placeholder="Enter deliverable description"
                                                         />
@@ -1358,7 +1367,7 @@
                                             </tbody>
                                         </table>
 
-                                        <!-- Deliverables Section -->
+                                        <!-- Deliverables Section 
 
                                         <div class="mt-3">
                                             <!--
@@ -1420,13 +1429,185 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            -->
+                                            
                                             <div ng-if="wp.deliverables.length === 0" class="alert alert-info">
                                                 No deliverables added yet. Click "Add Deliverable" to add one.
                                             </div>
                                         </div>
 
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+                        <div class="mt-5">
+                            <div class="col-md-12">
+                                <div class="wp-deliverable-section">
+
+                                    <!-- Header -->
+                                    <div class="wp-header d-flex justify-content-between align-items-center mb-3">
+                                        <h4 class="mb-0">
+                                            <b>Work Package (WP) with Deliverables (D)</b>
+                                        </h4>
+
+                                        <button type="button" class="btn btn-primary add-wp-btn" ng-click="addNewWP()" ng-if="!proposalStage">
+                                            <i class="fas fa-plus"></i> Add Work Package
+                                        </button>
+                                    </div>
+
+                                    <div class="text-muted mb-3">
+                                        Total Work Packages: {{wpDeliverablesTableList.length}}
+                                    </div>
+
+
+                                    <!-- Work Packages -->
+                                    <div ng-repeat="wp in wpDeliverablesTableList" class="wp-card">
+
+                                        <!-- WP Header -->
+                                        <div class="wp-title-row">
+
+                                            <div class="wp-title">
+                                                {{wp.wpSequence}} : {{wp.title || 'New Work Package'}}
+                                            </div>
+
+                                            <i class="fa-solid fa-circle-xmark remove-wp" ng-click="removeWP($index)" ng-if="!proposalStage"></i>
+
+                                        </div>
+
+                                        <!-- WP Table -->
+                                        <table class="table wp-table">
+
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:8%">WP Id</th>
+                                                    <th style="width:20%">WP Title</th>
+                                                    <th style="width:15%">TRL</th>
+                                                    <th style="width:20%">Responsible Partners</th>
+                                                    <th style="width:10%">Start Month</th>
+                                                    <th style="width:10%">End Month</th>
+                                                    <th style="width:5%"></th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+
+                                                <!-- WP Row -->
+                                                <tr class="wp-main-row">
+
+                                                    <td>
+                                                        <strong>{{wp.wpSequence}}</strong>
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text" class="form-control" ng-model="wp.title" ng-disabled="proposalStage" placeholder="Enter WP title" />
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <select class="form-control me-1" ng-model="wp.trlFrom" ng-options="option for option in trlOptions" ng-disabled="proposalStage">
+                                                                <option value="">From</option>
+                                                            </select>
+
+                                                            <span class="mx-1">to</span>
+
+                                                            <select class="form-control ms-1" ng-model="wp.trlTo" ng-options="option for option in trlOptions" ng-disabled="proposalStage">
+                                                                <option value="">To</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="dropdown">
+
+                                                            <button class="btn btn-light dropdown-toggle w-100" data-bs-toggle="dropdown" ng-disabled="proposalStage">
+                                                                Select Partners
+                                                            </button>
+
+                                                            <ul class="dropdown-menu partner-dropdown">
+
+                                                                <li ng-repeat="acc in wp.AccountList">
+
+                                                                    <label class="dropdown-item">
+
+                                                                        <input type="checkbox" ng-model="acc.selected" ng-disabled="proposalStage" />
+
+                                                                        <span class="ms-2">{{acc.Name}}</span>
+
+                                                                    </label>
+
+                                                                </li>
+
+                                                            </ul>
+
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="number" class="form-control" ng-model="wp.wpStartMonth" ng-disabled="proposalStage" />
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="number" class="form-control" ng-model="wp.wpEndMonth" ng-disabled="proposalStage" />
+                                                    </td>
+
+                                                    <!-- Add Deliverable Button -->
+                                                    <td class="text-center">
+
+                                                        <button class="add-deliverable-btn" ng-click="addNewDeliverable($index)" ng-if="!proposalStage">
+
+                                                            <i class="fas fa-plus"></i>
+
+                                                        </button>
+
+                                                    </td>
+
+                                                </tr>
+
+
+                                                <!-- Deliverables -->
+                                                <tr ng-repeat="deliv in wp.deliverables" class="deliverable-row">
+
+                                                    <td></td>
+
+                                                    <td class="deliverable-id">
+                                                        {{deliv.deliverableSequence}}
+                                                    </td>
+
+                                                    <td colspan="2">
+
+                                                        <input type="text" class="form-control form-control-sm" ng-model="deliv.title" ng-disabled="proposalStage" placeholder="Deliverable description"
+                                                        />
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <input type="number" class="form-control form-control-sm" ng-model="deliv.startMonth" ng-change="validateDeliverableMonths(wp,deliv)"
+                                                            ng-disabled="proposalStage" />
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <input type="number" class="form-control form-control-sm" ng-model="deliv.endMonth" ng-change="validateDeliverableMonths(wp,deliv)"
+                                                            ng-disabled="proposalStage" />
+
+                                                    </td>
+
+                                                    <td class="text-center">
+
+                                                        <i class="fas fa-times remove-deliverable" ng-click="removeDeliverable($parent.$index,$index)" ng-if="!proposalStage"></i>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

@@ -2406,6 +2406,8 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
     /**
      * Internal function to save work package details (called from saveDetails)
+     * Note: Grants saving is now independent and called directly from this function
+     * to ensure grants are saved even when old deliverables code is commented out
      */
 
     $scope.saveWorkPackageDetailsInternal = function (callback) {
@@ -2417,7 +2419,16 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             // Still need to save deliverables and grants even if no work packages
             $scope.saveWPDeliverablesData();
             console.log('WP and Deliverables saved successfully (no work packages)');
-            if (callback) callback(true);
+
+            // Save existing grants independently
+            $scope.saveExistingGrantsInternal(function (grantsSuccess) {
+                if (grantsSuccess) {
+                    console.log('Existing grants saved successfully (no work packages)');
+                } else {
+                    console.error('Error saving existing grants');
+                }
+                if (callback) callback(true);
+            });
             return;
         }
 
@@ -2548,8 +2559,17 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 // Save WP and Deliverables using the new combined method
                 $scope.saveWPDeliverablesData();
                 console.log('WP and Deliverables saved successfully');
-                // Call callback after both are done
-                if (callback) callback(true);
+
+                // Save existing grants independently (not dependent on old deliverables flow)
+                $scope.saveExistingGrantsInternal(function (grantsSuccess) {
+                    if (grantsSuccess) {
+                        console.log('Existing grants saved successfully');
+                    } else {
+                        console.error('Error saving existing grants');
+                    }
+                    // Call callback after all are done
+                    if (callback) callback(true);
+                });
             } else {
                 console.error('Error saving work packages:', event.message || result);
                 if (callback) callback(false);
@@ -2675,7 +2695,9 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
 
     /**
-     * Internal function to save existing grants (called from saveDeliverablesInternal)
+     * Internal function to save existing grants 
+     * Previously called from saveDeliverablesInternal, now called independently from saveWorkPackageDetailsInternal
+     * to ensure grants are saved even when old deliverables code is commented out
      */
     $scope.saveExistingGrantsInternal = function (callback) {
         debugger;
@@ -3880,10 +3902,10 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         ApplicantPortal_Contoller.saveWPWithDeliverables(dataToSend, $rootScope.proposalId, $rootScope.stage, function (result, event) {
             if (event.status) {
                 if (result === 'success') {
-                    Swal.fire('Success', 'Work Packages and Deliverables saved successfully!', 'success');
+                    //Swal.fire('Success', 'Work Packages and Deliverables saved successfully!', 'success');
                     $scope.loadWPDeliverablesData();
                 } else {
-                    swal("Error", "Failed to save: " + result, "error");
+                    swal("Error", "Failed to save Work Packages and Deliverables: " + result, "error");
                 }
                 $scope.$applyAsync();
             } else {

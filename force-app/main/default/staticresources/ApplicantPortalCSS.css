@@ -3531,3 +3531,113 @@ input[type=number] {
     text-align:right;
 } */
 
+
+/* STYLING FOR WP AND DELIVERABLES TABLE OF 2+2 CALL IN ProjectDetail Page */
+/* MAIN WRAPPER */
+.wp-deliverable-section{
+    margin-top:30px;
+}
+
+/* HEADER */
+.wp-header{
+    border-bottom:1px solid #eee;
+    padding-bottom:10px;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* WP CARD */
+.wp-card{
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 3px 12px rgba(0,0,0,0.08);
+    margin-bottom:25px;
+    overflow:hidden;
+}
+
+/* WP TITLE ROW */
+.wp-title-row{
+    background:#0d6efd;
+    color:white;
+    padding:12px 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:600;
+}
+
+/* REMOVE WP ICON */
+.remove-wp{
+    cursor:pointer;
+    font-size:18px;
+}
+
+/* TABLE */
+.wp-table{
+    margin-bottom:0;
+}
+
+.wp-table thead th{
+    background:#f7f9fc;
+    border:none;
+    font-weight:600;
+    color:#555;
+}
+
+/* WP MAIN ROW */
+.wp-main-row{
+    background:#ffffff;
+}
+
+/* DELIVERABLE ROW */
+.deliverable-row{
+    background:#f9fbff;
+}
+
+/* DELIVERABLE INDENT */
+.deliverable-row td{
+    padding-left:20px;
+}
+
+/* DELIVERABLE ID */
+.deliverable-id{
+    font-weight:600;
+    color:#0d6efd;
+}
+
+/* ADD DELIVERABLE BUTTON */
+.add-deliverable-btn{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:none;
+    background:#28a745;
+    color:white;
+    cursor:pointer;
+}
+
+/* REMOVE DELIVERABLE */
+.remove-deliverable{
+    color:#dc3545;
+    cursor:pointer;
+}
+
+/* INPUTS */
+.wp-deliverable-section input,
+.wp-deliverable-section select{
+    border-radius:6px;
+    border:1px solid #ddd;
+}
+
+/* PARTNER DROPDOWN */
+.partner-dropdown{
+    max-height:200px;
+    overflow-y:auto;
+}
+
+/* ADD WP BUTTON */
+.add-wp-btn{
+    border-radius:6px;
+}

@@ -164,12 +164,26 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
     $scope.openDocumentPopup = function (p) {
         debugger;
-        console.log(' ----------- openDocumentPopup ------------ : ', p)
-        $scope.selectedProgram = p;
-        $scope.showDocumentPopup = true;
-    };
+        console.log(' ----------- openDocumentPopup ------------ : ', p);
+
+        if (p.name === '2+2 Call') {
+            $scope.selectedProgram = p;
+            $scope.showDocumentPopup = true;
+        } else {
+            $scope.redirectToForm(p);
+        }
+    }
+
+    // $scope.openDocumentPopup = function (p) {
+    //     debugger;
+    //     console.log(' ----------- openDocumentPopup ------------ : ', p)
+    //     $scope.selectedProgram = p;
+    //     $scope.showDocumentPopup = true;
+    // };
 
     $scope.dontShowAgain = function (p) {
+        debugger;
+
         $rootScope.userSelectedDSA = true;
         localStorage.setItem('userPopupChoice', 'DAA');
 
@@ -186,6 +200,8 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     };
 
     $scope.remindMeLater = function () {
+        debugger;
+
         $rootScope.userSelectedRML = true;
         localStorage.setItem('userPopupChoice', 'RML');
         //$scope.showDocumentPopup = false;
