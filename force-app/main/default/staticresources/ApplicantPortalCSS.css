@@ -3621,7 +3621,13 @@ input[type=number] {
 /* REMOVE DELIVERABLE */
 .remove-deliverable{
     color:#dc3545;
-    cursor:pointer;
+    cursor:pointer; 
+    font-size:22px;
+}
+
+.remove-deliverable:hover{
+    color:#b30000;
+    transform:scale(1.1);
 }
 
 /* INPUTS */

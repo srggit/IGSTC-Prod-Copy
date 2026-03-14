@@ -125,4 +125,6 @@ export default class WorkPackageDeliverablesGanttChart extends LightningElement 
         return `grid-template-columns: repeat(${this.maxDuration}, 1fr);`;
     }
 
+
+
 }

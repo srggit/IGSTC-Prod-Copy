@@ -1,98 +1,141 @@
+.contact-badge:hover{
+    background:#005fb2;
+}
+
 .gantt-container{
-border:1px solid #d8dde6;
-overflow-x:auto;
+    border:1px solid #d8dde6;
+    overflow-x:auto;
+    position: relative;
 }
-
+ 
 /* header */
-
 .month-row{
-display:grid;
-background:#f3f3f3;
-border-bottom:2px solid #d8dde6;
+    display:grid;
+    background:#f3f3f3;
+    border-bottom:2px solid #d8dde6;
+    position: relative;
+    z-index: 3;
 }
-
+ 
 .month{
-border-right:1px solid #e5e5e5;
-text-align:center;
-font-size:12px;
-padding:6px 0;
+    border-right:1px solid #e5e5e5;
+    text-align:center;
+    font-size:12px;
+    padding:6px 0;
 }
-
+ 
+/* Vertical lines */
+.content-area{
+    position:relative;
+}
+ 
+.vertical-lines-overlay{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    display:grid;
+    pointer-events:none;
+    z-index: 1; /* Increased from 0 to 1 */
+}
+ 
+.vertical-line{
+    border-right:1px solid rgba(229, 229, 229, 0.3);
+    height:100%;
+}
+ 
 /* WP block */
-
 .wp-block{
-margin-bottom:6px;
+    margin-bottom:6px;
+    position: relative;
+    z-index: 2; /* Content appears above vertical lines */
 }
-
+ 
 /* bars */
-
 .wp-bar{
-background:#2ea043;
-height:8px;
-border-radius:3px;
-width:100%;
+    background:#2ea043;
+    height:8px;
+    border-radius:3px;
+    width:100%;
+    position: relative;
+    z-index: 2;
 }
-
+ 
 .deliverable-row{
-height:40px;
+    height:40px;
+    position: relative;
+    z-index: 2;
 }
-
+ 
 .deliverable-bar{
-height:26px;
-border-radius:4px;
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-font-size:12px;
-font-weight:500;
+    height:26px;
+    border-radius:4px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:12px;
+    font-weight:500;
+    position: relative;
+    z-index: 2;
 }
-
+ 
 /* WP title row */
-
 .wp-title-row{
-height:14px;
-border:none;
-margin-bottom:3px;
+    height:14px;
+    border:none;
+    margin-bottom:3px;
+    position: relative;
+    z-index: 2;
 }
-
+ 
 /* WP title */
-
 .wp-title{
-font-size:12px;
-font-weight:600;
-color:#2c3e50;
-margin-bottom:3px; /* EXACT gap */
-display:flex;
-align-items:center;
-gap:6px;
-flex-wrap:wrap;
+    font-size:12px;
+    font-weight:600;
+    color:#2c3e50;
+    margin-bottom:3px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+    position: relative;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.9); /* Optional: adds slight background for better readability */
+    padding: 2px 4px;
+    border-radius: 2px;
 }
-
+ 
 /* Month grid background */
-
 .row{
-display:grid;
-align-items:center;
-height:40px;
-border-bottom:1px solid #e5e5e5;
+    display:grid;
+    align-items:center;
+    height:40px;
+    border-bottom:1px solid #dfdfdf;
+    position: relative;
+    z-index: 2;
 }
-
+ 
 /* WP container spanning grid columns */
 .wp-wrapper{
     display:flex;
     flex-direction:column;
     align-items:flex-start;
+    position: relative;
+    z-index: 2;
 }
-
+ 
 /* Contact badges styling */
 .contact-badges{
     display:flex;
     gap:4px;
     margin-bottom:3px;
     flex-wrap:wrap;
+    position: relative;
+    z-index: 4; /* Badges should be above everything */
 }
-
+ 
 /* Contact badges styling - inline version */
 .contact-badges-inline{
     display:inline-flex;
@@ -100,8 +143,10 @@ border-bottom:1px solid #e5e5e5;
     margin-bottom:3px;
     align-items:center;
     margin-left:6px;
+    position: relative;
+    z-index: 4;
 }
-
+ 
 .contact-badge{
     background:#0070d2;
     color:white;
@@ -114,8 +159,27 @@ border-bottom:1px solid #e5e5e5;
     min-width:20px;
     text-align:center;
     transition:background-color 0.2s ease;
+    position: relative;
+    z-index: 4;
 }
-
+ 
 .contact-badge:hover{
     background:#005fb2;
+}
+
+/* Ensure the main container establishes stacking context */
+.gantt {
+    position: relative;
+    z-index: 1;
+}
+
+/* Make sure all content rows are above the vertical lines */
+.row > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* If you want the vertical lines to be barely visible behind content */
+.vertical-line {
+    opacity: 0.8;
 }

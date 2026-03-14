@@ -33,47 +33,58 @@
                         </template>
                     </div>
 
-                    <!-- Work Packages -->
-                    <template for:each={workPackages} for:item="wp">
+                    <!-- Content area with vertical lines -->
+                    <div class="content-area">
+                        <!-- Vertical lines overlay -->
+                        <div class="vertical-lines-overlay" style={gridStyle}>
+                            <template for:each={months} for:item="m">
+                                <div key={m} class="vertical-line"></div>
+                            </template>
+                        </div>
 
-                        <div key={wp.id} class="wp-block">
+                        <!-- Work Packages -->
+                        <template for:each={workPackages} for:item="wp">
 
-                            <!-- Work Package Row -->
-                            <div class="row wp-row" style={gridStyle}>
+                            <div key={wp.id} class="wp-block">
 
-                                <div class="wp-wrapper" style={wp.wpStyle}>
+                                <!-- Work Package Row -->
+                                <div class="row wp-row" style={gridStyle}>
 
-                                    <div class="wp-title">
-                                        {wp.title}
-                                        <!-- Contact Initials Badges -->
-                                        <template for:each={wp.contactInitials} for:item="initials">
-                                            <span key={initials} class="contact-badges-inline contact-badge"
-                                                title={initials}>
-                                                {initials}
-                                            </span>
-                                        </template>
+                                    <div class="wp-wrapper" style={wp.wpStyle}>
+
+                                        <div class="wp-title">
+                                            {wp.title}
+                                            <!-- Contact Initials Badges -->
+                                            <template for:each={wp.contactInitials} for:item="initials">
+                                                <span key={initials} class="contact-badges-inline contact-badge"
+                                                    title={initials}>
+                                                    {initials}
+                                                </span>
+                                            </template>
+                                        </div>
+
+                                        <div class="wp-bar"></div>
+
                                     </div>
 
-                                    <div class="wp-bar"></div>
-
                                 </div>
+
+                                <!-- Deliverables -->
+                                <template for:each={wp.deliverables} for:item="d">
+
+                                    <div key={d.id} class="row deliverable-row" style={gridStyle}>
+                                        <div class="deliverable-bar" style={d.style}>
+                                            {d.label}
+                                        </div>
+                                    </div>
+
+                                </template>
 
                             </div>
 
-                            <!-- Deliverables -->
-                            <template for:each={wp.deliverables} for:item="d">
+                        </template>
 
-                                <div key={d.id} class="row deliverable-row" style={gridStyle}>
-                                    <div class="deliverable-bar" style={d.style}>
-                                        {d.label}
-                                    </div>
-                                </div>
-
-                            </template>
-
-                        </div>
-
-                    </template>
+                    </div> <!-- End of content-area -->
 
                 </div>
 

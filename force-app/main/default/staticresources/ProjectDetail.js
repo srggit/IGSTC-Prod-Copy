@@ -179,6 +179,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
                         $rootScope.currentProposalStage = result.proposalStage;
                         $rootScope.isCoordinator = result.isCoordinator;
+                        $scope.isCoordinator = $rootScope.isCoordinator;
                         $rootScope.stage = result.stage;
                         $rootScope.maxDurationInMonths = result.durationInMonths;
                         $rootScope.mailingCountry = result.mailingCountry;
