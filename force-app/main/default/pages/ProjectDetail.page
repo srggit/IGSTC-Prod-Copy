@@ -132,8 +132,9 @@
 
             /* CRITICAL FIX: WP bar should be semi-transparent to show lines through it */
             #ganttChart .wp-bar {
-                background: rgba(46, 160, 67, 0.7);
+                /* background: rgba(30, 235, 68, 0.7); */
                 /* 70% opacity green - lets lines show through */
+                background: rgb(0, 231, 0);
                 height: 8px;
                 border-radius: 3px;
                 width: 100%;
