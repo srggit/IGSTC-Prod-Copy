@@ -4,7 +4,16 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     // Fetching the proposalId from Local Storage
     if (localStorage.getItem('proposalId')) {
         $rootScope.proposalId = localStorage.getItem('proposalId');
+        $scope.proposalId = localStorage.getItem('proposalId');
         console.log('Loaded proposalId from localStorage:', $rootScope.proposalId);
+
+        // Initialize Gantt Chart after proposalId is loaded
+        /*
+        setTimeout(function () {
+            debugger;
+            initializeGanttChartFromAngular($rootScope.proposalId);
+        }, 1000);
+        */
     }
 
     // Fetching the APA Id from Local Storage
@@ -3569,10 +3578,6 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     //         }
     //     }
 
-    // =====================================================================================
-    // ==================== NEW WORK PACKAGE + DELIVERABLES COMBINED TABLE ==================
-    // =====================================================================================
-
     $scope.trlOptions = [3, 4, 5, 6, 7, 8, 9];
     $scope.wpDeliverablesTableList = [];
 
@@ -3917,3 +3922,188 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     };
 
 });
+
+
+
+// =====================================================================================
+// ==================== GANTT CHART FUNCTIONALITY ==================
+// =====================================================================================
+
+$scope.renderGanttChart = function () {
+    try {
+        console.log('Rendering Gantt Chart with wpDeliverablesTableList:', $scope.wpDeliverablesTableList);
+
+        if (!$scope.wpDeliverablesTableList || $scope.wpDeliverablesTableList.length === 0) {
+            document.getElementById('ganttChart').innerHTML =
+                '<div style="text-align: center; padding: 40px; color: #666;">No work packages found</div>';
+            return;
+        }
+
+        // Use fixed duration from rootScope or default to 24
+        let maxDuration = $rootScope.maxDurationInMonths ? parseInt($rootScope.maxDurationInMonths) : 24;
+
+        // Generate months array for header
+        let months = [];
+        for (let i = 1; i <= maxDuration; i++) {
+            months.push(i);
+        }
+
+        // EXACT same grid style as LWC - 1fr
+        let gridStyle = `grid-template-columns: repeat(${maxDuration}, 1fr);`;
+
+        let html = '';
+
+        // EXACT same structure as LWC
+        html += '<div class="gantt-container">';
+
+        // Month header - EXACT same as LWC
+        html += '<div class="month-row" style="' + gridStyle + '">';
+        for (let i = 1; i <= maxDuration; i++) {
+            html += '<div class="month">' + i + '</div>';
+        }
+        html += '</div>';
+
+        // Content area with vertical lines
+        html += '<div class="content-area">';
+
+        // Vertical lines overlay - EXACT same as LWC
+        html += '<div class="vertical-lines-overlay" style="' + gridStyle + '">';
+        for (let i = 1; i <= maxDuration; i++) {
+            html += '<div class="vertical-line"></div>';
+        }
+        html += '</div>';
+
+        // Define colors array (matching LWC)
+        const colors = ['#ffad43ff', '#ff8c00', '#a855f7', '#10b981', '#50d492ff', '#f59e0b', '#06b6d6', '#8b5cf6'];
+
+        // Work Packages
+        for (let wp of $scope.wpDeliverablesTableList) {
+
+            // Parse month values
+            const wpStart = wp.wpStartMonth ? parseInt(wp.wpStartMonth) : 1;
+            const wpEnd = wp.wpEndMonth ? parseInt(wp.wpEndMonth) : maxDuration;
+
+            // EXACT same style as LWC
+            const wpStyle = `grid-column: ${wpStart} / ${wpEnd + 1};`;
+
+            html += '<div class="wp-block">';
+
+            // Work Package Row - EXACT same structure
+            html += '<div class="row wp-row" style="' + gridStyle + '">';
+            html += '<div class="wp-wrapper" style="' + wpStyle + '">';
+            html += '<div class="wp-title">';
+            html += wp.title || 'Work Package';
+
+            // Add contact initials if they exist
+            if (wp.contactInitials && wp.contactInitials.length > 0) {
+                for (let initials of wp.contactInitials) {
+                    html += '<span class="contact-badges-inline contact-badge" title="' + initials + '">' + initials + '</span>';
+                }
+            }
+
+            html += '</div>'; // Close wp-title
+            html += '<div class="wp-bar"></div>';
+            html += '</div>'; // Close wp-wrapper
+            html += '</div>'; // Close row
+
+            // Deliverables
+            if (wp.deliverables && wp.deliverables.length > 0) {
+                for (let d of wp.deliverables) {
+                    const dStart = d.startMonth ? parseInt(d.startMonth) : wpStart;
+                    const dEnd = d.endMonth ? parseInt(d.endMonth) : wpEnd;
+
+                    // EXACT same style as LWC
+                    const colorIndex = dStart % colors.length;
+                    const dStyle = `grid-column: ${dStart} / ${dEnd + 1}; background: ${colors[colorIndex]};`;
+
+                    html += '<div class="row deliverable-row" style="' + gridStyle + '">';
+                    html += '<div class="deliverable-bar" style="' + dStyle + '">';
+
+                    let label = d.deliverableSequence || d.Deliverable_Sequence__c || 'D';
+                    html += label;
+
+                    html += '</div>';
+                    html += '</div>';
+                }
+            }
+
+            html += '</div>'; // End wp-block
+        }
+
+        html += '</div>'; // End content-area
+        html += '</div>'; // End gantt-container
+
+        document.getElementById('ganttChart').innerHTML = html;
+
+    } catch (error) {
+        console.error('Error rendering Gantt Chart:', error);
+    }
+};
+
+// Watch for changes in wpDeliverablesTableList
+$scope.$watch('wpDeliverablesTableList', function (newValue, oldValue) {
+    if (newValue !== oldValue) {
+        setTimeout(function () {
+            $scope.renderGanttChart();
+        }, 100); // Small delay to ensure DOM is ready
+    }
+}, true);
+
+// Initial render when data is loaded
+$scope.$on('wpDataLoaded', function () {
+    setTimeout(function () {
+        $scope.renderGanttChart();
+    }, 100);
+});
+
+// =====================================================================================
+// ==================== END GANTT CHART FUNCTIONALITY ==================
+// =====================================================================================
+
+
+/*
+// Global function to initialize Gantt Chart from Angular controller
+function initializeGanttChartFromAngular(proposalId) {
+    console.log('=== INITIALIZING GANTT CHART FROM ANGULAR ===');
+    console.log('Proposal ID from Angular:', proposalId);
+
+    if (!proposalId) {
+        console.error('No proposal ID provided to initializeGanttChartFromAngular');
+        return;
+    }
+
+    try {
+        $Lightning.use("c:GanttChartApp", function () {
+            console.log('Lightning Out app loaded successfully from Angular');
+
+            $Lightning.createComponent(
+                "c:ganttChartWrapper",
+                { recordId: proposalId },
+                "ganttChartContainer",
+                function (component) {
+                    console.log("Gantt Chart component loaded successfully from Angular:", component);
+
+                    // Hide loading message
+                    const container = document.getElementById('ganttChartContainer');
+                    if (container) {
+                        const loadingDiv = container.querySelector('div[style*="Loading Gantt Chart"]');
+                        if (loadingDiv) {
+                            loadingDiv.style.display = 'none';
+                        }
+                    }
+                }
+            );
+        }, function (err) {
+            console.error('Lightning Out app failed to load from Angular:', err);
+
+            // Show error message
+            const container = document.getElementById('ganttChartContainer');
+            if (container) {
+                container.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 100%; color: red;"><div><i class="fas fa-exclamation-triangle me-2"></i>Failed to load Gantt Chart from Angular. Please check console for details.</div></div>';
+            }
+        });
+    } catch (error) {
+        console.error("Error initializing Lightning Out from Angular:", error);
+    }
+}
+*/

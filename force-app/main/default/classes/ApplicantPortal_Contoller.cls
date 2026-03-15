@@ -1347,7 +1347,8 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
             List<Work_Package__c> workPackageList = [
                 SELECT Id, WP_Sequence__c, WP_Sequence_2__c, Title__c, TRL_Level__c, End_TRL_Level__c, Duration_Start_Month__c, Duration_End_Month__c, External_Id__c, Application__c,
                        (SELECT Id, Name, Account_Name__c, Account__c FROM Account_Mapping__r),
-                       (SELECT Id, Account__c, Application__c, Due_Date__c, Deliverable_Sequence__c, Duration_Start_Month__c, Duration_End_Month__c, External_Id__c, Name, Title__c, Work_Package__c FROM PI_Deliverables__r ORDER BY Deliverable_Sequence__c)
+                       (SELECT Id, Account__c, Application__c, Due_Date__c, Deliverable_Sequence__c, Duration_Start_Month__c, Duration_End_Month__c, External_Id__c, Name, Title__c, Work_Package__c FROM PI_Deliverables__r ORDER BY Deliverable_Sequence__c),
+                       (SELECT Id, Account__c FROM Account_Mapping__r)
                 FROM Work_Package__c 
                 WHERE Application__c = :proposalId
                 AND Proposal_Stage__c = :proposalStage

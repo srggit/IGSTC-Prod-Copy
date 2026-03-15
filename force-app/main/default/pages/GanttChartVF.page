@@ -1,0 +1,177 @@
+<apex:page controller="VF_GanttController" showHeader="false" sidebar="false" standardStylesheets="false"
+    contentType="text/html" applyHtmlTag="true" applyBodyTag="true">
+    <style>
+        .gantt-container {
+            border: 1px solid #d8dde6;
+            width: 100%;
+        }
+
+        /* Month header */
+
+        .month-row {
+            display: grid;
+            background: #f3f3f3;
+            border-bottom: 2px solid #d8dde6;
+        }
+
+        .month {
+            border-right: 1px solid #e5e5e5;
+            text-align: center;
+            font-size: 12px;
+            padding: 6px 0;
+        }
+
+        /* Vertical lines */
+
+        .content-area {
+            position: relative;
+        }
+
+        .vertical-lines {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: grid;
+            pointer-events: none;
+        }
+
+        .vertical-line {
+            border-right: 1px solid #e5e5e5;
+        }
+
+        /* rows */
+
+        .row {
+            display: grid;
+            height: 40px;
+            align-items: center;
+        }
+
+        /* Work Package */
+
+        .wp-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wp-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .wp-bar {
+            height: 8px;
+            background: #2ea043;
+            border-radius: 3px;
+        }
+
+        /* Deliverables */
+
+        .deliverable-bar {
+            height: 26px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+    </style>
+
+    <head>
+        <meta http-equiv="Content-Security-Policy"
+            content="frame-ancestors 'self' https://*.salesforce-sites.com https://*.force.com https://*.salesforce.com" />
+    </head>
+
+    <!-- DEBUG INFO PANEL -->
+    <div
+        style="background: #f0f8ff; border: 1px solid #0066cc; padding: 10px; margin: 10px; font-family: monospace; font-size: 12px;">
+        <h4>DEBUG INFORMATION</h4>
+        <p><strong>Proposal ID:</strong> {!proposalId}</p>
+        <p><strong>Max Duration:</strong> {!maxDuration}</p>
+        <p><strong>Months Count:</strong> {!months.size}</p>
+        <p><strong>Work Packages Count:</strong> {!workPackages.size}</p>
+        <p><strong>Error Message:</strong> {!errorMessage}</p>
+        <p><strong>Debug Info:</strong></p>
+        <pre>{!debugInfo}</pre>
+    </div>
+
+    <div class="gantt-container">
+
+        <!-- Month header -->
+
+        <div class="month-row" style="grid-template-columns:repeat({!maxDuration},1fr)">
+
+            <apex:repeat value="{!months}" var="m">
+
+                <div class="month">{!m}</div>
+
+            </apex:repeat>
+
+        </div>
+
+
+        <div class="content-area">
+
+            <!-- Vertical grid lines -->
+
+            <div class="vertical-lines" style="grid-template-columns:repeat({!maxDuration},1fr)">
+
+                <apex:repeat value="{!months}" var="v">
+
+                    <div class="vertical-line"></div>
+
+                </apex:repeat>
+
+            </div>
+
+
+            <!-- Work Packages -->
+
+            <apex:repeat value="{!workPackages}" var="wp">
+
+                <div class="row" style="grid-template-columns:repeat({!maxDuration},1fr)">
+
+                    <div class="wp-wrapper"
+                        style="grid-column:{!wp.Duration_Start_Month__c}/{!wp.Duration_End_Month__c + 1}">
+
+                        <div class="wp-title">
+
+                            {!wp.Title__c}
+
+                        </div>
+
+                        <div class="wp-bar"></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Deliverables -->
+
+                <apex:repeat value="{!wp.PI_Deliverables__r}" var="d">
+
+                    <div class="row" style="grid-template-columns:repeat({!maxDuration},1fr)">
+
+                        <div class="deliverable-bar" style="grid-column:{!d.Duration_Start_Month__c}/{!d.Duration_End_Month__c + 1};
+            background:#1b74e4;">
+
+                            D{!d.Deliverable_Sequence__c}
+
+                        </div>
+
+                    </div>
+
+                </apex:repeat>
+
+            </apex:repeat>
+
+        </div>
+
+    </div>
+
+</apex:page>

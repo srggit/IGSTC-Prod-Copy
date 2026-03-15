@@ -7,16 +7,259 @@
             .no-border-right {
                 border-right: none !important;
             }
+
             .hide-coordinator-column th:last-child,
             .hide-coordinator-column td:last-child {
                 border-right: none !important;
+            }
+
+            /* SAFE VERSION - Only target Gantt chart elements, no global reset */
+            #ganttChart .gantt-container {
+                border: 1px solid #d8dde6;
+                overflow-x: auto;
+                position: relative;
+                background: white;
+                display: inline-block;
+                min-width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            }
+
+            #ganttChart .month-row {
+                display: grid;
+                background: #f3f3f3;
+                border-bottom: 2px solid #d8dde6;
+                position: relative;
+                z-index: 3;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #ganttChart .month {
+                border-right: 1px solid #e5e5e5;
+                text-align: center;
+                font-size: 12px;
+                padding: 6px 0;
+                white-space: nowrap;
+                margin: 0;
+                line-height: normal;
+            }
+
+            #ganttChart .content-area {
+                position: relative;
+                width: 100%;
+            }
+
+            /* Vertical lines overlay */
+            #ganttChart .vertical-lines-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: grid;
+                pointer-events: none;
+                z-index: 1;
+                width: 100%;
+            }
+
+            #ganttChart .vertical-line {
+                border-right: 1px solid rgba(0, 0, 0, 0.15);
+                /* Slightly darker lines */
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #ganttChart .wp-block {
+                margin-bottom: 6px;
+                position: relative;
+                z-index: 2;
+                width: 100%;
+            }
+
+            /* Row background - transparent to show lines */
+            #ganttChart .row {
+                display: grid;
+                align-items: center;
+                height: 40px;
+                border-bottom: 1px solid #dfdfdf;
+                position: relative;
+                z-index: 2;
+                background: transparent;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* CRITICAL FIX: WP wrapper should not have background */
+            #ganttChart .wp-wrapper {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                position: relative;
+                z-index: 2;
+                min-width: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+                /* Ensure transparent */
+            }
+
+            /* WP title - keep background for readability */
+            #ganttChart .wp-title {
+                font-size: 12px;
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 3px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-wrap: nowrap;
+                position: relative;
+                z-index: 3;
+                /*background-color: rgba(255, 255, 255, 0.9);*/
+                padding: 2px 4px;
+                border-radius: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+                line-height: normal;
+            }
+
+            /* CRITICAL FIX: WP bar should be semi-transparent to show lines through it */
+            #ganttChart .wp-bar {
+                background: rgba(46, 160, 67, 0.7);
+                /* 70% opacity green - lets lines show through */
+                height: 8px;
+                border-radius: 3px;
+                width: 100%;
+                position: relative;
+                z-index: 2;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Deliverable row */
+            #ganttChart .deliverable-row {
+                height: 40px;
+                position: relative;
+                z-index: 2;
+                background: transparent;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Deliverable bar - keep opaque for better visibility */
+            #ganttChart .deliverable-bar {
+                height: 26px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 12px;
+                font-weight: 500;
+                position: relative;
+                z-index: 2;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                box-sizing: border-box;
+                /* Keep opaque for deliverables */
+            }
+
+            #ganttChart .deliverable-bar span {
+                padding-left: 8px;
+                padding-right: 8px;
+                display: inline-block;
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: normal;
+                text-align: center;
+                width: 100%;
+            }
+
+            #ganttChart .contact-badges-inline {
+                display: inline-flex;
+                gap: 4px;
+                align-items: center;
+                flex-shrink: 0;
+                margin-left: 6px;
+                position: relative;
+                z-index: 4;
+            }
+
+            #ganttChart .contact-badge {
+                background: #0070d2;
+                color: white;
+                font-size: 10px;
+                font-weight: 600;
+                padding: 2px 6px;
+                border-radius: 12px;
+                line-height: 1;
+                cursor: default;
+                min-width: 20px;
+                text-align: center;
+                transition: background-color 0.2s ease;
+                display: inline-block;
+            }
+
+            #ganttChart .contact-badge:hover {
+                background: #005fb2;
+            }
+
+            /* Override Bootstrap specific styles */
+            #ganttChart .row,
+            #ganttChart .row>*,
+            #ganttChart .wp-block,
+            #ganttChart .wp-wrapper,
+            #ganttChart .deliverable-bar {
+                box-sizing: border-box;
+            }
+
+            /* Remove any Bootstrap margins and paddings */
+            #ganttChart .row {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+
+            /* Ensure proper layering */
+            #ganttChart .vertical-lines-overlay {
+                z-index: 1;
+            }
+
+            #ganttChart .wp-block,
+            #ganttChart .row,
+            #ganttChart .wp-wrapper,
+            #ganttChart .deliverable-bar {
+                z-index: 2;
+            }
+
+            #ganttChart .wp-title {
+                z-index: 3;
+            }
+
+            #ganttChart .contact-badges-inline,
+            #ganttChart .contact-badge {
+                z-index: 4;
             }
         </style>
         <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.8/angular.min.js"></script>
-        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.1.1/ui-bootstrap-tpls.min.js"></script>
+        <script type="text/javascript"
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.1.1/ui-bootstrap-tpls.min.js"></script>
         <script src="https://cdn.ckeditor.com/4.6.2/full/ckeditor.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ng.ckeditor/2.0.2/ng-ckeditor.min.js"></script>
         <script>
@@ -272,6 +515,8 @@
                     </div>
                 </div>
 
+
+
                 <div class="modal" id="filePreview">
                     <div class="modal-dialog" style="min-width:120rem">
                         <div class="modal-content">
@@ -286,7 +531,8 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                <iframe style="width:100%;height:75vh;border: 0px;border-radius: 10px;" id="file_frame" title="File"></iframe>
+                                <iframe style="width:100%;height:75vh;border: 0px;border-radius: 10px;" id="file_frame"
+                                    title="File"></iframe>
                             </div>
                         </div>
                     </div>
@@ -295,16 +541,20 @@
                 <div class="row mx-5 mt-5">
                     <div class="alert bg-color-list font-if" role="alert">
                         <li class="ps-4">
-                            <i class="fa-solid fa-circle text-success me-3"></i>Only the coordinator can upload the filled project details pdf. </li>
+                            <i class="fa-solid fa-circle text-success me-3"></i>Only the coordinator can upload the
+                            filled project details pdf.
+                        </li>
                         <li class="ps-4">
-                            <i class="fa-solid fa-circle text-success me-3"></i>The project details must be in format. The template can be downloaded from
+                            <i class="fa-solid fa-circle text-success me-3"></i>The project details must be in format.
+                            The template can be downloaded from
                             <a href="https://www.igstc.org/home/scheme_forms" target="_blank">here.</a>
                         </li>
                         <!--<div ng-show="sampleDoc.Category_Template__r.Document_Public_Link__c!=''">
                             <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i>Download the Sample Document <a href="{{sampleDoc.Category_Template__r.Document_Public_Link__c}}" target="_blank">here.</a></li>
                         </div>-->
                         <li class="ps-4">
-                            <i class="fa-solid fa-circle text-success me-3"></i>Only PDF files allowed. (Max. size 4 MB)</li>
+                            <i class="fa-solid fa-circle text-success me-3"></i>Only PDF files allowed. (Max. size 4 MB)
+                        </li>
                     </div>
                 </div>
 
@@ -314,11 +564,14 @@
                             <div class="col-md-12">
                                 <label class="font-if mb-3">
                                     <b>Undertaking Format of Grant Acceptance</b>
-                                    <br/> Click button to download the Undertaking Format of Grant Acceptance.
+                                    <br /> Click button to download the Undertaking Format of Grant Acceptance.
                                 </label>
                                 <div class="mt-3">
-                                    <a href="{!$Resource.Undertaking_Format_of_Grant_Acceptance}" download="Undertaking_Format_of_Grant_Acceptance.docx" class="blue-btn py-2 px-4 ms-2"
-                                        style="text-decoration: none; display: inline-block;" onclick="this.setAttribute('download', 'Undertaking_Format_of_Grant_Acceptance.docx'); return true;">
+                                    <a href="{!$Resource.Undertaking_Format_of_Grant_Acceptance}"
+                                        download="Undertaking_Format_of_Grant_Acceptance.docx"
+                                        class="blue-btn py-2 px-4 ms-2"
+                                        style="text-decoration: none; display: inline-block;"
+                                        onclick="this.setAttribute('download', 'Undertaking_Format_of_Grant_Acceptance.docx'); return true;">
                                         <i class="fa-solid fa-download me-2"></i>Download
                                     </a>
                                 </div>
@@ -331,11 +584,14 @@
                             <div class="col-md-12">
                                 <label class="font-if mb-3">
                                     <b>Undertaking for Sensitivity Security Regulations</b>
-                                    <br/> Click button to download the Undertaking for Sensitivity Security Regulations.
+                                    <br /> Click button to download the Undertaking for Sensitivity Security
+                                    Regulations.
                                 </label>
                                 <div class="mt-3">
-                                    <a href="{!$Resource.Undertaking_for_Sensitivity_Security_Regulations}" download="Undertaking_for_Sensitivity_Security_Regulations.docx"
-                                        class="blue-btn py-2 px-4 ms-2" style="text-decoration: none; display: inline-block;"
+                                    <a href="{!$Resource.Undertaking_for_Sensitivity_Security_Regulations}"
+                                        download="Undertaking_for_Sensitivity_Security_Regulations.docx"
+                                        class="blue-btn py-2 px-4 ms-2"
+                                        style="text-decoration: none; display: inline-block;"
                                         onclick="this.setAttribute('download', 'Undertaking_for_Sensitivity_Security_Regulations.docx'); return true;">
                                         <i class="fa-solid fa-download me-2"></i>Download
                                     </a>
@@ -581,7 +837,8 @@
                                 <!-- <input type="file" accept=".pdf" class="form-control" ng-disabled="uploadDisable || isUploading || doc.userDocument.Status__c=='Uploaded'"
                                     id="fileSignature" /> -->
 
-                                <input type="file" accept=".pdf" class="form-control" ng-disabled="uploadDisable || isUploading || (doc.userDocument.Status__c=='Uploaded' && currentProposalStage == 'Submitted')"
+                                <input type="file" accept=".pdf" class="form-control"
+                                    ng-disabled="uploadDisable || isUploading || (doc.userDocument.Status__c=='Uploaded' && currentProposalStage == 'Submitted')"
                                     id="fileSignature" />
 
                                 <!-- <input type="file" accept=".pdf" class="form-control" ng-disabled="uploadDisable" id="fileSignature" /> -->
@@ -596,7 +853,9 @@
                                         </span>
                                     </button> -->
 
-                                    <button class="btn btn-success mt-4 py-3" ng-click="uploadFile(doc.userDocument.Name, doc.userDocument.Id, '')" type="button"
+                                    <button class="btn btn-success mt-4 py-3"
+                                        ng-click="uploadFile(doc.userDocument.Name, doc.userDocument.Id, '')"
+                                        type="button"
                                         ng-disabled="isUploading || (doc.userDocument.Status__c=='Uploaded' && currentProposalStage == 'Submitted')">
                                         <span ng-if="!isUploading">Upload</span>
                                         <span ng-if="isUploading">
@@ -606,12 +865,14 @@
                                 </span>
                             </div>
                             <div class="progress ms-4 mt-2" ng-show="showProgressBar" style="height: 20px;">
-                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{uploadProgress}}" aria-valuemin="0"
-                                    aria-valuemax="100" ng-style="{ 'width': uploadProgress + '%' }">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                    aria-valuenow="{{uploadProgress}}" aria-valuemin="0" aria-valuemax="100"
+                                    ng-style="{ 'width': uploadProgress + '%' }">
                                     <span style="font-size:14px; font-weight:bold;">{{uploadProgress}}%</span>
                                 </div>
                             </div>
-                            <div ng-if="doc.userDocument.Status__c=='Uploaded' && !isUploading" class="alert alert-success ms-4 mt-2 py-2">
+                            <div ng-if="doc.userDocument.Status__c=='Uploaded' && !isUploading"
+                                class="alert alert-success ms-4 mt-2 py-2">
                                 <i class="fa fa-check-circle"></i> Project proposal uploaded successfully.
                             </div>
                         </div>
@@ -619,7 +880,8 @@
 <a class="blue-btn float-end mt-5 py-3" ng-click="filePreviewHandler(doc)">View</a>
 </div>-->
                         <div class="col-md-2" ng-show="doc.userDocument.Status__c=='Uploaded'">
-                            <a class="blue-btn float-end mt-5 py-3" ng-class="{'disabled': isUploading}" href="{{previewFileLink}}" target="_blank">View</a>
+                            <a class="blue-btn float-end mt-5 py-3" ng-class="{'disabled': isUploading}"
+                                href="{{previewFileLink}}" target="_blank">View</a>
                         </div>
                     </div>
 
@@ -639,9 +901,11 @@
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -649,10 +913,12 @@
                             <div id="panelsStayOpen-collapseOne " class="accordion-collapse collapse show
                         " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Research_Approach_Objectives__c
-                        " ng-change="readCharacter(proposalFieldsDetails.Research_Approach_Objectives__c,0, 3000) " name="ckSummary2 "
-                                    id="ckSummary " ng-config="config " maxlength="3000 "></ng-ckeditor>
+                        " ng-change="readCharacter(proposalFieldsDetails.Research_Approach_Objectives__c,0, 3000) "
+                                    name="ckSummary2 " id="ckSummary " ng-config="config "
+                                    maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[0].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[0].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[0].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
@@ -664,9 +930,11 @@
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -674,25 +942,30 @@
                             <div id="panelsStayOpen-collapseOne " class="accordion-collapse collapse show
                         " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Current_State_Of_The_Art__c
-                        " ng-change="readCharacter(proposalFieldsDetails.Current_State_Of_The_Art__c,1, 3000) " name="ckSummary2 "
-                                    id="ckSummary " ng-config="config " maxlength="3000 "></ng-ckeditor>
+                        " ng-change="readCharacter(proposalFieldsDetails.Current_State_Of_The_Art__c,1, 3000) "
+                                    name="ckSummary2 " id="ckSummary " ng-config="config "
+                                    maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[1].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[1].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[1].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
                         <div class="col-md-12 mt-5 mb-5">
                             <label class="pb-3 color-theme ">
-                                <b>Project description including work packages/work distribution amongst partners. Comment on
+                                <b>Project description including work packages/work distribution amongst partners.
+                                    Comment on
                                     starting TRL and expected TRL at end of the project (max. chars 12000)
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -700,9 +973,11 @@
                             <div id="panelsStayOpen-collapseOne " class="accordion-collapse collapse show
                         " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Project_Description__c " ng-change="readCharacter(proposalFieldsDetails.Project_Description__c,2,
-                        12000) " name="ckSummary2 " id="ckSummary " ng-config="config " maxlength="12000"></ng-ckeditor>
+                        12000) " name="ckSummary2 " id="ckSummary " ng-config="config "
+                                    maxlength="12000"></ng-ckeditor>
                                 <span>Total characters : {{objRtf[2].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[2].errorStatus ">maximum character limit is 12000</span>
+                                <span class="text-danger " ng-if="objRtf[2].errorStatus ">maximum character limit is
+                                    12000</span>
                             </div>
                         </div>
 
@@ -846,9 +1121,11 @@
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -858,22 +1135,26 @@
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Expected_Deliverables__c " ng-change="readCharacter(proposalFieldsDetails.Expected_Deliverables__c,3,
                         3000) " name="ckSummary2 " id="ckSummary " ng-config="config " maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[3].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[3].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[3].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
                         <div class="col-md-12 mt-5 ">
                             <label class="pb-3 color-theme ">
-                                <b>Reasons for and benefits of cooperation - including previous collaboration with the partner
+                                <b>Reasons for and benefits of cooperation - including previous collaboration with the
+                                    partner
                                     country (max. chars 6000)
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -882,23 +1163,28 @@
                         " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c
                         " ng-change="readCharacter(proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c,4, 6000) "
-                                    name="ckSummary2 " id="ckSummary " ng-config="config " maxlength="6000 "></ng-ckeditor>
+                                    name="ckSummary2 " id="ckSummary " ng-config="config "
+                                    maxlength="6000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[4].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[4].errorStatus ">maximum character limit is 6000</span>
+                                <span class="text-danger " ng-if="objRtf[4].errorStatus ">maximum character limit is
+                                    6000</span>
                             </div>
                         </div>
 
                         <div class="col-md-12 mt-5 ">
                             <label class="pb-3 color-theme ">
-                                <b>Equipment (if equipment to be purchased, please justify briefly the need) (max. chars 3000)
+                                <b>Equipment (if equipment to be purchased, please justify briefly the need) (max. chars
+                                    3000)
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -908,22 +1194,26 @@
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Equipment__c " ng-change="readCharacter(proposalFieldsDetails.Equipment__c,5,
                         3000) " name="ckSummary2 " id="ckSummary " ng-config="config " maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[5].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[5].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[5].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
                         <div class="col-md-12 mt-5 ">
                             <label class="pb-3 color-theme ">
-                                <b>Brief profile of each partner institution with emphasis on research activities (max. chars
+                                <b>Brief profile of each partner institution with emphasis on research activities (max.
+                                    chars
                                     3000)
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -931,10 +1221,12 @@
                             <div id="panelsStayOpen-collapseOne " class="accordion-collapse collapse show
                         " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Brief_Statement_of_Purpose__c
-                        " ng-change="readCharacter(proposalFieldsDetails.Brief_Statement_of_Purpose__c,6, 3000) " name="ckSummary2 "
-                                    id="ckSummary " ng-config="config " maxlength="3000 "></ng-ckeditor>
+                        " ng-change="readCharacter(proposalFieldsDetails.Brief_Statement_of_Purpose__c,6, 3000) "
+                                    name="ckSummary2 " id="ckSummary " ng-config="config "
+                                    maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[6].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[6].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[6].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
@@ -957,9 +1249,11 @@
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -968,9 +1262,11 @@
                         " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Main_Objective_Research_Approach_S2__c
                         " ng-change="readCharacter(proposalFieldsDetails.Main_Objective_Research_Approach_S2__c,0, 4000) "
-                                    name="ckSummary2 " id="ckSummary " ng-config="config " maxlength="4000 "></ng-ckeditor>
+                                    name="ckSummary2 " id="ckSummary " ng-config="config "
+                                    maxlength="4000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[0].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[0].errorStatus ">maximum character limit is 4000</span>
+                                <span class="text-danger " ng-if="objRtf[0].errorStatus ">maximum character limit is
+                                    4000</span>
                             </div>
                         </div>
 
@@ -982,9 +1278,11 @@
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -993,9 +1291,11 @@
                         " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c
                         " ng-change="readCharacter(proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c,1, 6000) "
-                                    name="ckSummary2 " id="ckSummary " ng-config="config " maxlength="6000 "></ng-ckeditor>
+                                    name="ckSummary2 " id="ckSummary " ng-config="config "
+                                    maxlength="6000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[1].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[1].errorStatus ">maximum character limit is 6000</span>
+                                <span class="text-danger " ng-if="objRtf[1].errorStatus ">maximum character limit is
+                                    6000</span>
                             </div>
                         </div>
 
@@ -1004,15 +1304,18 @@
                                 <b>Detailed project description (max. chars 20000)
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
-                                <i>(Work packages indicating the involvement of the partners in each work package/ indicate
+                                <i>(Work packages indicating the involvement of the partners in each work package/
+                                    indicate
                                     the WP Leader using bold letters)
                                 </i>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1020,10 +1323,12 @@
                             <div id="panelsStayOpen-collapseOne " class="accordion-collapse collapse show
                         " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Project_Description_Stage_2__c
-                        " ng-change="readCharacter(proposalFieldsDetails.Project_Description_Stage_2__c,2, 20000) " name="ckSummary2 "
-                                    id="ckSummary " ng-config="config" maxlength="20000 "></ng-ckeditor>
+                        " ng-change="readCharacter(proposalFieldsDetails.Project_Description_Stage_2__c,2, 20000) "
+                                    name="ckSummary2 " id="ckSummary " ng-config="config"
+                                    maxlength="20000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[2].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[2].errorStatus ">maximum character limit is 20000</span>
+                                <span class="text-danger " ng-if="objRtf[2].errorStatus ">maximum character limit is
+                                    20000</span>
                             </div>
                         </div>
 
@@ -1459,7 +1764,8 @@
                                             <b>Work Package (WP) with Deliverables (D)</b>
                                         </h4>
 
-                                        <button type="button" class="btn btn-primary add-wp-btn" ng-click="addNewWP()" ng-if="!proposalStage" ng-hide="!isCoordinator">
+                                        <button type="button" class="btn btn-primary add-wp-btn" ng-click="addNewWP()"
+                                            ng-if="!proposalStage" ng-hide="!isCoordinator">
                                             <i class="fas fa-plus"></i> Add Work Package
                                         </button>
                                     </div>
@@ -1479,12 +1785,14 @@
                                                 {{wp.wpSequence}} : {{wp.title || 'New Work Package'}}
                                             </div>
 
-                                            <i class="fa-solid fa-circle-xmark remove-wp" ng-click="removeWP($index)" ng-if="!proposalStage" ng-hide="!isCoordinator"></i>
+                                            <i class="fa-solid fa-circle-xmark remove-wp" ng-click="removeWP($index)"
+                                                ng-if="!proposalStage" ng-hide="!isCoordinator"></i>
 
                                         </div>
 
                                         <!-- WP Table -->
-                                        <table class="table wp-table" ng-class="{'hide-coordinator-column': !isCoordinator}">
+                                        <table class="table wp-table"
+                                            ng-class="{'hide-coordinator-column': !isCoordinator}">
 
                                             <thead>
                                                 <tr>
@@ -1493,7 +1801,8 @@
                                                     <th style="width:15%">TRL</th>
                                                     <th style="width:20%">Responsible Partners</th>
                                                     <th style="width:10%">Start Month</th>
-                                                    <th style="width:10%" ng-class="{'no-border-right': !isCoordinator}">End Month</th>
+                                                    <th style="width:10%"
+                                                        ng-class="{'no-border-right': !isCoordinator}">End Month</th>
                                                     <th style="width:5%" ng-hide="!isCoordinator"></th>
                                                 </tr>
                                             </thead>
@@ -1508,19 +1817,24 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="text" class="form-control" ng-model="wp.title" ng-disabled="proposalStage || !isCoordinator" placeholder="Enter WP title"
-                                                        />
+                                                        <input type="text" class="form-control" ng-model="wp.title"
+                                                            ng-disabled="proposalStage || !isCoordinator"
+                                                            placeholder="Enter WP title" />
                                                     </td>
 
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            <select class="form-control me-1" ng-model="wp.trlFrom" ng-options="option for option in trlOptions" ng-disabled="proposalStage || !isCoordinator">
+                                                            <select class="form-control me-1" ng-model="wp.trlFrom"
+                                                                ng-options="option for option in trlOptions"
+                                                                ng-disabled="proposalStage || !isCoordinator">
                                                                 <option value="">From</option>
                                                             </select>
 
                                                             <span class="mx-1">to</span>
 
-                                                            <select class="form-control ms-1" ng-model="wp.trlTo" ng-options="option for option in trlOptions" ng-disabled="proposalStage || !isCoordinator">
+                                                            <select class="form-control ms-1" ng-model="wp.trlTo"
+                                                                ng-options="option for option in trlOptions"
+                                                                ng-disabled="proposalStage || !isCoordinator">
                                                                 <option value="">To</option>
                                                             </select>
                                                         </div>
@@ -1529,7 +1843,9 @@
                                                     <td>
                                                         <div class="dropdown">
 
-                                                            <button class="btn btn-light dropdown-toggle w-100" data-bs-toggle="dropdown" ng-disabled="proposalStage || !isCoordinator">
+                                                            <button class="btn btn-light dropdown-toggle w-100"
+                                                                data-bs-toggle="dropdown"
+                                                                ng-disabled="proposalStage || !isCoordinator">
                                                                 Select Partners
                                                             </button>
 
@@ -1539,7 +1855,8 @@
 
                                                                     <label class="dropdown-item">
 
-                                                                        <input type="checkbox" ng-model="acc.selected" ng-disabled="proposalStage || !isCoordinator" />
+                                                                        <input type="checkbox" ng-model="acc.selected"
+                                                                            ng-disabled="proposalStage || !isCoordinator" />
 
                                                                         <span class="ms-2">{{acc.Name}}</span>
 
@@ -1553,17 +1870,22 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="number" class="form-control" ng-model="wp.wpStartMonth" ng-disabled="proposalStage || !isCoordinator" />
+                                                        <input type="number" class="form-control"
+                                                            ng-model="wp.wpStartMonth"
+                                                            ng-disabled="proposalStage || !isCoordinator" />
                                                     </td>
 
                                                     <td ng-class="{'no-border-right': !isCoordinator}">
-                                                        <input type="number" class="form-control" ng-model="wp.wpEndMonth" ng-disabled="proposalStage || !isCoordinator" />
+                                                        <input type="number" class="form-control"
+                                                            ng-model="wp.wpEndMonth"
+                                                            ng-disabled="proposalStage || !isCoordinator" />
                                                     </td>
 
                                                     <!-- Add Deliverable Button -->
                                                     <td class="text-center" ng-hide="!isCoordinator">
 
-                                                        <button class="add-deliverable-btn" ng-click="addNewDeliverable($index)">
+                                                        <button class="add-deliverable-btn"
+                                                            ng-click="addNewDeliverable($index)">
 
                                                             <i class="fas fa-plus"></i>
 
@@ -1585,26 +1907,34 @@
 
                                                     <td colspan="2">
 
-                                                        <input type="text" class="form-control form-control-sm" ng-model="deliv.title" ng-disabled="proposalStage || !isCoordinator"
+                                                        <input type="text" class="form-control form-control-sm"
+                                                            ng-model="deliv.title"
+                                                            ng-disabled="proposalStage || !isCoordinator"
                                                             placeholder="Deliverable description" />
 
                                                     </td>
 
                                                     <td>
 
-                                                        <input type="number" class="form-control form-control-sm" ng-model="deliv.startMonth" ng-change="validateDeliverableMonths(wp,deliv)"
+                                                        <input type="number" class="form-control form-control-sm"
+                                                            ng-model="deliv.startMonth"
+                                                            ng-change="validateDeliverableMonths(wp,deliv)"
                                                             ng-disabled="proposalStage || !isCoordinator" />
 
                                                     </td>
 
                                                     <td ng-class="{'no-border-right': !isCoordinator}">
-                                                        <input type="number" class="form-control form-control-sm" ng-model="deliv.endMonth" ng-change="validateDeliverableMonths(wp,deliv)"
+                                                        <input type="number" class="form-control form-control-sm"
+                                                            ng-model="deliv.endMonth"
+                                                            ng-change="validateDeliverableMonths(wp,deliv)"
                                                             ng-disabled="proposalStage || !isCoordinator" />
                                                     </td>
 
                                                     <td class="text-center" ng-hide="!isCoordinator">
 
-                                                        <i class="fa-solid fa-circle-xmark remove-deliverable" ng-click="removeDeliverable($parent.$index,$index)" style="color: red;"></i>
+                                                        <i class="fa-solid fa-circle-xmark remove-deliverable"
+                                                            ng-click="removeDeliverable($parent.$index,$index)"
+                                                            style="color: red;"></i>
 
                                                     </td>
 
@@ -1618,25 +1948,64 @@
 
                                 </div>
                             </div>
+
+                            <!-- GANTT CHART SECTION -->
+                            <!-- GANTT CHART SECTION - Keep Bootstrap classes only on text, not on container -->
+                            <div class="mt-5">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-chart-gantt me-2"></i>
+                                    Work Package &amp; Deliverables Gantt Chart
+                                </h4>
+                                <!-- Remove card-body class -->
+                                <div style="padding: 0; margin-top: 15px;">
+                                    <!-- Gantt Chart Container -->
+                                    <div id="ganttChartContainer" style="overflow-x: auto; padding: 0; margin: 0;">
+                                        <div id="ganttChart" style="padding: 0; margin: 0;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- GANTT CHART SECTION -->
+                        <div class="card mt-5">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-chart-gantt me-2"></i>
+                                    Work Package &amp; Deliverables Gantt Chart
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <!-- Gantt Chart Container -->
+                                <div id="ganttChartContainer" style="overflow-x: auto;">
+                                    <div id="ganttChart" class="gantt-chart">
+                                        <!-- Chart will be rendered here by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- ==================== END NEW TABLE ==================== -->
 
                         <div class="col-md-12 mt-5 ">
                             <label class="pb-3 color-theme ">
-                                <b>Risk assessment &amp; mitigation strategy and Criteria for abandoning the project (max. chars
+                                <b>Risk assessment &amp; mitigation strategy and Criteria for abandoning the project
+                                    (max. chars
                                     3000)
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                                 <i>
-                                    (please comment on any technical, financial, regulatory and/or operational risks that might occur so that a continuation
+                                    (please comment on any technical, financial, regulatory and/or operational risks
+                                    that might occur so that a continuation
                                     of the project would make no sense)
                                 </i>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1645,10 +2014,11 @@
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c
                                                             " ng-change="readCharacter(proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c,3,
-                                                            3000) " name="ckSummary2 " id="ckSummary " ng-config="config "
-                                    maxlength="3000 "></ng-ckeditor>
+                                                            3000) " name="ckSummary2 " id="ckSummary "
+                                    ng-config="config " maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[3].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[3].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[3].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
@@ -1663,9 +2033,11 @@
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1674,10 +2046,11 @@
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c
                                                             " ng-change="readCharacter(proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c,4,
-                                                            3000) " name="ckSummary2 " id="ckSummary " ng-config="config "
-                                    maxlength="3000 "></ng-ckeditor>
+                                                            3000) " name="ckSummary2 " id="ckSummary "
+                                    ng-config="config " maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[4].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[4].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[4].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
@@ -1687,16 +2060,20 @@
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                                 <i>
-                                    (please mention any possible conflict of IP issues that might be relevant for the project / please describe precisely where
-                                    the innovation is and the gap you intend to close in respect to existing solutions /give
+                                    (please mention any possible conflict of IP issues that might be relevant for the
+                                    project / please describe precisely where
+                                    the innovation is and the gap you intend to close in respect to existing solutions
+                                    /give
                                     a reasonable time horizon within the utilization plan)
                                 </i>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1707,7 +2084,8 @@
                                                             10000) " name="ckSummary2 " id="ckSummary " ng-config="config
                                                             " maxlength="10000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[5].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[5].errorStatus ">maximum character limit is 10000</span>
+                                <span class="text-danger " ng-if="objRtf[5].errorStatus ">maximum character limit is
+                                    10000</span>
                             </div>
                         </div>
 
@@ -1717,15 +2095,18 @@
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                                 <i>
-                                    (it may include brief survey on similar existing technologies/product, competitiveness, demand-supply, challenges/drawbacks
+                                    (it may include brief survey on similar existing technologies/product,
+                                    competitiveness, demand-supply, challenges/drawbacks
                                     and proposed cost-benefit analysis)
                                 </i>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1734,10 +2115,11 @@
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c
                                                             " ng-change="readCharacter(proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c,6,
-                                                            12000) " name="ckSummary2 " id="ckSummary " ng-config="config "
-                                    maxlength="12000 "></ng-ckeditor>
+                                                            12000) " name="ckSummary2 " id="ckSummary "
+                                    ng-config="config " maxlength="12000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[6].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[6].errorStatus ">maximum character limit is 12000</span>
+                                <span class="text-danger " ng-if="objRtf[6].errorStatus ">maximum character limit is
+                                    12000</span>
                             </div>
                         </div>
 
@@ -1749,9 +2131,11 @@
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1760,10 +2144,11 @@
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Future_Commercialization_Plan__c
                                                             " ng-change="readCharacter(proposalFieldsDetails.Future_Commercialization_Plan__c,7,
-                                                            12000) " name="ckSummary2 " id="ckSummary " ng-config="config "
-                                    maxlength="12000 "></ng-ckeditor>
+                                                            12000) " name="ckSummary2 " id="ckSummary "
+                                    ng-config="config " maxlength="12000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[7].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[7].errorStatus ">maximum character limit is 12000</span>
+                                <span class="text-danger " ng-if="objRtf[7].errorStatus ">maximum character limit is
+                                    12000</span>
                             </div>
                         </div>
 
@@ -1773,15 +2158,18 @@
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                                 <i>
-                                    (Please mention how project data will be generated, stored, standardized, shared among partners, and protected, ensuring
+                                    (Please mention how project data will be generated, stored, standardized, shared
+                                    among partners, and protected, ensuring
                                     compliance with national/international data policies.)
                                 </i>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1790,10 +2178,11 @@
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c
                                                             " ng-change="readCharacter(proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c,8,
-                                                            5000) " name="ckSummary2 " id="ckSummary " ng-config="config "
-                                    maxlength="5000 "></ng-ckeditor>
+                                                            5000) " name="ckSummary2 " id="ckSummary "
+                                    ng-config="config " maxlength="5000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[8].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[8].errorStatus ">maximum character limit is 5000</span>
+                                <span class="text-danger " ng-if="objRtf[8].errorStatus ">maximum character limit is
+                                    5000</span>
                             </div>
                         </div>
 
@@ -1808,9 +2197,11 @@
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1819,10 +2210,11 @@
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                 <ng-ckeditor ng-model="proposalFieldsDetails.Involvement_Of_Young_Scientists__c
                                                             " ng-change="readCharacter(proposalFieldsDetails.Involvement_Of_Young_Scientists__c,9,
-                                                            3000) " name="ckSummary2 " id="ckSummary " ng-config="config "
-                                    maxlength="3000 "></ng-ckeditor>
+                                                            3000) " name="ckSummary2 " id="ckSummary "
+                                    ng-config="config " maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[9].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[9].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[9].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
@@ -1832,14 +2224,17 @@
                                     <span class="required-asterisk text-danger ">*</span>
                                 </b>
                                 <i>
-                                    (describe the need for funding. Especially industrial partners should comment on the percentage of funding needed.)
+                                    (describe the need for funding. Especially industrial partners should comment on the
+                                    percentage of funding needed.)
                                 </i>
                             </label>
                             <div>
                                 <small class="label-rtf ">
-                                    <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                    <b>To use below RTF box more efficiently, make sure you write your content in word
+                                        document
                                         first and then copy paste here
-                                        <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT change
+                                        <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do
+                                        NOT change
                                         margins.
                                     </b>
                                 </small>
@@ -1850,7 +2245,8 @@
                                                             3000) " name="ckSummary2 " id="ckSummary " ng-config="config
                                                             " maxlength="3000 "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[10].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[10].errorStatus ">maximum character limit is 3000</span>
+                                <span class="text-danger " ng-if="objRtf[10].errorStatus ">maximum character limit is
+                                    3000</span>
                             </div>
                         </div>
 
@@ -1866,19 +2262,23 @@
 
                             <div class="mt-5 ">
                                 <label class="pb-3 color-theme ">
-                                    <b>Tentative Plans For Network Meetings and Exchange Visits (including duration) (max. chars
+                                    <b>Tentative Plans For Network Meetings and Exchange Visits (including duration)
+                                        (max. chars
                                         3000)
                                         <span class="required-asterisk text-danger ">*</span>
                                     </b>
                                     <i>
-                                        (It is expected that network meetings - at least 1 per year - and project related exchange visits are decided in advance)
+                                        (It is expected that network meetings - at least 1 per year - and project
+                                        related exchange visits are decided in advance)
                                     </i>
                                 </label>
                                 <div>
                                     <small class="label-rtf ">
-                                        <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                        <b>To use below RTF box more efficiently, make sure you write your content in
+                                            word document
                                             first and then copy paste here
-                                            <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT
+                                            <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations.
+                                            Do NOT
                                             change margins.
                                         </b>
                                     </small>
@@ -1887,26 +2287,30 @@
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                     <ng-ckeditor ng-model="proposalFieldsDetails.Tentative_plans_for_networking__c
                                                             " ng-change="readCharacter(proposalFieldsDetails.Tentative_plans_for_networking__c,11,
-                                                            3000) " name="ckSummary2 " id="ckSummary " ng-config="config "
-                                        maxlength="3000 ">
+                                                            3000) " name="ckSummary2 " id="ckSummary "
+                                        ng-config="config " maxlength="3000 ">
                                     </ng-ckeditor>
                                     <span>Total characters : {{objRtf[11].charCount}}</span>
-                                    <span class="text-danger " ng-if="objRtf[11].errorStatus ">maximum character limit is 3000</span>
+                                    <span class="text-danger " ng-if="objRtf[11].errorStatus ">maximum character limit
+                                        is 3000</span>
                                 </div>
                             </div>
 
                             <div class="mt-5 ">
                                 <label class="pb-3 color-theme ">
-                                    <b>Plan for the utilisation and preservation of project-acquired equipment after the completion
+                                    <b>Plan for the utilisation and preservation of project-acquired equipment after the
+                                        completion
                                         of the project. (max. chars 3000)
                                         <span class="required-asterisk text-danger ">*</span>
                                     </b>
                                 </label>
                                 <div>
                                     <small class="label-rtf ">
-                                        <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                        <b>To use below RTF box more efficiently, make sure you write your content in
+                                            word document
                                             first and then copy paste here
-                                            <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT
+                                            <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations.
+                                            Do NOT
                                             change margins.
                                         </b>
                                     </small>
@@ -1914,11 +2318,13 @@
                                 <div id="panelsStayOpen-collapseOne " class="accordion-collapse collapse show
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                     <ng-ckeditor ng-model="proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c
-                                                            " ng-change="readCharacter(proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c,12,3000) "
+                                                            "
+                                        ng-change="readCharacter(proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c,12,3000) "
                                         name="ckSummary2 " id="ckSummary " ng-config="config " maxlength="3000 ">
                                     </ng-ckeditor>
                                     <span>Total characters : {{objRtf[12].charCount}}</span>
-                                    <span class="text-danger " ng-if="objRtf[12].errorStatus ">maximum character limit is 3000</span>
+                                    <span class="text-danger " ng-if="objRtf[12].errorStatus ">maximum character limit
+                                        is 3000</span>
                                 </div>
                             </div>
 
@@ -1930,9 +2336,11 @@
                                 </label>
                                 <div>
                                     <small class="label-rtf ">
-                                        <b>To use below RTF box more efficiently, make sure you write your content in word document
+                                        <b>To use below RTF box more efficiently, make sure you write your content in
+                                            word document
                                             first and then copy paste here
-                                            <br/> Please use Calibri pt 11 throughout the document, pt 9 for citations. Do NOT
+                                            <br /> Please use Calibri pt 11 throughout the document, pt 9 for citations.
+                                            Do NOT
                                             change margins.
                                         </b>
                                     </small>
@@ -1940,11 +2348,13 @@
                                 <div id="panelsStayOpen-collapseOne " class="accordion-collapse collapse show
                                                             " aria-labelledby="panelsStayOpen-headingOne ">
                                     <ng-ckeditor ng-model="proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c
-                                                            " ng-change="readCharacter(proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c,13,10000) "
+                                                            "
+                                        ng-change="readCharacter(proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c,13,10000) "
                                         name="ckSummary2 " id="ckSummary " ng-config="config " maxlength="10000 ">
                                     </ng-ckeditor>
                                     <span>Total characters : {{objRtf[13].charCount}}</span>
-                                    <span class="text-danger " ng-if="objRtf[13].errorStatus ">maximum character limit is 10000</span>
+                                    <span class="text-danger " ng-if="objRtf[13].errorStatus ">maximum character limit
+                                        is 10000</span>
                                 </div>
                             </div>
 
@@ -1999,13 +2409,14 @@
                                                     </td>
                                                     <td>
                                                         <input type="text " class="form-control " ng-model="applicnt.Funding_Agency__c
-                                                            " required="true " ng-required="applicnt.Funding_Agency__c "
+                                                            " required="true "
+                                                            ng-required="applicnt.Funding_Agency__c "
                                                             ng-disabled="proposalStage " />
                                                     </td>
                                                     <td>
                                                         <input type="text " class="form-control " ng-model="applicnt.Budget__c
-                                                            " required="true " ng-required="applicnt.Budget__c " ng-disabled="proposalStage "
-                                                        />
+                                                            " required="true " ng-required="applicnt.Budget__c "
+                                                            ng-disabled="proposalStage " />
                                                     </td>
                                                     <td>
                                                         <input type="date " class="form-control " ng-model="applicnt.Starting_Date__c
@@ -2014,8 +2425,8 @@
                                                     </td>
                                                     <td>
                                                         <input type="Number " class="form-control " ng-model="applicnt.Duration__c
-                                                            " required="true " ng-required="applicnt.Duration__c " ng-disabled="proposalStage "
-                                                        />
+                                                            " required="true " ng-required="applicnt.Duration__c "
+                                                            ng-disabled="proposalStage " />
                                                     </td>
                                                     <td ng-show="!proposalStage ">
                                                         <a type="button " ng-click="deleteRow($parent.$index,$index) ">
@@ -2148,8 +2559,8 @@
                                             <label class="font-if ">Upload Letter of Consent</label>
                                             <input type="file " accept=".pdf " class="form-control " ng-disabled="uploadDisable
                                                             || isUploadingLetterOfConsent || (letterOfConsentDoc.userDocument.Status__c=='Uploaded'
-                                                            && currentProposalStage=='Submitted' ) " id="letterOfConsentFile "
-                                            />
+                                                            && currentProposalStage=='Submitted' ) "
+                                                id="letterOfConsentFile " />
                                             <span class="input-group-btn pt-3 " ng-hide="uploadDisable ">
                                                 <button class="btn btn-success mt-4 py-3 " ng-click="uploadLetterOfConsent()
                                                             " type="button " ng-disabled="isUploadingLetterOfConsent || (letterOfConsentDoc.userDocument.Status__c=='Uploaded'
@@ -2166,9 +2577,11 @@
                                             <i class="fa fa-check-circle "></i> Letter of Consent uploaded successfully.
                                         </div>
                                     </div>
-                                    <div class="col-md-2 " ng-show="letterOfConsentDoc.userDocument.Status__c=='Uploaded' ">
+                                    <div class="col-md-2 "
+                                        ng-show="letterOfConsentDoc.userDocument.Status__c=='Uploaded' ">
                                         <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingLetterOfConsent}
-                                                            " href="{{letterOfConsentPreviewLink}} " target="_blank ">View</a>
+                                                            " href="{{letterOfConsentPreviewLink}} "
+                                            target="_blank ">View</a>
                                     </div>
                                 </div>
                             </div>
@@ -2277,11 +2690,12 @@
                                     <span class="ms-2 text-danger ">*</span>
                                 </label>
                                 <input type="file " accept=".pdf " class="form-control " ng-disabled="isUploadingGrantAcceptanceUndertaking
-                                                            || currentProposalStage=='Submitted' " id="grantAcceptanceUndertakingFileStage1 "
-                                />
+                                                            || currentProposalStage=='Submitted' "
+                                    id="grantAcceptanceUndertakingFileStage1 " />
                                 <span class="input-group-btn pt-3 ">
                                     <button class="btn btn-success mt-4 py-3 " ng-click="uploadGrantAcceptanceUndertaking()
-                                                            " type="button " ng-disabled="isUploadingGrantAcceptanceUndertaking || currentProposalStage=='Submitted' ">
+                                                            " type="button "
+                                        ng-disabled="isUploadingGrantAcceptanceUndertaking || currentProposalStage=='Submitted' ">
                                         <span ng-if="!isUploadingGrantAcceptanceUndertaking ">Upload</span>
                                         <span ng-if="isUploadingGrantAcceptanceUndertaking ">
                                             <i class="fa fa-spinner fa-spin "></i> Uploading...
@@ -2292,13 +2706,16 @@
                             <div class="alert alert-success ms-4 mt-2 py-2 " ng-if="grantAcceptanceUndertakingDoc && grantAcceptanceUndertakingDoc.userDocument
                                                             && grantAcceptanceUndertakingDoc.userDocument.Status__c=='Uploaded'
                                                             && !isUploadingGrantAcceptanceUndertaking ">
-                                <i class="fa fa-check-circle "></i> Undertaking Format of Grant Acceptance - Uploaded successfully.
+                                <i class="fa fa-check-circle "></i> Undertaking Format of Grant Acceptance - Uploaded
+                                successfully.
                             </div>
                         </div>
-                        <div class="col-md-2 " ng-show="grantAcceptanceUndertakingDoc && grantAcceptanceUndertakingDoc.userDocument
+                        <div class="col-md-2 "
+                            ng-show="grantAcceptanceUndertakingDoc && grantAcceptanceUndertakingDoc.userDocument
                                                             && grantAcceptanceUndertakingDoc.userDocument.Status__c=='Uploaded' ">
                             <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingGrantAcceptanceUndertaking}
-                                                            " href="{{grantAcceptanceUndertakingPreviewLink}} " target="_blank ">View</a>
+                                                            " href="{{grantAcceptanceUndertakingPreviewLink}} "
+                                target="_blank ">View</a>
                         </div>
                     </div>
 
@@ -2306,12 +2723,13 @@
                     <div class="row mt-5 " ng-show="stage==='1st Stage' ">
                         <div class="col-md-6 ">
                             <div class="input-group ms-4 ">
-                                <label class="font-if ">Upload Undertaking for Sensitivity Security Regulations (max 3.5 Mb)
+                                <label class="font-if ">Upload Undertaking for Sensitivity Security Regulations (max 3.5
+                                    Mb)
                                     <span class="ms-2 text-danger ">*</span>
                                 </label>
                                 <input type="file " accept=".pdf " class="form-control " ng-disabled="isUploadingSensitivitySecurityUndertaking
-                                                            || currentProposalStage=='Submitted' " id="sensitivitySecurityUndertakingFileStage1 "
-                                />
+                                                            || currentProposalStage=='Submitted' "
+                                    id="sensitivitySecurityUndertakingFileStage1 " />
                                 <span class="input-group-btn pt-3 ">
                                     <button class="btn btn-success mt-4 py-3 " ng-click="uploadSensitivitySecurityUndertaking()
                                                             " type="button " ng-disabled="isUploadingSensitivitySecurityUndertaking
@@ -2326,13 +2744,16 @@
                             <div class="alert alert-success ms-4 mt-2 py-2 " ng-if="sensitivitySecurityUndertakingDoc &&
                                                             sensitivitySecurityUndertakingDoc.userDocument && sensitivitySecurityUndertakingDoc.userDocument.Status__c=='Uploaded'
                                                             && !isUploadingSensitivitySecurityUndertaking ">
-                                <i class="fa fa-check-circle "></i> Undertaking for Sensitivity Security Regulations - Uploaded successfully.
+                                <i class="fa fa-check-circle "></i> Undertaking for Sensitivity Security Regulations -
+                                Uploaded successfully.
                             </div>
                         </div>
-                        <div class="col-md-2 " ng-show="sensitivitySecurityUndertakingDoc && sensitivitySecurityUndertakingDoc.userDocument
+                        <div class="col-md-2 "
+                            ng-show="sensitivitySecurityUndertakingDoc && sensitivitySecurityUndertakingDoc.userDocument
                                                             && sensitivitySecurityUndertakingDoc.userDocument.Status__c=='Uploaded' ">
                             <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingSensitivitySecurityUndertaking}
-                                                            " href="{{sensitivitySecurityUndertakingPreviewLink}} " target="_blank ">View</a>
+                                                            " href="{{sensitivitySecurityUndertakingPreviewLink}} "
+                                target="_blank ">View</a>
                         </div>
                     </div>
 
@@ -2345,11 +2766,12 @@
                                     <span ng-if="mailingCountry==='India' " class="ms-2 text-danger ">*</span>
                                 </label>
                                 <input type="file " accept=".pdf " class="form-control " ng-disabled="isUploadingFinancialStatement
-                                                            || currentProposalStage=='Submitted' " id="auditedFinancialFileStage2 "
-                                />
+                                                            || currentProposalStage=='Submitted' "
+                                    id="auditedFinancialFileStage2 " />
                                 <span class="input-group-btn pt-3 ">
                                     <button class="btn btn-success mt-4 py-3 " ng-click="uploadAuditedFinancial()
-                                                            " type="button " ng-disabled="isUploadingFinancialStatement || currentProposalStage=='Submitted' ">
+                                                            " type="button "
+                                        ng-disabled="isUploadingFinancialStatement || currentProposalStage=='Submitted' ">
                                         <span ng-if="!isUploadingFinancialStatement ">Upload</span>
                                         <span ng-if="isUploadingFinancialStatement ">
                                             <i class="fa fa-spinner fa-spin "></i> Uploading...
@@ -2360,21 +2782,25 @@
                             <div class="progress ms-4 mt-2 " ng-show="showFinancialStatementProgressBar " style="height:
                                                             20px; ">
                                 <div class="progress-bar progress-bar-striped active " role="progressbar
-                                                            " aria-valuenow="{{financialStatementUploadProgress}} " aria-valuemin="0 "
-                                    aria-valuemax="100 " ng-style="{ 'width': financialStatementUploadProgress
+                                                            " aria-valuenow="{{financialStatementUploadProgress}} "
+                                    aria-valuemin="0 " aria-valuemax="100 " ng-style="{ 'width': financialStatementUploadProgress
                                                             + '%' } ">
-                                    <span style="font-size:14px; font-weight:bold; ">{{financialStatementUploadProgress}}%</span>
+                                    <span
+                                        style="font-size:14px; font-weight:bold; ">{{financialStatementUploadProgress}}%</span>
                                 </div>
                             </div>
                             <div ng-if="auditedFinancialDoc && auditedFinancialDoc.userDocument && auditedFinancialDoc.userDocument.Status__c=='Uploaded'
-                                                            && !isUploadingFinancialStatement " class="alert alert-success ms-4 mt-2 py-2 ">
+                                                            && !isUploadingFinancialStatement "
+                                class="alert alert-success ms-4 mt-2 py-2 ">
                                 <i class="fa fa-check-circle "></i> Budget Report - Stage 2 uploaded successfully.
 
                             </div>
                         </div>
-                        <div class="col-md-2 " ng-show="auditedFinancialDoc && auditedFinancialDoc.userDocument && auditedFinancialDoc.userDocument.Status__c=='Uploaded' ">
+                        <div class="col-md-2 "
+                            ng-show="auditedFinancialDoc && auditedFinancialDoc.userDocument && auditedFinancialDoc.userDocument.Status__c=='Uploaded' ">
                             <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingFinancialStatement}
-                                                            " href="{{auditedFinancialPreviewLink}} " target="_blank ">View</a>
+                                                            " href="{{auditedFinancialPreviewLink}} "
+                                target="_blank ">View</a>
                         </div>
                     </div>
 
@@ -2386,11 +2812,12 @@
                                     <span class="ms-2 text-danger ">*</span>
                                 </label>
                                 <input type="file " accept=".pdf " class="form-control " ng-disabled="isUploadingQuotation
-                                                            || currentProposalStage=='Submitted' " id="quotationEquipmentFileStage2 "
-                                />
+                                                            || currentProposalStage=='Submitted' "
+                                    id="quotationEquipmentFileStage2 " />
                                 <span class="input-group-btn pt-3 ">
                                     <button class="btn btn-success mt-4 py-3 " ng-click="uploadQuotationEquipment()
-                                                            " type="button " ng-disabled="isUploadingQuotation || currentProposalStage=='Submitted' ">
+                                                            " type="button "
+                                        ng-disabled="isUploadingQuotation || currentProposalStage=='Submitted' ">
                                         <span ng-if="!isUploadingQuotation ">Upload</span>
                                         <span ng-if="isUploadingQuotation ">
                                             <i class="fa fa-spinner fa-spin "></i> Uploading...
@@ -2401,21 +2828,25 @@
                             <div class="progress ms-4 mt-2 " ng-show="showQuotationEquipmentProgressBar " style="height:
                                                             20px; ">
                                 <div class="progress-bar progress-bar-striped active " role="progressbar
-                                                            " aria-valuenow="{{quotationEquipmentUploadProgress}} " aria-valuemin="0 "
-                                    aria-valuemax="100 " ng-style="{ 'width': quotationEquipmentUploadProgress
+                                                            " aria-valuenow="{{quotationEquipmentUploadProgress}} "
+                                    aria-valuemin="0 " aria-valuemax="100 " ng-style="{ 'width': quotationEquipmentUploadProgress
                                                             + '%' } ">
-                                    <span style="font-size:14px; font-weight:bold; ">{{quotationEquipmentUploadProgress}}%</span>
+                                    <span
+                                        style="font-size:14px; font-weight:bold; ">{{quotationEquipmentUploadProgress}}%</span>
                                 </div>
                             </div>
                             <div ng-if="quotationEquipmentDoc && quotationEquipmentDoc.userDocument && quotationEquipmentDoc.userDocument.Status__c=='Uploaded'
-                                                            && !isUploadingQuotation " class="alert alert-success ms-4 mt-2 py-2 ">
-                                <i class="fa fa-check-circle "></i> Quotation for Equipment / Accessories - Stage 2 uploaded successfully.
+                                                            && !isUploadingQuotation "
+                                class="alert alert-success ms-4 mt-2 py-2 ">
+                                <i class="fa fa-check-circle "></i> Quotation for Equipment / Accessories - Stage 2
+                                uploaded successfully.
                             </div>
                         </div>
                         <div class="col-md-2 " ng-show="quotationEquipmentDoc && quotationEquipmentDoc.userDocument &&
                                                             quotationEquipmentDoc.userDocument.Status__c=='Uploaded' ">
                             <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingQuotation}
-                                                            " href="{{quotationEquipmentPreviewLink}} " target="_blank ">View</a>
+                                                            " href="{{quotationEquipmentPreviewLink}} "
+                                target="_blank ">View</a>
                         </div>
                     </div>
 
@@ -2423,7 +2854,8 @@
 
                     <div class="row my-5 mt-5 " ng-if="!proposalStage ">
                         <div class="col-md-12 ">
-                            <button class="blue-btn float-end " id="btnSubmit " ng-click="saveDetails() " type="button ">
+                            <button class="blue-btn float-end " id="btnSubmit " ng-click="saveDetails() "
+                                type="button ">
                                 <i class="fa-solid fa-check me-2 "></i>Save and Next</button>
                             <button class="btn btn-secondary float-end me-2 " style="padding: 8px 20px !important;font-size:
                                                             16px !important; " ng-click="redirectPageURL(
