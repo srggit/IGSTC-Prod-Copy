@@ -1777,7 +1777,7 @@
 
 
                                     <!-- Work Packages -->
-                                    <div ng-repeat="wp in wpDeliverablesTableList" class="wp-card">
+                                    <div ng-repeat="wp in wpDeliverablesTableList" style="margin-bottom: 10px;">
 
                                         <!-- WP Header -->
                                         <div class="wp-title-row">

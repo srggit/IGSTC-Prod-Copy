@@ -3639,8 +3639,8 @@ input[type=number] {
 
 /* PARTNER DROPDOWN */
 .partner-dropdown{
-    max-height:200px;
-    overflow-y:auto;
+    max-height:150px;
+    overflow-y:scroll;
 }
 
 /* ADD WP BUTTON */

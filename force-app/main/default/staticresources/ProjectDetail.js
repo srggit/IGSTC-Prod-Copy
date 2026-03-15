@@ -3918,6 +3918,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 if ($scope.wpDeliverablesTableList.length === 0) {
                     $scope.addNewWP();
                 }
+
                 $scope.$applyAsync();
             }
         }, { escape: true });
