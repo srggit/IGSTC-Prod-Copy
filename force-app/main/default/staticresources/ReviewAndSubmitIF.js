@@ -301,123 +301,287 @@ angular.module('cp_app').controller('ReviewAndSubmitIF_Ctrl', function ($scope, 
     }
 
      
-    $scope.uploadFile = function (type, userDocId, fileId, fileSizeFun) {
-        debugger;
-        maxFileSize = fileSizeFun;
-        $scope.showSpinnereditProf = true;
-        var file;
+    // $scope.uploadFile = function (type, userDocId, fileId, fileSizeFun) {
+    //     debugger;
+    //     maxFileSize = fileSizeFun;
+    //     $scope.showSpinnereditProf = true;
+    //     var file;
 
-        file = document.getElementById(type).files[0];
-        fileName = file.name;
-        var typeOfFile = fileName.split(".");
-        lengthOfType = typeOfFile.length;
-        if (typeOfFile[lengthOfType - 1] == "jpg" || typeOfFile[lengthOfType - 1] == "jpeg") {
+    //     file = document.getElementById(type).files[0];
+    //     fileName = file.name;
+    //     var typeOfFile = fileName.split(".");
+    //     lengthOfType = typeOfFile.length;
+    //     if (typeOfFile[lengthOfType - 1] == "jpg" || typeOfFile[lengthOfType - 1] == "jpeg") {
 
-        } else {
-            swal('Info', 'Please choose jpg/jpeg file only.', 'info');
-            return;
-        }
-        console.log(file);
-        if (file != undefined) {
-            if (file.size <= maxFileSize) {
+    //     } else {
+    //         swal('Info', 'Please choose jpg/jpeg file only.', 'info');
+    //         return;
+    //     }
+    //     console.log(file);
+    //     if (file != undefined) {
+    //         if (file.size <= maxFileSize) {
 
-                attachmentName = file.name;
-                const myArr = attachmentName.split(".");
-                /* if (myArr[1] != "pdf" && type != 'profilePic') {
-                    alert("Please upload in PDF format only");
-                    return;
-                } */
-                var fileReader = new FileReader();
-                var maxStringSize = 6000000;
-                fileReader.onloadend = function (e) {
-                    attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
-                    positionIndex = 0;
-                    fileSize = attachment.length;
-                    $scope.showSpinnereditProf = false;
-                    console.log("Total Attachment Length: " + fileSize);
-                    doneUploading = false;
-                    debugger;
-                    if (fileSize < maxStringSize) {
-                        $scope.uploadAttachment(type, userDocId, fileId);
-                    } else {
-                        swal("Info", "Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".", "info");
-                        return;
-                        // alert("Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".");
-                    }
+    //             attachmentName = file.name;
+    //             const myArr = attachmentName.split(".");
+    //             /* if (myArr[1] != "pdf" && type != 'profilePic') {
+    //                 alert("Please upload in PDF format only");
+    //                 return;
+    //             } */
+    //             var fileReader = new FileReader();
+    //             var maxStringSize = 6000000;
+    //             fileReader.onloadend = function (e) {
+    //                 attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+    //                 positionIndex = 0;
+    //                 fileSize = attachment.length;
+    //                 $scope.showSpinnereditProf = false;
+    //                 console.log("Total Attachment Length: " + fileSize);
+    //                 doneUploading = false;
+    //                 debugger;
+    //                 if (fileSize < maxStringSize) {
+    //                     $scope.uploadAttachment(type, userDocId, fileId);
+    //                 } else {
+    //                     swal("Info", "Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".", "info");
+    //                     return;
+    //                     // alert("Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".");
+    //                 }
 
-                }
-                fileReader.onerror = function (e) {
-                    swal("Info", "There was an error reading the file.  Please try again.", "info");
-                    return;
-                    // alert("There was an error reading the file.  Please try again.");
-                }
-                fileReader.onabort = function (e) {
-                    swal("Info", "There was an error reading the file.  Please try again.", "info");
-                    return;
-                    // alert("There was an error reading the file.  Please try again.");
-                }
+    //             }
+    //             fileReader.onerror = function (e) {
+    //                 swal("Info", "There was an error reading the file.  Please try again.", "info");
+    //                 return;
+    //                 // alert("There was an error reading the file.  Please try again.");
+    //             }
+    //             fileReader.onabort = function (e) {
+    //                 swal("Info", "There was an error reading the file.  Please try again.", "info");
+    //                 return;
+    //                 // alert("There was an error reading the file.  Please try again.");
+    //             }
 
-                fileReader.readAsBinaryString(file);  //Read the body of the file
+    //             fileReader.readAsBinaryString(file);  //Read the body of the file
 
-            } else {
-                swal("Info", "File must be under 1 Mb in size.  Your file is too large.  Please try again.", "info");
-                return;
-            }
-        } else {
-            swal("Info", "You must choose a file before trying to upload it", "info");
-            return;
-            // alert("You must choose a file before trying to upload it");
-            // $scope.showSpinnereditProf = false;
-        }
+    //         } else {
+    //             swal("Info", "File must be under 1 Mb in size.  Your file is too large.  Please try again.", "info");
+    //             return;
+    //         }
+    //     } else {
+    //         swal("Info", "You must choose a file before trying to upload it", "info");
+    //         return;
+    //         // alert("You must choose a file before trying to upload it");
+    //         // $scope.showSpinnereditProf = false;
+    //     }
+    // }
+
+    // $scope.uploadAttachment = function (type, userDocId, fileId) {
+    //     debugger;
+    //     var attachmentBody = "";
+    //     var chunkSize = 750000;
+    //     if (fileId == undefined) {
+    //         fileId = " ";
+    //     }
+    //     if (fileSize <= positionIndex + chunkSize) {
+    //         debugger;
+    //         attachmentBody = attachment.substring(positionIndex);
+    //         doneUploading = true;
+    //     } else {
+    //         attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+    //     }
+    //     console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
+    //     ApplicantPortal_Contoller.doCUploadAttachmentSignature(
+    //         attachmentBody, attachmentName, fileId, userDocId,
+    //         function (result, event) {
+    //             console.log(result);
+    //             if (event.type === 'exception') {
+    //                 console.log("exception");
+    //                 console.log(event);
+    //             } else if (event.status) {
+    //                 if (doneUploading == true) {
+    //                     $scope.getProjectdetils();
+    //                     swal(
+    //                         'success',
+    //                         'Uploaded Successfully!',
+    //                         'success'
+    //                     )
+
+    //                     $scope.getProjectdetils();
+    //                     // $scope.disableSubmit = false;
+
+    //                 }
+    //                 $scope.showUplaodUserDoc = false;
+    //                 // $scope.getCandidateDetails();
+
+    //             } else {
+    //                 debugger;
+    //                 positionIndex += chunkSize;
+    //                 $scope.uploadAttachment(type, userDocId, result);
+    //             }
+    //         },
+
+
+    //         { buffer: true, escape: true, timeout: 120000 }
+    //     );
+    // }
+
+     $scope.uploadFile = function (type, userDocId, fileId, fileSizeFun) {
+    debugger;
+    maxFileSize = fileSizeFun;
+    $scope.showSpinnereditProf = true;
+    var file;
+
+    file = document.getElementById(type).files[0];
+    fileName = file.name;
+    var typeOfFile = fileName.split(".");
+    lengthOfType = typeOfFile.length;
+    if (typeOfFile[lengthOfType - 1] == "jpg" || typeOfFile[lengthOfType - 1] == "jpeg") {
+
+    } else {
+      swal('Info', 'Please choose jpg/jpeg file only.', 'info');
+      return;
     }
+    console.log(file);
+    if (file != undefined) {
+      if(file.size > maxFileSize){
+         $scope.showSpinnereditProf = false;    
+          swal(
+            "Info",
+            "File must be less than 1 MB.",
+            "info"
+          );
+          return;
+      }
+      
+      if (file.size <= maxFileSize) {
 
-    $scope.uploadAttachment = function (type, userDocId, fileId) {
-        debugger;
-        var attachmentBody = "";
-        var chunkSize = 750000;
-        if (fileId == undefined) {
-            fileId = " ";
+        attachmentName = file.name;
+        const myArr = attachmentName.split(".");
+        /* if (myArr[1] != "pdf" && type != 'profilePic') {
+            alert("Please upload in PDF format only");
+            return;
+        } */
+        var fileReader = new FileReader();
+        var maxStringSize = 1048576;
+        fileReader.onloadend = function (e) {
+          attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+          positionIndex = 0;
+          fileSize = attachment.length;
+          $scope.showSpinnereditProf = false;
+          console.log("Total Attachment Length: " + fileSize);
+          doneUploading = false;
+          debugger;
+
+          if (fileSize < maxStringSize) {
+            $scope.uploadAttachment(type, userDocId, fileId);
+          } else {
+            swal("Info", "Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".", "info");
+            return;
+            // alert("Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".");
+          }
+
         }
-        if (fileSize <= positionIndex + chunkSize) {
-            debugger;
-            attachmentBody = attachment.substring(positionIndex);
-            doneUploading = true;
-        } else {
-            attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+        fileReader.onerror = function (e) {
+          swal("Info", "There was an error reading the file.  Please try again.", "info");
+          return;
+          // alert("There was an error reading the file.  Please try again.");
         }
-        console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
-        ApplicantPortal_Contoller.doCUploadAttachmentSignature(
-            attachmentBody, attachmentName, fileId, userDocId,
-            function (result, event) {
-                console.log(result);
-                if (event.type === 'exception') {
-                    console.log("exception");
-                    console.log(event);
-                } else if (event.status) {
-                    if (doneUploading == true) {
-                        $scope.getProjectdetils();
-                        swal(
-                            'success',
-                            'Uploaded Successfully!',
-                            'success'
-                        )
+        fileReader.onabort = function (e) {
+          swal("Info", "There was an error reading the file.  Please try again.", "info");
+          return;
+          // alert("There was an error reading the file.  Please try again.");
+        }
 
-                        $scope.getProjectdetils();
-                        // $scope.disableSubmit = false;
+        fileReader.readAsBinaryString(file);  //Read the body of the file
 
-                    }
-                    $scope.showUplaodUserDoc = false;
-                    // $scope.getCandidateDetails();
-
-                } else {
-                    debugger;
-                    positionIndex += chunkSize;
-                    $scope.uploadAttachment(type, userDocId, result);
-                }
-            },
-
-
-            { buffer: true, escape: true, timeout: 120000 }
-        );
+      } else {
+        swal("Info", "File must be under 1 Mb in size.  Your file is too large.  Please try again.", "info");
+        return;
+      }
+    } else {
+      swal("Info", "You must choose a file before trying to upload it", "info");
+      return;
+      // alert("You must choose a file before trying to upload it");
+      // $scope.showSpinnereditProf = false;
     }
+  }
+
+  $scope.uploadAttachment = function (type, userDocId, fileId) {
+    debugger;
+    var attachmentBody = "";
+    var chunkSize = 750000;
+    if (fileId == undefined) {
+      fileId = " ";
+    }
+    if (fileSize <= positionIndex + chunkSize) {
+      debugger;
+      attachmentBody = attachment.substring(positionIndex);
+      doneUploading = true;
+    } else {
+      attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+    }
+    console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
+    ApplicantPortal_Contoller.doCUploadAttachmentSignature(
+      attachmentBody, attachmentName, fileId, userDocId,
+      function (result, event) {
+        console.log(result);
+        if (event.type === 'exception') {
+          console.log("exception");
+          console.log(event);
+        }
+        //  else if (event.status) {
+        //   if (doneUploading == true) {
+        //     swal(
+        //       'success',
+        //       'Uploaded Successfully!',
+        //       'success'
+        //     )
+
+        //     $scope.getProjectdetils();
+        //     // $scope.disableSubmit = false;
+
+        //   }
+        //   $scope.showUplaodUserDoc = false;
+        //   // $scope.getCandidateDetails();
+
+        // } 
+        // else if (event.status === true) {
+
+        //   if (doneUploading === true) {
+        //     $scope.showSpinnereditProf = false;
+
+        //     swal(
+        //       'Success',
+        //       'Uploaded Successfully!',
+        //       'success'
+        //     );
+
+        //     $scope.getProjectdetils();
+        //     $scope.showUplaodUserDoc = false;
+        //   }
+         
+        // }
+        // else {
+        //   debugger;
+        //   positionIndex += chunkSize;
+        //   $scope.uploadAttachment(type, userDocId, result);
+        // }
+       else if (event.status === true && doneUploading === true) {
+          $scope.showSpinnereditProf = false;
+
+          swal(
+            'Success',
+            'Uploaded Successfully!',
+            'success'
+          );
+
+          $scope.getProjectdetils();
+          $scope.showUplaodUserDoc = false;
+        }
+        else if (!doneUploading) {
+          positionIndex += chunkSize;
+          $scope.uploadAttachment(type, userDocId, result);
+        }
+      },
+
+
+      { buffer: true, escape: true, timeout: 120000 }
+    );
+  }
 });

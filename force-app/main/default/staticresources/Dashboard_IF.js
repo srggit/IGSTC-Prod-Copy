@@ -150,7 +150,13 @@ $scope.getActiveCampaignData = function() {
 
                 $scope.PIEF_phd_limit = result[0].PIEF_PhD_time__c;
 
-                 $scope.endDate=new Date(result[0].Campaign_End_Date__c,);
+                // $scope.endDate=new Date(result[0].Campaign_End_Date__c);
+                
+                //converting date time to date only format
+                if (result[0].Campaign_End_Date__c) {
+                    let d = new Date(result[0].Campaign_End_Date__c);
+                    $scope.endDate = new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate());
+                }
 
                 //Set Campaign ID;
                localStorage.setItem('campaignId', result[0].Campaign__c);

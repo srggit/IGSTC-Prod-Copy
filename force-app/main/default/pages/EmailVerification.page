@@ -6,6 +6,7 @@
             debugger;
             app.controller('uEmailCtrl', function ($scope) {
                 hashId = "{!$CurrentPage.parameters.id}";
+                console.log('hashId--',hashId);
                 $scope.successfull = false;
                 $scope.onInit = function () {
                     debugger;
@@ -17,17 +18,25 @@
                             if (event.status) { 
                                 debugger;
                                 if (result != null) {
-                                    $scope.successfull = true;
+                                    //$scope.successfull = true;
                                     $scope.res = result;
+                                    console.log('result--',result);
                                     $scope.$apply();
 
-                                    swal('success','Your email has been verified successfully. Kindly re-login for continuing your proposal.','success');
+                                    swal('Thank You!','Your email has been verified Successfully.','success');
+                                        setTimeout(function () {
+                                            window.location.replace(
+                                                'https://indo-germansciencetechnologycentre--prodcopy.sandbox.my.salesforce-sites.com/ApplicantDashboard'
+                                            );
+                                        }, 2000);
+
+                                    
                                     // Swal.fire(
                                     //     '',
                                     //     'Your Email has been verified successfully',
                                     //     'success'
                                     // )
-                                    if($scope.res == "workshop"){
+                                     if($scope.res == "workshop"){
                                         var sitePrefix = window.location.href.includes('/apex') ? '/apex' : '/ApplicantDashboard?campaign=Landing_Page_Workshop';
                                         setTimeout(function() {window.location.replace(window.location.origin + sitePrefix )}, 5000);
                                         
@@ -59,6 +68,7 @@
                             }
                         }, { escape: false })
                     } else {
+                         console.log('else part--');
                        //   window.location.replace('https://surveyfieldwork.com/');
                        var sitePrefix = window.location.href.includes('/apex') ? '/apex' : '/ApplicantDashboard';
                             window.location.replace(window.location.origin + sitePrefix );

@@ -1,17 +1,27 @@
 import { LightningElement, api, track } from 'lwc';
 import getProposalData from '@salesforce/apex/WPDeliverableGanttController.getProposalData';
 
+// const colors = [
+//     '#ffad43ff',
+//     '#ff8c00',
+//     '#a855f7',
+//     '#10b981',
+//     '#50d492ff',
+//     '#f59e0b',
+//     '#06b6d4',
+//     '#8b5cf6'
+// ];
+
 const colors = [
     '#ffad43ff',
     '#ff8c00',
     '#a855f7',
-    '#10b981',
+    '#0e7adfff',
     '#50d492ff',
     '#f59e0b',
-    '#06b6d4',
+    '#06a5d6ff',
     '#8b5cf6'
 ];
-
 export default class WorkPackageDeliverablesGanttChart extends LightningElement {
 
     @api recordId;
@@ -64,18 +74,17 @@ export default class WorkPackageDeliverablesGanttChart extends LightningElement 
                     }
 
                     const deliverables = (wp.deliverables || []).map(d => {
-
                         const dStart = Number(d.Duration_Start_Month__c) || wpStart;
                         const dEnd = Number(d.Duration_End_Month__c) || wpEnd;
+
+                        // Fix: Use (dStart - 1) to match VF logic
+                        const colorIndex = (dStart - 1) % colors.length;
 
                         return {
                             id: d.Id,
                             label: d.Deliverable_Sequence__c,
-                            // style: `grid-column:${dStart} / ${dEnd + 1};`
-                            style: `grid-column:${dStart} / ${dEnd + 1}; background:${colors[dStart % colors.length]};`
-
+                            style: `grid-column:${dStart} / ${dEnd + 1}; background:${colors[colorIndex]};`
                         };
-
                     });
 
                     // Generate contact initials for badge

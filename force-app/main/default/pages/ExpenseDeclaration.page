@@ -291,7 +291,7 @@
                                     <div class="row mt-5 mb-5">
                                         <div class="col-md-6">
                                             <h4 class="label-rtf ms-5">Indian IGSTC Funding:</h4>
-                                            <div class="row box-shadow-2 mt-3 ms-5">
+                                            <!-- <div class="row box-shadow-2 mt-3 ms-5">
                                                 <p style="font-size: 15px;">
                                                     <i class="fa fa-money me-3 ms-3 mt-3"></i>Total Funding Requested By Indian Partners :
                                                     <i class="fa-solid fa-indian-rupee-sign"></i> {{TotalIndianContribution | inrCurrency}}</p>
@@ -301,11 +301,22 @@
                                                 <p style="font-size: 15px;">
                                                     <i class="fa fa-money me-3 ms-3 mt-3 mb-3"></i>Indian Academia Partner(s) :
                                                     <i class="fa-solid fa-indian-rupee-sign"></i> {{TotalContriIndianAcademia | inrCurrency}}</p>
+                                            </div> -->
+                                            <div class="row box-shadow-2 mt-3 ms-5">
+                                                <p style="font-size: 15px;">
+                                                    <i class="fa fa-money me-3 ms-3 mt-3"></i>Total Funding Requested By Indian Partners :
+                                                    <i class="fa-solid"></i> {{TotalIndianContribution | inrCurrency}}</p>
+                                                <p style="font-size: 15px;">
+                                                    <i class="fa fa-money me-3 ms-3 mt-3"></i>Indian Industy Partner(s) :
+                                                    <i class="fa-solid"></i> {{TotalContriIndianIndustry | inrCurrency}}</p>
+                                                <p style="font-size: 15px;">
+                                                    <i class="fa fa-money me-3 ms-3 mt-3 mb-3"></i>Indian Academia Partner(s) :
+                                                    <i class="fa-solid"></i> {{TotalContriIndianAcademia | inrCurrency}}</p>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <h4 class="label-rtf">German IGSTC Funding:</h4>
-                                            <div class="row box-shadow-2 mt-3 ms-1 mx-2">
+                                            <!-- <div class="row box-shadow-2 mt-3 ms-1 mx-2">
                                                 <p style="font-size: 15px;">
                                                     <i class="fa fa-money me-3 ms-3 mt-3"></i>Total Funding Requested By German Partners :
                                                     <i class="fa-solid fa-euro-sign"></i> {{TotalGermanContribution | euroCurrency}}</p>
@@ -315,6 +326,17 @@
                                                 <p style="font-size: 15px;">
                                                     <i class="fa fa-money me-3 ms-3 mt-3 mb-3"></i>German Academia Partner(s) :
                                                     <i class="fa-solid fa-euro-sign"></i> {{TotalContriGermanAcademia | euroCurrency}}</p>
+                                            </div> -->
+                                            <div class="row box-shadow-2 mt-3 ms-1 mx-2">
+                                                <p style="font-size: 15px;">
+                                                    <i class="fa fa-money me-3 ms-3 mt-3"></i>Total Funding Requested By German Partners :
+                                                    <i class="fa-solid"></i> {{TotalGermanContribution | euroCurrency}}</p>
+                                                <p style="font-size: 15px;">
+                                                    <i class="fa fa-money me-3 ms-3 mt-3"></i>German Industy Partner(s) :
+                                                    <i class="fa-solid"></i> {{TotalContriGermanIndustry | euroCurrency}}</p>
+                                                <p style="font-size: 15px;">
+                                                    <i class="fa fa-money me-3 ms-3 mt-3 mb-3"></i>German Academia Partner(s) :
+                                                    <i class="fa-solid"></i> {{TotalContriGermanAcademia | euroCurrency}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -988,11 +1010,11 @@
                                         </tr>
 
                                         <!-- Overhead rows -->
-                                        <tr class="input-row " ng-if="(accList.BillingCountry=='India' && accList.Academia__c==t
-                                                rue) || (accList.BillingCountry=='Germany' ) " ng-repeat="con in overhead ">
+                                        <tr class="input-row" ng-if="(accList.BillingCountry=='India' && accList.Academia__c==true) || (accList.BillingCountry=='Germany')"
+                                            ng-repeat="con in overhead">
                                             <td>
-                                                <input ng-disabled="proposalStage " ng-model="con.Description__c
-                                                " placeholder="Description " type="text " />
+                                                <input ng-disabled="proposalStage" ng-model="con.Description__c
+                                                " placeholder="Description" type="text " />
                                             </td>
                                             <td></td>
                                             <td></td>

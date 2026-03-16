@@ -1,0 +1,15 @@
+.table-container{
+    max-height: 350px;
+    overflow-y: auto;
+}
+.footer{   
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    justify-content: flex-end;   
+}
+.empty-state{
+    text-align: center;
+    padding: 40px;
+    color: #6b6b6b;
+}

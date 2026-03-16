@@ -338,7 +338,7 @@
                                                 <!-- <button type="button" ng-cloak="true" class="btn btn-danger float-end" ng-click="removeAccount($index,account.Id)" ng-disabled="proposalStage"> -->
                                                 <button type="button" ng-cloak="true" class="btn btn-danger float-end"
                                                     ng-click="removeAccount($index,account.Id)"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage">
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage|| disablePartnerEdit">
                                                     <i class="fa-solid fa-circle-xmark me-2"></i>Delete</button>
                                                 <!-- </div> -->
                                             </div>

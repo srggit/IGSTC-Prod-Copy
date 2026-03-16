@@ -128,13 +128,15 @@
                 text-overflow: ellipsis;
                 width: 100%;
                 line-height: normal;
+                margin-top: 5px;
             }
 
             /* CRITICAL FIX: WP bar should be semi-transparent to show lines through it */
             #ganttChart .wp-bar {
                 /* background: rgba(30, 235, 68, 0.7); */
                 /* 70% opacity green - lets lines show through */
-                background: rgb(0, 231, 0);
+                /* background: rgb(0, 231, 0); */
+                background: #2ea043;
                 height: 8px;
                 border-radius: 3px;
                 width: 100%;
@@ -1846,7 +1848,8 @@
 
                                                             <button class="btn btn-light dropdown-toggle w-100"
                                                                 data-bs-toggle="dropdown"
-                                                                ng-disabled="proposalStage || !isCoordinator">
+                                                                ng-disabled="proposalStage || !isCoordinator"
+                                                                ng-hide="proposalStage || !isCoordinator">
                                                                 Select Partners
                                                             </button>
 
@@ -1866,6 +1869,23 @@
                                                                 </li>
 
                                                             </ul>
+
+                                                            <!-- Show selected partners as badges - AUTOMATIC UPDATES -->
+                                                            <div class="selected-partners mt-2"
+                                                                ng-if="(wp.AccountList | filter:{selected:true}).length > 0">
+                                                                <span class="badge bg-badge me-1 rounded-pill px-3 py-2"
+                                                                    ng-repeat="partner in wp.AccountList | filter:{selected:true}"
+                                                                    title="{{partner.Name}}">
+                                                                    {{partner.Name | limitTo:15}}{{partner.Name.length >
+                                                                    15 ? '...' : ''}}
+                                                                </span>
+                                                            </div>
+
+                                                            <!-- Show message when no partners selected -->
+                                                            <div class="text-muted small mt-1"
+                                                                ng-if="(wp.AccountList | filter:{selected:true}).length === 0">
+                                                                No partners selected
+                                                            </div>
 
                                                         </div>
                                                     </td>
@@ -1960,25 +1980,26 @@
 
                             <!-- GANTT CHART SECTION -->
                             <!-- GANTT CHART SECTION - Keep Bootstrap classes only on text, not on container -->
-                            <!--
-                            <div class="mt-5">
-                                <h4 class="mb-0">
+
+                            <div class="mt-5" style="margin-left: 10px; margin-right: 5px;">
+                                <h4 class="mb-0 mt-5">
                                     <i class="fas fa-chart-gantt me-2"></i>
                                     Work Package &amp; Deliverables Gantt Chart
                                 </h4>
-                                <!-- Remove card-body class 
+                                <!-- Remove card-body class -->
                                 <div style="padding: 0; margin-top: 15px;">
-                                    <!-- Gantt Chart Container 
-                            <div id="ganttChartContainer" style="overflow-x: auto; padding: 0; margin: 0;">
-                                <div id="ganttChart" style="padding: 0; margin: 0;"></div>
+                                    <!-- Gantt Chart Container -->
+                                    <!-- <div id="ganttChartContainer" style="overflow-x: auto; padding: 0; margin: 0;"> -->
+                                    <div id="ganttChart" style="padding: 0; margin: 0;"></div>
+                                    <!-- </div> -->
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    -->
+
                         </div>
 
 
                         <!-- GANTT CHART SECTION -->
+
                         <!--
                         <div class="card mt-5">
                             <div class="card-header bg-primary text-white">
@@ -1988,10 +2009,10 @@
                                 </h4>
                             </div>
                             <div class="card-body">
-                                <!-- Gantt Chart Container 
+                                <!-- Gantt Chart Container
                                 <div id="ganttChartContainer" style="overflow-x: auto;">
                                     <div id="ganttChart" class="gantt-chart">
-                                        <!-- Chart will be rendered here by JavaScript 
+                                        <!-- Chart will be rendered here by JavaScript
                                     </div>
                                 </div>
                             </div>

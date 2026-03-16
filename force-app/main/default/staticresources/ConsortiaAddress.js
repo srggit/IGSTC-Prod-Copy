@@ -163,7 +163,7 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
 
         file = document.getElementById(type).files[0];
         if (!file) {
-            swal('info', 'You must choose a file before trying to upload it', 'info');
+            swal('Info', 'You must choose a file before trying to upload it', 'info');
             setUploadingFlagForType(type, false);
             return;
         }
@@ -172,7 +172,7 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
         var typeOfFile = fileName.split(".");
         lengthOfType = typeOfFile.length;
         if (typeOfFile[lengthOfType - 1] != "pdf") {
-            swal('info', 'Please choose pdf file only.', 'info');
+            swal('Info', 'Please choose pdf file only.', 'info');
             setUploadingFlagForType(type, false);
             return;
         }
@@ -194,19 +194,19 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                     if (fileSize < maxStringSize) {
                         $scope.uploadAttachment(type, userDocId, null);
                     } else {
-                        swal('info', 'Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".', 'info');
+                        swal('Info', 'Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".', 'info');
                         setUploadingFlagForType(type, false);
                         return;
                     }
 
                 }
                 fileReader.onerror = function (e) {
-                    swal('info', 'There was an error reading the file.  Please try again.', 'info');
+                    swal('Info', 'There was an error reading the file.  Please try again.', 'info');
                     setUploadingFlagForType(type, false);
                     return;
                 }
                 fileReader.onabort = function (e) {
-                    swal('info', 'There was an error reading the file.  Please try again.', 'info');
+                    swal('Info', 'There was an error reading the file.  Please try again.', 'info');
                     setUploadingFlagForType(type, false);
                     return;
                 }
@@ -214,12 +214,12 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                 fileReader.readAsBinaryString(file);  //Read the body of the file
 
             } else {
-                swal('info', 'Your file is too large.  Please try again.', 'info');
+                swal('Info', 'Your file is too large.  Please try again.', 'info');
                 setUploadingFlagForType(type, false);
                 return;
             }
         } else {
-            swal('info', 'You must choose a file before trying to upload it', 'info');
+            swal('Info', 'You must choose a file before trying to upload it', 'info');
             setUploadingFlagForType(type, false);
             return;
         }
@@ -378,7 +378,7 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
         var contact0 = $scope.addressDetails.Contacts[0];
 
         if ($scope.addressDetails.Name == undefined || $scope.addressDetails.Name == "") {
-            swal("Address Details", "Please Enter Institution/Industry Name.");
+            swal("Address Details", "Please enter Institution/Industry Name.");
             $("#inst").addClass('border-theme');
             return;
         }
@@ -393,60 +393,60 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
             return;
         }
         if (contact0.Name == undefined || contact0.Name == "") {
-            swal("Address Details", "Please Enter Head of Project.");
+            swal("Address Details", "Please enter Head of Project.");
             $("#head").addClass('border-theme');
             return;
         }
         if (contact0.Phone == undefined || contact0.Phone == "") {
-            swal("Address Details", "Please Enter Phone.");
+            swal("Address Details", "Please enter Phone.");
             $("#phone").addClass('border-theme');
             return;
         }
         if (contact0.Department == undefined || contact0.Department == "") {
-            swal("Address Details", "Please Enter Department.");
+            swal("Address Details", "Please enter Department.");
             $("#dept").addClass('border-theme');
             return;
         }
 
         if ($scope.addressDetails.BillingStreet == undefined || $scope.addressDetails.BillingStreet == "") {
-            swal("Address Details", "Please Enter Street.");
+            swal("Address Details", "Please enter Street.");
             $("#IStreet").addClass('border-theme');
             return;
         }
         if ($scope.addressDetails.BillingCity == undefined || $scope.addressDetails.BillingCity == "") {
-            swal("Address Details", "Please Enter City.");
+            swal("Address Details", "Please enter City.");
             $("#ICity").addClass('border-theme');
             return;
         }
         if ($scope.addressDetails.BillingCountry == undefined || $scope.addressDetails.BillingCountry == "") {
-            swal("Address Details", "Please Enter Country.");
+            swal("Address Details", "Please enter Country.");
             $("#ICountry").addClass('border-theme');
             return;
         }
         if ($scope.addressDetails.BillingState == undefined || $scope.addressDetails.BillingState == "") {
-            swal("Address Details", "Please Enter State.");
+            swal("Address Details", "Please enter State.");
             $("#IState").addClass('border-theme');
             return;
         }
         if ($scope.addressDetails.BillingPostalCode == undefined || $scope.addressDetails.BillingPostalCode == "") {
-            swal("Address Details", "Please Enter Post Code.");
+            swal("Address Details", "Please enter Post Code.");
             $("#IPcode").addClass('border-theme');
             return;
         }
 
         if ($scope.addressDetails.Industry__c == true) {
             if ($scope.addressDetails.Year_Of_Establishment__c == undefined || $scope.addressDetails.Year_Of_Establishment__c == "") {
-                swal("Address Details", "Please Enter Year Of Establishment.");
+                swal("Address Details", "Please enter Year Of Establishment.");
                 $("#establish").addClass('border-theme');
                 return;
             }
             if ($scope.addressDetails.Main_Business_Area__c == undefined || $scope.addressDetails.Main_Business_Area__c == "") {
-                swal("Address Details", "Please Enter Main Business Area.");
+                swal("Address Details", "Please enter Main Business Area.");
                 $("#business").addClass('border-theme');
                 return;
             }
             if ($scope.addressDetails.NumberOfEmployees == undefined || $scope.addressDetails.NumberOfEmployees === "") {
-                swal("Address Details", "Please Enter Number Of Permanent Employees.");
+                swal("Address Details", "Please enter Number Of Permanent Employees.");
                 $("#employees").addClass('border-theme');
                 return;
             }
@@ -457,22 +457,22 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
                 return;
             }
             if ($scope.addressDetails.Infrastructural_Facilities__c == undefined || $scope.addressDetails.Infrastructural_Facilities__c == "") {
-                swal("Address Details", "Please Enter Infrastructural Facilities.");
+                swal("Address Details", "Please enter Infrastructural Facilities.");
                 $("#facility").addClass('border-theme');
                 return;
             }
             if ($scope.addressDetails.Domain_Expertise_Available__c == undefined || $scope.addressDetails.Domain_Expertise_Available__c == "") {
-                swal("Address Details", "Please Enter Domain Expertise Available/Existing.");
+                swal("Address Details", "Please enter Domain Expertise Available/Existing.");
                 $("#domain").addClass('border-theme');
                 return;
             }
             if ($scope.addressDetails.Ownership_Profile__c == undefined || $scope.addressDetails.Ownership_Profile__c == "") {
-                swal("Address Details", "Please Enter Ownership profile.");
+                swal("Address Details", "Please enter Ownership profile.");
                 $("#ownership").addClass('border-theme');
                 return;
             }
             if ($scope.addressDetails.Last_Year_s_Balance__c == undefined || $scope.addressDetails.Last_Year_s_Balance__c == "") {
-                swal("Address Details", "Please Enter Last year's balance.");
+                swal("Address Details", "Please enter Last year's balance.");
                 $("#balance").addClass('border-theme');
                 return;
             }
@@ -512,17 +512,19 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
             $scope.addressDetails.Year_Of_Establishment__c = (!isNaN(yearEst) && yearEst >= 1000 && yearEst <= 9999) ? yearEst : $scope.addressDetails.Year_Of_Establishment__c;
         }
 
-        delete ($scope.addressDetails['Contacts']);
-        delete ($scope.addressDetails['$$hashKey']);
-        delete ($scope.addressDetails['stateList']);
-        delete ($scope.addressDetails['RecordTypeId']);
+        $scope.addressDetails1 = angular.copy($scope.addressDetails);
+
+        delete ($scope.addressDetails1['Contacts']);
+        delete ($scope.addressDetails1['$$hashKey']);
+        delete ($scope.addressDetails1['stateList']);
+        delete ($scope.addressDetails1['RecordTypeId']);
         // Ensure Contact has AccountId so save persists correctly
-        if ($scope.contactList.length > 0 && $scope.addressDetails.Id) {
-            $scope.contactList[0].AccountId = $scope.addressDetails.Id;
+        if ($scope.contactList.length > 0 && $scope.addressDetails1.Id) {
+            $scope.contactList[0].AccountId = $scope.addressDetails1.Id;
         }
         $("#btnSubmit").html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...');
         debugger;
-        ApplicantPortal_Contoller.saveAddressDetails($scope.addressDetails, $scope.contactList, function (result, event) {
+        ApplicantPortal_Contoller.saveAddressDetails($scope.addressDetails1, $scope.contactList, function (result, event) {
             debugger;
             $("#btnSubmit").html('<i class="fa-solid fa-check me-2"></i>Save and Next');
             if (event.type === 'exception' || !event.status || result !== 'success') {

@@ -197,14 +197,14 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         file = document.getElementById('fileSignature').files[0];
         if (!file) {
             $scope.showSpinnereditProf = false;
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             return;
         }
 
         var maxFileSize = 1048576;
         if (file.size > maxFileSize) {
             $scope.showSpinnereditProf = false;
-            swal("info", "File must be under 1 Mb in size. Please try again.", "info");
+            swal("Info", "File must be under 1 Mb in size. Please try again.", "info");
             return;
         }
         fileName = file.name;
@@ -213,7 +213,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         if (typeOfFile[lengthOfType - 1] == "jpg" || typeOfFile[lengthOfType - 1] == "jpeg") {
 
         } else {
-            swal('info', 'Please choose jpg/jpeg file only.', 'info');
+            swal('Info', 'Please choose jpg/jpeg file only.', 'info');
             return;
         }
         console.log(file);
@@ -266,12 +266,12 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
 
                 }
                 fileReader.onerror = function (e) {
-                    swal("info", "There was an error reading the file.  Please try again.", "info");
+                    swal("Info", "There was an error reading the file.  Please try again.", "info");
                     return;
                     // alert("There was an error reading the file.  Please try again.");
                 }
                 fileReader.onabort = function (e) {
-                    swal("info", "There was an error reading the file.  Please try again.", "info");
+                    swal("Info", "There was an error reading the file.  Please try again.", "info");
                     return;
                     // alert("There was an error reading the file.  Please try again.");
                 }
@@ -279,11 +279,11 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
                 fileReader.readAsBinaryString(file);  //Read the body of the file
 
             } else {
-                swal("info", "File must be under 1 Mb in size.  Your file is too large.  Please try again.", "info");
+                swal("Info", "File must be under 1 Mb in size.  Your file is too large.  Please try again.", "info");
                 return;
             }
         } else {
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             return;
             // alert("You must choose a file before trying to upload it");
             // $scope.showSpinnereditProf = false;
@@ -357,7 +357,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         for (var i = 0; i < $scope.allDocs.length; i++) {
             if ($scope.allDocs[i].userDocument.Name == 'Signature') {
                 if ($scope.allDocs[i].userDocument.Status__c != 'Uploaded') {
-                    swal('info', 'Please upload Signature.', 'info');
+                    swal('Info', 'Please upload Signature.', 'info');
                     return;
                 }
             }
@@ -448,11 +448,25 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
                             }
                             else {
 
-                                swal(
-                                    'Success',
-                                    'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
-                                    'warning'
-                                ).then(function () {
+                                // swal(
+                                //     'Success',
+                                //     'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
+                                //     'warning'
+                                swal({
+                                title: "Success",
+                                content: {
+                                    element: "div",
+                                    attributes: {
+                                        innerHTML: `
+                                            <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
+                                                Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.
+                                            </p>
+                                        `
+                                    }
+                                },
+                                icon: "warning",
+                                button: "OK"
+                                }).then(function () {
 
                                     setTimeout(function () {
                                         $scope.redirectPageURL('Home');
@@ -461,6 +475,8 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
 
                                 });
                             }
+
+                            
 
                             // } else {
                             //     // Swal.fire(
@@ -488,6 +504,8 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
             });
     }
 
+   
+
     $scope.saveDetails = function () {
         debugger;
         var year = 0;
@@ -496,7 +514,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         for (var i = 0; i < $scope.allDocs.length; i++) {
             if ($scope.allDocs[i].userDocument.Name == 'Signature') {
                 if ($scope.allDocs[i].userDocument.Status__c != 'Uploaded') {
-                    swal('info', 'Please upload Signature.', 'info');
+                    swal('Info', 'Please upload Signature.', 'info');
                     return;
                 }
             }
@@ -547,34 +565,49 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         for (var i = 0; i < $scope.allDocs.length; i++) {
             if ($scope.allDocs[i].userDocument.Name == 'Signature') {
                 if ($scope.allDocs[i].userDocument.Status__c != 'Uploaded') {
-                    swal('info', 'Please upload Signature.', 'info');
+                    swal('Info', 'Please upload Signature.', 'info');
                     return;
                 }
             }
         }
 
         // Validate Quotation for Equipment / Accessories is uploaded - Stage 1
-        if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
-            if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
-                swal('info', 'Please upload Quotation for Equipment / Accessories - Stage 1 before submitting.', 'info');
-                return;
-            }
-        }
+        // if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
+        //     if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
+        //         //swal('Info', 'Please upload Quotation for Equipment / Accessories - Stage 1 before submitting.', 'info');
+        //         showInfo('Please upload Quotation for Equipment / Accessories - Stage 1 before submitting.');
+        //         return;
+        //     }
+        // }
 
-        // Validate Quotation for Equipment / Accessories is uploaded - Stage 2
-        if ($rootScope.stage === '2nd Stage' && $rootScope.mailingCountry === 'India') {
-            if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
-                swal('info', 'Please upload Quotation for Equipment / Accessories - Stage 2 before submitting.', 'info');
-                return;
-            }
-        }
+        // // Validate Quotation for Equipment / Accessories is uploaded - Stage 2
+        // if ($rootScope.stage === '2nd Stage' && $rootScope.mailingCountry === 'India') {
+        //     if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
+        //         showInfo('Please upload Quotation for Equipment / Accessories - Stage 2 before submitting.');
+        //         return;
+        //     }
+        // }
 
-        // Validate Financial Statement Report is uploaded - Stage 2
-        if ($rootScope.stage === '2nd Stage' && ($rootScope.mailingCountry === 'India')) {
-            if (!$scope.auditedFinancialDoc || !$scope.auditedFinancialDoc.userDocument || $scope.auditedFinancialDoc.userDocument.Status__c !== 'Uploaded') {
-                swal('info', 'Please upload Financial Statement Report - Stage 2 before submitting.', 'info');
-                return;
-            }
+        // // Validate Financial Statement Report is uploaded - Stage 2
+        // if ($rootScope.stage === '2nd Stage' && ($rootScope.mailingCountry === 'India')) {
+        //     if (!$scope.auditedFinancialDoc || !$scope.auditedFinancialDoc.userDocument || $scope.auditedFinancialDoc.userDocument.Status__c !== 'Uploaded') {
+        //         showInfo('Please upload Financial Statement Report - Stage 2 before submitting.');
+        //         return;
+        //     }
+        // }
+
+        function showInfo(message) {
+            swal({
+                title: "Info",
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                    }
+                },
+                icon: "info",
+                button: "OK"
+            });
         }
         if ($scope.SignDate != undefined && $scope.SignDate != '') {
             year = $scope.SignDate.getUTCFullYear();
@@ -622,7 +655,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         for (var i = 0; i < $scope.allDocs.length; i++) {
             if ($scope.allDocs[i].userDocument.Name == 'Signature') {
                 if ($scope.allDocs[i].userDocument.Status__c != 'Uploaded') {
-                    swal('info', 'Please upload Signature.', 'info');
+                    swal('Info', 'Please upload Signature.', 'info');
                     return;
                 }
             }

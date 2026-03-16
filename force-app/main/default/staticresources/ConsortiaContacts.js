@@ -270,47 +270,47 @@ angular.module('cp_app').controller('ConsortiaContacts_Ctrl', function ($scope, 
         debugger;
         if ($scope.allDetailList != undefined) {
             if ($scope.allDetailList.FirstName == undefined || $scope.allDetailList.FirstName == "") {
-                swal("Contact Details", "Please Enter Your First Name.");
+                swal("Contact Details", "Please enter Your First Name.");
                 $("#FName").addClass('border-theme');
                 return;
             }
             if ($scope.allDetailList.LastName == undefined || $scope.allDetailList.LastName == "") {
-                swal("Contact Details", "Please Enter Your Last Name.");
+                swal("Contact Details", "Please enter Your Last Name.");
                 $("#LName").addClass('border-theme');
                 return;
             }
             if ($scope.allDetailList.Email == undefined || $scope.allDetailList.Email == "") {
-                swal("Contact Details", "Please Enter Your Email.");
+                swal("Contact Details", "Please enter Your Email.");
                 $("#email").addClass('border-theme');
                 return;
             }
             if ($scope.allDetailList.Actual_Position__c == undefined || $scope.allDetailList.Actual_Position__c == "") {
-                swal("Contact Details", "Please Enter Your Actual Position.");
+                swal("Contact Details", "Please enter Your Actual Position.");
                 $("#position").addClass('border-theme');
                 return;
             }
             if ($scope.allDetailList.MailingStreet == undefined || $scope.allDetailList.MailingStreet == "") {
-                swal("Contact Details", "Please Enter Your Street Name.");
+                swal("Contact Details", "Please enter Your Street Name.");
                 $("#street").addClass('border-theme');
                 return;
             }
             if ($scope.allDetailList.MailingCity == undefined || $scope.allDetailList.MailingCity == "") {
-                swal("Contact Details", "Please Enter Your City.");
+                swal("Contact Details", "Please enter Your City.");
                 $("#city").addClass('border-theme');
                 return;
             }
             if ($scope.allDetailList.MailingCountry == undefined || $scope.allDetailList.MailingCountry == "") {
-                swal("Contact Details", "Please Enter Country.");
+                swal("Contact Details", "Please enter Country.");
                 $("#country").addClass('border-theme');
                 return;
             }
             if ($scope.allDetailList.MailingState == undefined || $scope.allDetailList.MailingState == "") {
-                swal("Contact Details", "Please Enter State.");
+                swal("Contact Details", "Please enter State.");
                 $("#state").addClass('border-theme');
                 return;
             }
             if ($scope.allDetailList.MailingPostalCode == undefined || $scope.allDetailList.MailingPostalCode == "") {
-                swal("Contact Details", "Please Enter Post Code.");
+                swal("Contact Details", "Please enter Post Code.");
                 $("#pCode").addClass('border-theme');
                 return;
             }
@@ -318,28 +318,28 @@ angular.module('cp_app').controller('ConsortiaContacts_Ctrl', function ($scope, 
             if ($scope.allDetailList.Education_Details__r != undefined) {
                 for (var i = 0; i < $scope.allDetailList.Education_Details__r.length; i++) {
                     if ($scope.allDetailList.Education_Details__r[i].Degree__c == undefined || $scope.allDetailList.Education_Details__r[i].Degree__c == "") {
-                        swal("Education Details", "Please Enter Degree.");
+                        swal("Education Details", "Please enter Degree.");
                         $("#degree" + i + "").addClass('border-theme');
                         return;
                     }
                     if ($scope.allDetailList.Education_Details__r[i].Institution_Name__c == undefined || $scope.allDetailList.Education_Details__r[i].Institution_Name__c == "") {
-                        swal("Education Details", "Please Enter Institution Name.");
+                        swal("Education Details", "Please enter Institution Name.");
                         $("#institution" + i + "").addClass('border-theme');
                         return;
                     }
                     if ($scope.allDetailList.Education_Details__r[i].Area_of_specialization__c == undefined || $scope.allDetailList.Education_Details__r[i].Area_of_specialization__c == "") {
-                        swal("Education Details", "Please Enter Specialization.");
+                        swal("Education Details", "Please enter Specialization.");
                         $("#specialization" + i + "").addClass('border-theme');
                         return;
                     }
 
                     if ($scope.allDetailList.Education_Details__r[i].Start_Year__c == undefined || $scope.allDetailList.Education_Details__r[i].Start_Year__c == "") {
-                        swal("Education Details", "Please Enter Start Year.");
+                        swal("Education Details", "Please enter Start Year.");
                         $("#zipCode1" + i + "").addClass('border-theme');
                         return;
                     }
                     if ($scope.allDetailList.Education_Details__r[i].End_Year__c == undefined || $scope.allDetailList.Education_Details__r[i].End_Year__c == "") {
-                        swal("Education Details", "Please Enter End Year.");
+                        swal("Education Details", "Please enter End Year.");
                         $("#zipCode2" + i + "").addClass('border-theme');
                         return;
                     }
@@ -349,25 +349,25 @@ angular.module('cp_app').controller('ConsortiaContacts_Ctrl', function ($scope, 
             if ($scope.allDetailList.Employment_Details__r != undefined) {
                 for (var j = 0; j < $scope.allDetailList.Employment_Details__r.length; j++) {
                     if ($scope.allDetailList.Employment_Details__r[j].Organization_Name__c == undefined || $scope.allDetailList.Employment_Details__r[j].Organization_Name__c == "") {
-                        swal("Employment Details", "Please Enter Organization Name.");
+                        swal("Employment Details", "Please enter Organization Name.");
                         $("#org" + j + "").addClass('border-theme');
                         return;
                     }
 
                     if ($scope.allDetailList.Employment_Details__r[j].Position__c == undefined || $scope.allDetailList.Employment_Details__r[j].Position__c == "") {
-                        swal("Employment Details", "Please Enter Position.");
+                        swal("Employment Details", "Please enter Position.");
                         $("#position1" + j + "").addClass('border-theme');
                         return;
                     }
 
                     if ($scope.allDetailList.Employment_Details__r[j].Start_Year__c == undefined || $scope.allDetailList.Employment_Details__r[j].Start_Year__c == "") {
-                        swal("Employment Details", "Please Enter Start Year.");
+                        swal("Employment Details", "Please enter Start Year.");
                         $("#zipCode11" + j + "").addClass('border-theme');
                         return;
                     }
 
                     if ($scope.allDetailList.Employment_Details__r[j].End_Year__c == undefined || $scope.allDetailList.Employment_Details__r[j].End_Year__c == "") {
-                        swal("Employment Details", "Please Enter End Year.");
+                        swal("Employment Details", "Please enter End Year.");
                         $("#zipCode22" + j + "").addClass('border-theme');
                         return;
                     }

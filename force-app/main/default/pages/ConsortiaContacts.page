@@ -630,7 +630,7 @@
                                 </div>
                             </div>
                             <div class="mb-5">
-                                <ng-ckeditor id="publication" read-Only="true" ng-model="allDetailList.Publications_Patents__c" name="ckEditor" ng-config="config"></ng-ckeditor>
+                                <ng-ckeditor id="publication"  ng-model="allDetailList.Publications_Patents__c" name="ckEditor" ng-config="config"></ng-ckeditor>
                             </div>
                         </div>
                         <div class="row mb-3" ng-if="!proposalStage">

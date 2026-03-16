@@ -2180,10 +2180,66 @@ update conRec;
         }
     }
     
+    /**
+     * Populates cross-year expense values so each record has Year1_Expense__c, Year2_Expense__c and Year3_Expense__c.
+     * - Year 1 record: gets Year2_Expense__c and Year3_Expense__c from Year 2 and Year 3 records.
+     * - Year 2 record: gets Year1_Expense__c and Year3_Expense__c from Year 1 and Year 3 records.
+     * - Year 3 record: gets Year1_Expense__c and Year2_Expense__c from Year 1 and Year 2 records.
+     * Groups by (Index__c, Description__c) to find same logical line across years. Single records get nulls defaulted to 0.
+     */
+    private static void populateCrossYearExpenseValues(List<Expense_Line_Item__c> expLineItem){
+        if(expLineItem == null || expLineItem.isEmpty()) return;
+        Decimal zeroVal = 0;
+        String key;
+        Map<String, List<Expense_Line_Item__c>> groupByKey = new Map<String, List<Expense_Line_Item__c>>();
+        for(Expense_Line_Item__c eli : expLineItem){
+            key = (eli.Index__c != null ? String.valueOf(eli.Index__c) : '') + '|' + (eli.Description__c != null ? eli.Description__c : '');
+            if(!groupByKey.containsKey(key)) groupByKey.put(key, new List<Expense_Line_Item__c>());
+            groupByKey.get(key).add(eli);
+        }
+        for(List<Expense_Line_Item__c> groupList : groupByKey.values()){
+            Expense_Line_Item__c year1Rec = null, year2Rec = null, year3Rec = null;
+            for(Expense_Line_Item__c eli : groupList){
+                Decimal y1 = eli.Year1_Expense__c != null ? eli.Year1_Expense__c : zeroVal;
+                Decimal y2 = eli.Year2_Expense__c != null ? eli.Year2_Expense__c : zeroVal;
+                Decimal y3 = eli.Year3_Expense__c != null ? eli.Year3_Expense__c : zeroVal;
+                if(y1 != 0 && (year1Rec == null || (year1Rec.Year1_Expense__c == null ? 0 : year1Rec.Year1_Expense__c) < y1)) year1Rec = eli;
+                if(y2 != 0 && (year2Rec == null || (year2Rec.Year2_Expense__c == null ? 0 : year2Rec.Year2_Expense__c) < y2)) year2Rec = eli;
+                if(y3 != 0 && (year3Rec == null || (year3Rec.Year3_Expense__c == null ? 0 : year3Rec.Year3_Expense__c) < y3)) year3Rec = eli;
+            }
+            if(year1Rec != null || year2Rec != null || year3Rec != null){
+                Decimal y1Val = year1Rec != null && year1Rec.Year1_Expense__c != null ? year1Rec.Year1_Expense__c : zeroVal;
+                Decimal y2Val = year2Rec != null && year2Rec.Year2_Expense__c != null ? year2Rec.Year2_Expense__c : zeroVal;
+                Decimal y3Val = year3Rec != null && year3Rec.Year3_Expense__c != null ? year3Rec.Year3_Expense__c : zeroVal;
+                if(year1Rec != null){
+                    year1Rec.Year2_Expense__c = y2Val;
+                    year1Rec.Year3_Expense__c = y3Val;
+                    if(year1Rec.Year1_Expense__c == null) year1Rec.Year1_Expense__c = y1Val;
+                }
+                if(year2Rec != null){
+                    year2Rec.Year1_Expense__c = y1Val;
+                    year2Rec.Year3_Expense__c = y3Val;
+                    if(year2Rec.Year2_Expense__c == null) year2Rec.Year2_Expense__c = y2Val;
+                }
+                if(year3Rec != null){
+                    year3Rec.Year1_Expense__c = y1Val;
+                    year3Rec.Year2_Expense__c = y2Val;
+                    if(year3Rec.Year3_Expense__c == null) year3Rec.Year3_Expense__c = y3Val;
+                }
+            }
+            for(Expense_Line_Item__c eli : groupList){
+                if(eli.Year1_Expense__c == null) eli.Year1_Expense__c = zeroVal;
+                if(eli.Year2_Expense__c == null) eli.Year2_Expense__c = zeroVal;
+                if(eli.Year3_Expense__c == null) eli.Year3_Expense__c = zeroVal;
+            }
+        }
+    }
+    
     public static String saveExpenceLineItemWISER(List<Expense_Line_Item__c> expLineItem, String totalSum){
         try{
             system.debug('expLineItem ---->'+expLineItem);
             if(!expLineItem.isEmpty()){
+                populateCrossYearExpenseValues(expLineItem);
                 upsert expLineItem;
             }
             Expense_Head__c expenseHeadRecord = [SELECT Id,Name,Proposals__c FROM Expense_Head__c WHERE Id =: expLineItem[0].Expense_Head__c];

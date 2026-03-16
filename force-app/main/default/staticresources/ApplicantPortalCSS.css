@@ -1196,6 +1196,12 @@ course-desc p {
     background-color: #171347 !important;
 }
 
+.bg-badge {
+    background-color: #2268ff !important;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
 .list-unstyled {
     padding-left: 0;
     list-style: none;

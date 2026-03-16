@@ -7,6 +7,8 @@ angular.module('cp_app').controller('AttachmentsIF_Ctrl', function ($scope, $sce
     var chunkSize = 750000;
     var doneUploading = false;
     var maxStringSize = 6000000;
+    var maxStringSize = 1400000;
+
 
     $scope.SignDate = new Date($rootScope.signDate);
     $rootScope.projectId;
@@ -306,7 +308,9 @@ angular.module('cp_app').controller('AttachmentsIF_Ctrl', function ($scope, $sce
         }
 
         // ADD FILE SIZE VALIDATION FOR 1 MB ↓
-        var maxFileSize = 6000000; // 1 MB in bytes
+        //var maxFileSize = 6000000; 
+       // var maxFileSize = 750 * 1024;
+       var maxFileSize = 1024 * 1024;// 1 MB in bytes
 
         if (file.size > maxFileSize) {
             swal('Info', 'File size must be less than 1 MB. Your file is ' + (file.size / 1024 / 1024).toFixed(2) + ' MB', 'info');

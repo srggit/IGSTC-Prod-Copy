@@ -1,0 +1,55 @@
+<template>
+    <!-- Spinner -->
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading reviewers"></lightning-spinner>
+    </template>
+    <lightning-card title="Matching Reviewers 1" icon-name="standard:people">
+        <div class="table-container">
+            <!-- Reviewers table -->
+            <template if:true={reviewers.length}>
+                <lightning-datatable
+                    key-field="reviewerId"
+                    data={reviewers}
+                    columns={columns}
+                    onrowselection={handleRowSelection}                    
+                    show-row-number-column>
+                </lightning-datatable>
+            </template>
+            <!-- Empty State -->
+            <template if:false={reviewers.length}>
+                <div class="empty-state">
+                    <lightning-icon
+                        icon-name="utility:search"
+                        size="large">
+                    </lightning-icon>
+                    <p>No matching reviewers found</p>
+                </div>
+            </template>
+        </div>
+        <!-- Footer -->
+       <div class="footer">
+            <lightning-button
+                label="Cancel"
+                onclick={handleCancel}
+                class="slds-m-right_small"
+                disabled={isAssigning}>
+            </lightning-button>
+            <template if:false={isAssigning}>
+                <lightning-button
+                    label="Assign Reviewer"
+                    variant="brand"
+                    onclick={handleAssign}
+                    disabled={disableAssign}>
+                </lightning-button>
+            </template>
+            <!-- Loading state -->
+            <template if:true={isAssigning}>
+                <lightning-button
+                    label="Assigning..."
+                    variant="brand"
+                    disabled>
+                </lightning-button>
+            </template>
+        </div>
+    </lightning-card>
+</template>

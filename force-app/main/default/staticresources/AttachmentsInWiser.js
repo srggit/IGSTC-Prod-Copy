@@ -435,12 +435,10 @@ angular.module('cp_app').controller('attachmentWiser_ctrl', function ($scope, $s
             // console.log(result);
             if (event.status) {
                 $scope.projProposal = result;
-
+                var apaId = $scope.projProposal[i].userDocument.Applicant_Proposal_Association__c;
 
                 for (var i = 0; i < $scope.projProposal.length; i++) {
-                    var apaId = $scope.projProposal[i].userDocument.Applicant_Proposal_Association__c;
-
-                    if ($scope.projProposal[i].userDocument.Name == 'project Description' && apaId !== null && apaId !== undefined && apaId !== '') {
+                    if ($scope.projProposal[i].userDocument.Name == 'project Description' && apaId !== null && apaId !== undefined) {
                         $scope.projectProposal = $scope.projProposal[i];
                     }
                 }

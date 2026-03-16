@@ -65,11 +65,25 @@ public with sharing class IFReleaseTrancheLetter {
         system.debug('queryData--'+queryData);
         Disbursement_Schedule__c ds = [select id,proposals__c,tranche__c from Disbursement_Schedule__c where id =: ds_id];
         //-------------------------------------------------------------------------
+        
+         // Query contacts via Applicant_Proposal_Association__c junction object
+        List<Contact> contactList = [
+            SELECT Id, Firstname, Account.BillingCountry, Lastname 
+            FROM Contact 
+            WHERE Id IN (
+                SELECT Contact__c 
+                FROM Applicant_Proposal_Association__c 
+                WHERE Proposals__c = :recordID
+            )
+        ];
+        
+        system.debug('contactList---:'+contactList);
+        
         Application_Proposal__c propRec = new Application_Proposal__c();
         propRec = queryData[0];
         map<Id,List<Contact>> contactsByPropID = new map<Id,List<Contact>>();
         List<Contact> conLIst = new List<Contact>();
-        conLIst.addAll(propRec.contacts__r);
+        conLIst.addAll(contactList);
         contactsByPropID.put(propRec.Id ,conLIst);
         //-------------------------------------------------------------------------- 
         

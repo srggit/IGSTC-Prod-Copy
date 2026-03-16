@@ -237,6 +237,12 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 $scope.getWPDetails();
                 // Load new WP+Deliverables combined table data
                 $scope.loadWPDeliverablesData();
+
+                // Initial Gantt chart update (will get data from database)
+                setTimeout(function () {
+                    $scope.updateGanttChart();
+                }, 1000);
+
                 $scope.$applyAsync();
             } else {
                 console.error('Error fetching partner accounts:', event.message);
@@ -250,6 +256,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     // ==================== GANTT CHART FUNCTIONALITY ==================
     // =====================================================================================
 
+    /*
     $scope.renderGanttChart = function () {
         try {
             console.log('Rendering Gantt Chart with wpDeliverablesTableList:', $scope.wpDeliverablesTableList);
@@ -375,6 +382,172 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         setTimeout(function () {
             $scope.renderGanttChart();
         }, 100);
+    });
+    */
+
+
+    // Function to update Gantt chart with current data (even unsaved)
+    $scope.updateGanttChart = function () {
+        // Get current work package data from the scope (including unsaved changes)
+        var currentWPData = $scope.wpDeliverablesTableList;
+
+        if (!currentWPData || currentWPData.length === 0) {
+            // If no data, show empty state
+            document.getElementById('ganttChart').innerHTML =
+                '<div style="text-align: center; padding: 40px; color: #666;">Add work packages to see Gantt chart</div>';
+            return;
+        }
+
+        // Show loading indicator
+        document.getElementById('ganttChart').innerHTML =
+            '<div style="text-align: center; padding: 40px; color: #666;">Loading Gantt chart...</div>';
+
+        // Convert current data to JSON string to send to Apex
+        var wpDataJSON = angular.toJson(currentWPData);
+
+        // Call Apex to get enriched data with contact initials
+        ApplicantPortal_Contoller.getGanttChartData(
+            $rootScope.proposalId,
+            $rootScope.stage,
+            wpDataJSON, // Send current unsaved data
+            function (result, event) {
+                if (event.status && result && result.success) {
+                    console.log('Gantt chart data updated:', result);
+
+                    // Update max duration if needed
+                    if (result.maxDuration) {
+                        $rootScope.maxDurationInMonths = result.maxDuration;
+                    }
+
+                    // Render chart with enriched data
+                    $scope.renderGanttChartWithData(result.workPackages);
+
+                    $scope.$applyAsync();
+                } else {
+                    console.error('Error updating Gantt chart:', event.message || result?.error);
+                    // Fallback to client-side rendering without contact initials
+                    $scope.renderGanttChartWithData(currentWPData);
+                }
+            },
+            { escape: true }
+        );
+    };
+
+    // Enhanced render function
+    $scope.renderGanttChartWithData = function (ganttData) {
+        try {
+            if (!ganttData || ganttData.length === 0) {
+                document.getElementById('ganttChart').innerHTML =
+                    '<div style="text-align: center; padding: 40px; color: #666;">No work packages to display</div>';
+                return;
+            }
+
+            let maxDuration = $rootScope.maxDurationInMonths ? parseInt($rootScope.maxDurationInMonths) : 36;
+            let gridStyle = `grid-template-columns: repeat(${maxDuration}, 1fr);`;
+
+            let html = '<div class="gantt-container">';
+
+            // Month header
+            html += '<div class="month-row" style="' + gridStyle + '">';
+            for (let i = 1; i <= maxDuration; i++) {
+                html += '<div class="month">' + i + '</div>';
+            }
+            html += '</div>';
+
+            // Content area with vertical lines
+            html += '<div class="content-area">';
+            html += '<div class="vertical-lines-overlay" style="' + gridStyle + '">';
+            for (let i = 1; i <= maxDuration; i++) {
+                html += '<div class="vertical-line"></div>';
+            }
+            html += '</div>';
+
+            const colors = ['#ffad43ff', '#ff8c00', '#a855f7', '#0e7adfff', '#50d492ff', '#f59e0b', '#06a5d6ff', '#8b5cf6'];
+
+            // Work Packages
+            for (let wp of ganttData) {
+                const wpStart = wp.wpStartMonth ? parseInt(wp.wpStartMonth) : 1;
+                const wpEnd = wp.wpEndMonth ? parseInt(wp.wpEndMonth) : maxDuration;
+
+                // Ensure valid numbers
+                if (isNaN(wpStart) || isNaN(wpEnd)) continue;
+
+                const wpStyle = `grid-column: ${wpStart} / ${wpEnd + 1};`;
+
+                html += '<div class="wp-block">';
+
+                // Work Package Row
+                html += '<div class="row wp-row" style="' + gridStyle + '">';
+                html += '<div class="wp-wrapper" style="' + wpStyle + '">';
+                html += '<div class="wp-title">';
+                html += wp.title || 'Work Package ' + (wp.wpSequence || '');
+
+                // Add contact initials if they exist
+                if (wp.contactInitials && wp.contactInitials.length > 0) {
+                    for (let initials of wp.contactInitials) {
+                        if (initials) {
+                            html += '<span class="contact-badges-inline contact-badge" title="' + initials + '">' + initials + '</span>';
+                        }
+                    }
+                }
+
+                html += '</div>'; // Close wp-title
+                html += '<div class="wp-bar"></div>';
+                html += '</div>'; // Close wp-wrapper
+                html += '</div>'; // Close row
+
+                // Deliverables
+                if (wp.deliverables && wp.deliverables.length > 0) {
+                    for (let d of wp.deliverables) {
+                        const dStart = d.startMonth ? parseInt(d.startMonth) : wpStart;
+                        const dEnd = d.endMonth ? parseInt(d.endMonth) : wpEnd;
+
+                        if (isNaN(dStart) || isNaN(dEnd)) continue;
+
+                        const colorIndex = (dStart - 1) % colors.length;
+                        const dStyle = `grid-column: ${dStart} / ${dEnd + 1}; background: ${colors[colorIndex]};`;
+
+                        html += '<div class="row deliverable-row" style="' + gridStyle + '">';
+                        html += '<div class="deliverable-bar" style="' + dStyle + '">';
+                        html += d.deliverableSequence || 'D';
+                        html += '</div>';
+                        html += '</div>';
+                    }
+                }
+
+                html += '</div>'; // End wp-block
+            }
+
+            html += '</div>'; // End content-area
+            html += '</div>'; // End gantt-container
+
+            document.getElementById('ganttChart').innerHTML = html;
+
+        } catch (error) {
+            console.error('Error rendering Gantt Chart:', error);
+            document.getElementById('ganttChart').innerHTML =
+                '<div style="text-align: center; padding: 40px; color: red;">Error rendering chart</div>';
+        }
+    };
+
+    // Trigger Gantt chart update whenever data changes
+    $scope.$watch('wpDeliverablesTableList', function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            // Debounce to avoid too many calls
+            if ($scope.ganttUpdateTimeout) {
+                clearTimeout($scope.ganttUpdateTimeout);
+            }
+            $scope.ganttUpdateTimeout = setTimeout(function () {
+                $scope.updateGanttChart();
+            }, 500); // Wait 500ms after user stops typing
+        }
+    }, true);
+
+    // Also watch for changes in max duration
+    $scope.$watch('rootScope.maxDurationInMonths', function (newValue, oldValue) {
+        if (newValue !== oldValue && $scope.wpDeliverablesTableList?.length > 0) {
+            $scope.updateGanttChart();
+        }
     });
 
     // =====================================================================================
@@ -1093,7 +1266,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         maxFileSize = 5191680;
         file = document.getElementById('fileSignature').files[0];
         if (!file) {
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             $scope.isUploadingProjectProposal = false;
             $scope.showSpinnereditProf = false;
             $scope.resetUploadState();
@@ -1107,7 +1280,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         } else {
             $scope.isUploadingProjectProposal = false;
             $scope.showSpinnereditProf = false;
-            swal('info', 'Please choose pdf only.', 'info');
+            swal('Info', 'Please choose pdf only.', 'info');
             return;
         }
         console.log(file);
@@ -1309,7 +1482,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         file = document.getElementById('auditedFinancialFile').files[0];
 
         if (!file) {
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             $scope.isUploading = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
@@ -1324,7 +1497,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploading = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal('info', 'Please choose PDF file only.', 'info');
+            swal('Info', 'Please choose PDF file only.', 'info');
             return;
         }
 
@@ -1332,7 +1505,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploading = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal("info", "File must be under 5 MB in size.", "info");
+            swal("Info", "File must be under 5 MB in size.", "info");
             return;
         }
 
@@ -1385,7 +1558,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploading = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal("info", "Error reading file. Please try again.", "info");
+            swal("Info", "Error reading file. Please try again.", "info");
         };
 
         fileReader.readAsBinaryString(file);
@@ -1410,7 +1583,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         file = document.getElementById(inputId).files[0];
 
         if (!file) {
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             $scope.isUploadingGrantAcceptanceUndertaking = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
@@ -1425,7 +1598,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingGrantAcceptanceUndertaking = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal('info', 'Please choose PDF file only.', 'info');
+            swal('Info', 'Please choose PDF file only.', 'info');
             return;
         }
 
@@ -1433,7 +1606,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingGrantAcceptanceUndertaking = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal("info", "File must be under 5 MB in size.", "info");
+            swal("Info", "File must be under 5 MB in size.", "info");
             return;
         }
 
@@ -1519,7 +1692,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         file = document.getElementById(inputId).files[0];
 
         if (!file) {
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             $scope.isUploadingSensitivitySecurityUndertaking = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
@@ -1534,7 +1707,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingSensitivitySecurityUndertaking = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal('info', 'Please choose PDF file only.', 'info');
+            swal('Info', 'Please choose PDF file only.', 'info');
             return;
         }
 
@@ -1542,7 +1715,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingSensitivitySecurityUndertaking = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal("info", "File must be under 5 MB in size.", "info");
+            swal("Info", "File must be under 5 MB in size.", "info");
             return;
         }
 
@@ -1625,7 +1798,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         file = document.getElementById(inputId).files[0];
 
         if (!file) {
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             $scope.isUploadingFinancialStatement = false;
             $scope.showSpinnereditProf = false;
             $scope.showFinancialStatementProgressBar = false;
@@ -1640,7 +1813,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingFinancialStatement = false;
             $scope.showSpinnereditProf = false;
             $scope.showFinancialStatementProgressBar = false;
-            swal('info', 'Please choose PDF file only.', 'info');
+            swal('Info', 'Please choose PDF file only.', 'info');
             return;
         }
 
@@ -1648,7 +1821,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingFinancialStatement = false;
             $scope.showSpinnereditProf = false;
             $scope.showFinancialStatementProgressBar = false;
-            swal("info", "File must be under 5 MB in size.", "info");
+            swal("Info", "File must be under 5 MB in size.", "info");
             return;
         }
 
@@ -1656,9 +1829,27 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         fileReader.onloadend = function (e) {
             var attachmentData = window.btoa(this.result);
 
-            swal({
+            // swal({
+            //     title: "Confirm Upload",
+            //     text: "Are you sure you want to upload the Financial Statement Report?",
+            //     icon: "warning",
+            //     buttons: {
+            //         cancel: "Cancel",
+            //         confirm: { text: "Upload", value: true }
+            //     }
+            // }).then((willUpload) => {
+                swal({
                 title: "Confirm Upload",
-                text: "Are you sure you want to upload the Financial Statement Report?",
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML: `
+                            <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
+                                Are you sure you want to upload the Financial Statement Report?
+                            </p>
+                        `
+                    }
+                },
                 icon: "warning",
                 buttons: {
                     cancel: "Cancel",
@@ -1833,7 +2024,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         file = document.getElementById(inputId).files[0];
 
         if (!file) {
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             $scope.isUploadingQuotation = false;
             $scope.showSpinnereditProf = false;
             $scope.showQuotationEquipmentProgressBar = false;
@@ -1848,7 +2039,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingQuotation = false;
             $scope.showSpinnereditProf = false;
             $scope.showQuotationEquipmentProgressBar = false;
-            swal('info', 'Please choose PDF file only.', 'info');
+            swal('Info', 'Please choose PDF file only.', 'info');
             return;
         }
 
@@ -1856,7 +2047,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingQuotation = false;
             $scope.showSpinnereditProf = false;
             $scope.showQuotationEquipmentProgressBar = false;
-            swal("info", "File must be under 5 MB in size.", "info");
+            swal("Info", "File must be under 5 MB in size.", "info");
             return;
         }
 
@@ -1864,15 +2055,33 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         fileReader.onloadend = function (e) {
             var attachmentData = window.btoa(this.result);
 
-            swal({
-                title: "Confirm Upload",
-                text: "Are you sure you want to upload the Quotation For Equipment/Accessories?",
-                icon: "warning",
-                buttons: {
-                    cancel: "Cancel",
-                    confirm: { text: "Upload", value: true }
-                }
-            }).then((willUpload) => {
+            // swal({
+            //     title: "Confirm Upload",
+            //     text: "Are you sure you want to upload the Quotation For Equipment/Accessories?",
+            //     icon: "warning",
+            //     buttons: {
+            //         cancel: "Cancel",
+            //         confirm: { text: "Upload", value: true }
+            //     }
+            // }).then((willUpload) => {
+                swal({
+                    title: "Confirm Upload",
+                    content: {
+                        element: "div",
+                        attributes: {
+                            innerHTML: `
+                                <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
+                                    Are you sure you want to upload the Quotation For Equipment/Accessories?
+                                </p>
+                            `
+                        }
+                    },
+                    icon: "warning",
+                    buttons: {
+                        cancel: "Cancel",
+                        confirm: { text: "Upload", value: true }
+                    }
+                }).then((willUpload) => {
                 if (willUpload) {
                     var userDocId = $scope.quotationEquipmentDoc ? $scope.quotationEquipmentDoc.userDocument.Id : '';
 
@@ -1942,7 +2151,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         file = document.getElementById('letterOfConsentFile').files[0];
 
         if (!file) {
-            swal("info", "You must choose a file before trying to upload it", "info");
+            swal("Info", "You must choose a file before trying to upload it", "info");
             $scope.isUploadingLetterOfConsent = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
@@ -1957,7 +2166,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingLetterOfConsent = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal('info', 'Please choose PDF file only.', 'info');
+            swal('Info', 'Please choose PDF file only.', 'info');
             return;
         }
 
@@ -1965,7 +2174,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingLetterOfConsent = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal("info", "File must be under 5 MB in size.", "info");
+            swal("Info", "File must be under 5 MB in size.", "info");
             return;
         }
 
@@ -2019,7 +2228,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.isUploadingLetterOfConsent = false;
             $scope.showSpinnereditProf = false;
             $scope.showProgressBar = false;
-            swal("info", "Error reading file. Please try again.", "info");
+            swal("Info", "Error reading file. Please try again.", "info");
         };
 
         fileReader.readAsBinaryString(file);
@@ -2576,11 +2785,27 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 && $scope.grantAcceptanceUndertakingDoc.userDocument.Status__c === 'Uploaded'
             )
         ) {
+            // swal({
+            //     title: "Info",
+            //     text: "Please upload Undertaking Format of Grant Acceptance before saving.",
+            //     icon: "info",
+            //     button: "OK",
+            // });
+            // return;
             swal({
                 title: "Info",
-                text: "Please upload Undertaking Format of Grant Acceptance before saving.",
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML: `
+                            <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
+                                Please upload Undertaking Format of Grant Acceptance before saving.
+                            </p>
+                        `
+                    }
+                },
                 icon: "info",
-                button: "OK",
+                button: "OK"
             });
             return;
         }
@@ -2594,11 +2819,27 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 && $scope.sensitivitySecurityUndertakingDoc.userDocument.Status__c === 'Uploaded'
             )
         ) {
+            // swal({
+            //     title: "Info",
+            //     text: "Please upload Undertaking for Sensitivity Security Regulations before saving.",
+            //     icon: "info",
+            //     button: "OK",
+            // });
+            // return;
             swal({
                 title: "Info",
-                text: "Please upload Undertaking for Sensitivity Security Regulations before saving.",
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML: `
+                            <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
+                               Please upload Undertaking for Sensitivity Security Regulations before saving.
+                            </p>
+                        `
+                    }
+                },
                 icon: "info",
-                button: "OK",
+                button: "OK"
             });
             return;
         }
@@ -2608,31 +2849,31 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         // Stage 1 required fields
         if (!$rootScope.secondStage) {
             if ($scope.proposalFieldsDetails.Research_Approach_Objectives__c == undefined || $scope.proposalFieldsDetails.Research_Approach_Objectives__c == "") {
-                swal('Info', 'Please fill Main objectives of the research approach (max. chars 3000).', 'info');
+                showInfo('Please fill Main objectives of the research approach (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Current_State_Of_The_Art__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art__c == "") {
-                swal('Info', 'Please fill Current state of the art in the field (max. chars 3000).', 'info');
+                showInfo('Please fill Current state of the art in the field (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Project_Description__c == undefined || $scope.proposalFieldsDetails.Project_Description__c == "") {
-                swal('Info', 'Please fill Project description including work packages/work distribution amongst partners. Comment on starting TRL and expected TRL at end of the project (max. chars 12000).', 'info');
+                showInfo('Please fill Project description including work packages/work distribution amongst partners. Comment on starting TRL and expected TRL at end of the project (max. chars 12000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Expected_Deliverables__c == undefined || $scope.proposalFieldsDetails.Expected_Deliverables__c == "") {
-                swal('Info', 'Please fill Expected deliverables as bullet points (max. chars 3000).', 'info');
+                showInfo('Please fill Expected deliverables as bullet points (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == "") {
-                swal('Info', 'Please fill Reasons for and benefits of cooperation - including previous collaboration with the partner country (max. chars 6000).', 'info');
+                showInfo('Please fill Reasons for and benefits of cooperation - including previous collaboration with the partner country (max. chars 6000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Equipment__c == undefined || $scope.proposalFieldsDetails.Equipment__c == "") {
-                swal('Info', 'Please fill Equipment (if equipment to be purchased, please justify briefly the need) (max. chars 3000).', 'info');
+                showInfo('Please fill Equipment (if equipment to be purchased, please justify briefly the need) (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == undefined || $scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == "") {
-                swal('Info', 'Please fill Brief profile of each partner institution with emphasis on research activities (max. chars 3000).', 'info');
+                showInfo('Please fill Brief profile of each partner institution with emphasis on research activities (max. chars 3000).');
                 return;
             }
         }
@@ -2640,61 +2881,75 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         // Stage 2 required fields
         if ($rootScope.secondStage == true) {
             if ($scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == undefined || $scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == "") {
-                swal('Info', 'Please fill Main objectives of the research approach (max. chars 4000).', 'info');
+                showInfo('Please fill Main objectives of the research approach (max. chars 4000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == "") {
-                swal('Info', 'Please fill Current state of the art in the field (max. chars 6000).', 'info');
+                showInfo('Please fill Current state of the art in the field (max. chars 6000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Project_Description_Stage_2__c == undefined || $scope.proposalFieldsDetails.Project_Description_Stage_2__c == "") {
-                swal('Info', 'Please fill Detailed project description (max. chars 20000).', 'info');
+                showInfo('Please fill Detailed project description (max. chars 20000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == undefined || $scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == "") {
-                swal('Info', 'Please fill Risk assessment & mitigation strategy and Criteria for abandoning the project (max. chars 3000).', 'info');
+                showInfo('Please fill Risk assessment & mitigation strategy and Criteria for abandoning the project (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == "") {
-                swal('Info', 'Please fill Reasons for and benefits of cooperation for each partner (max. chars 3000).', 'info');
+                showInfo('Please fill Reasons for and benefits of cooperation for each partner (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Innovative_Aspects__c == undefined || $scope.proposalFieldsDetails.Innovative_Aspects__c == "") {
-                swal('Info', 'Please fill Innovative aspects / IP and future potential utilization plan (max. chars 10000).', 'info');
+                showInfo('Please fill Innovative aspects / IP and future potential utilization plan (max. chars 10000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == undefined || $scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == "") {
-                swal('Info', 'Please fill Market assessment of proposed technology/product (max. chars 12000).', 'info');
+                showInfo('Please fill Market assessment of proposed technology/product (max. chars 12000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Future_Commercialization_Plan__c == undefined || $scope.proposalFieldsDetails.Future_Commercialization_Plan__c == "") {
-                swal('Info', 'Please fill Future commercialization plan and expected timeline (max. chars 12000).', 'info');
+                showInfo('Please fill Future commercialization plan and expected timeline (max. chars 12000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == undefined || $scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == "") {
-                swal('Info', 'Please fill Data Management and Sharing Protocols (max. chars 5000).', 'info');
+                showInfo('Please fill Data Management and Sharing Protocols (max. chars 5000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == undefined || $scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == "") {
-                swal('Info', 'Please fill Involvement of young scientists / research scholars (max. chars 3000).', 'info');
+                showInfo('Please fill Involvement of young scientists / research scholars (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Necessity_Of_Funding__c == undefined || $scope.proposalFieldsDetails.Necessity_Of_Funding__c == "") {
-                swal('Info', 'Please fill Necessity of funding (max. chars 3000).', 'info');
+                showInfo('Please fill Necessity of funding (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Tentative_plans_for_networking__c == undefined || $scope.proposalFieldsDetails.Tentative_plans_for_networking__c == "") {
-                swal('Info', 'Please fill Tentative Plans For Network Meetings and Exchange Visits (including duration) (max. chars 3000).', 'info');
+                showInfo('Please fill Tentative Plans For Network Meetings and Exchange Visits (including duration) (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == undefined || $scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == "") {
-                swal('Info', 'Please fill Plan for the utilisation and preservation of project-acquired equipment after the completion of the project. (max. chars 3000).', 'info');
+                showInfo('Please fill Plan for the utilisation and preservation of project-acquired equipment after the completion of the project. (max. chars 3000).');
                 return;
             }
             if ($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == undefined || $scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == "") {
-                swal('Info', 'Please fill Profile of the academic institutions (max. chars 3000).', 'info');
+                showInfo('Please fill Profile of the academic institutions (max. chars 3000).');
                 return;
             }
+        }
+
+        function showInfo(message) {
+            swal({
+                title: "Info",
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                    }
+                },
+                icon: "info",
+                button: "OK"
+            });
         }
 
         // ==================== CHARACTER LIMIT VALIDATIONS ====================
@@ -2873,54 +3128,56 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     }
                 }
             }
-            if (count <= 0) {
-                swal("Work Package Details", "Please select at least one partner for " + wp.wpSequence, "info");
-                return false;
-            }
+            if ($rootScope.secondStage == true) {
+                if (count <= 0) {
+                    swal("Work Package Details", "Please select at least one partner for " + wp.wpSequence, "info");
+                    return false;
+                }
 
-            // Title validation
-            if (!wp.title || wp.title.trim() === "") {
-                swal("Work Package Details", "Please enter title for " + wp.wpSequence, "info");
-                return false;
-            }
+                // Title validation
+                if (!wp.title || wp.title.trim() === "") {
+                    swal("Work Package Details", "Please enter title for " + wp.wpSequence, "info");
+                    return false;
+                }
 
-            // TRL validations
-            if (!wp.trlFrom || wp.trlFrom === "") {
-                swal("Work Package Details", "Please select TRL From for " + wp.wpSequence, "info");
-                return false;
-            }
+                // TRL validations
+                if (!wp.trlFrom || wp.trlFrom === "") {
+                    swal("Work Package Details", "Please select TRL From for " + wp.wpSequence, "info");
+                    return false;
+                }
 
-            if (!wp.trlTo || wp.trlTo === "") {
-                swal("Work Package Details", "Please select TRL To for " + wp.wpSequence, "info");
-                return false;
-            }
+                if (!wp.trlTo || wp.trlTo === "") {
+                    swal("Work Package Details", "Please select TRL To for " + wp.wpSequence, "info");
+                    return false;
+                }
 
-            if (parseInt(wp.trlTo) < parseInt(wp.trlFrom)) {
-                swal("Work Package Details", "TRL To must be >= TRL From for " + wp.wpSequence, "info");
-                return false;
-            }
+                if (parseInt(wp.trlTo) < parseInt(wp.trlFrom)) {
+                    swal("Work Package Details", "TRL To must be >= TRL From for " + wp.wpSequence, "info");
+                    return false;
+                }
 
-            // Month validations
-            if (!wp.wpStartMonth || wp.wpStartMonth === "") {
-                swal("Work Package Details", "Please enter WP Start Month for " + wp.wpSequence, "info");
-                return false;
-            }
+                // Month validations
+                if (!wp.wpStartMonth || wp.wpStartMonth === "") {
+                    swal("Work Package Details", "Please enter WP Start Month for " + wp.wpSequence, "info");
+                    return false;
+                }
 
-            if (!wp.wpEndMonth || wp.wpEndMonth === "") {
-                swal("Work Package Details", "Please enter WP End Month for " + wp.wpSequence, "info");
-                return false;
-            }
+                if (!wp.wpEndMonth || wp.wpEndMonth === "") {
+                    swal("Work Package Details", "Please enter WP End Month for " + wp.wpSequence, "info");
+                    return false;
+                }
 
-            if (parseInt(wp.wpEndMonth) < parseInt(wp.wpStartMonth)) {
-                swal("Work Package Details", "WP End Month must be >= WP Start Month for " + wp.wpSequence, "info");
-                return false;
-            }
+                if (parseInt(wp.wpEndMonth) < parseInt(wp.wpStartMonth)) {
+                    swal("Work Package Details", "WP End Month must be >= WP Start Month for " + wp.wpSequence, "info");
+                    return false;
+                }
 
-            // Duration validation against max duration
-            var wpDuration = parseInt(wp.wpEndMonth) - parseInt(wp.wpStartMonth) + 1;
-            if (wpDuration > parseInt($rootScope.maxDurationInMonths)) {
-                swal("Work Package Details", "WP Duration cannot exceed " + $rootScope.maxDurationInMonths + " months for " + wp.wpSequence, "info");
-                return false;
+                // Duration validation against max duration
+                var wpDuration = parseInt(wp.wpEndMonth) - parseInt(wp.wpStartMonth) + 1;
+                if (wpDuration > parseInt($rootScope.maxDurationInMonths)) {
+                    swal("Work Package Details", "WP Duration cannot exceed " + $rootScope.maxDurationInMonths + " months for " + wp.wpSequence, "info");
+                    return false;
+                }
             }
 
             // Deliverables validation
@@ -2928,39 +3185,41 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 for (var j = 0; j < wp.deliverables.length; j++) {
                     var deliv = wp.deliverables[j];
 
-                    if (!deliv.title || deliv.title.trim() === "") {
-                        swal("Deliverable Details", "Please enter title for " + deliv.deliverableSequence, "info");
-                        return false;
-                    }
+                    if ($rootScope.secondStage == true) {
+                        if (!deliv.title || deliv.title.trim() === "") {
+                            swal("Deliverable Details", "Please enter title for " + deliv.deliverableSequence, "info");
+                            return false;
+                        }
 
-                    if (!deliv.startMonth || deliv.startMonth === "") {
-                        swal("Deliverable Details", "Please enter Start Month for " + deliv.deliverableSequence, "info");
-                        return false;
-                    }
+                        if (!deliv.startMonth || deliv.startMonth === "") {
+                            swal("Deliverable Details", "Please enter Start Month for " + deliv.deliverableSequence, "info");
+                            return false;
+                        }
 
-                    if (!deliv.endMonth || deliv.endMonth === "") {
-                        swal("Deliverable Details", "Please enter End Month for " + deliv.deliverableSequence, "info");
-                        return false;
-                    }
+                        if (!deliv.endMonth || deliv.endMonth === "") {
+                            swal("Deliverable Details", "Please enter End Month for " + deliv.deliverableSequence, "info");
+                            return false;
+                        }
 
-                    var delivStart = parseInt(deliv.startMonth);
-                    var delivEnd = parseInt(deliv.endMonth);
-                    var wpStart = parseInt(wp.wpStartMonth);
-                    var wpEnd = parseInt(wp.wpEndMonth);
+                        var delivStart = parseInt(deliv.startMonth);
+                        var delivEnd = parseInt(deliv.endMonth);
+                        var wpStart = parseInt(wp.wpStartMonth);
+                        var wpEnd = parseInt(wp.wpEndMonth);
 
-                    if (delivStart < wpStart) {
-                        swal("Validation Error", "Deliverable Start Month must be >= WP Start Month (" + wpStart + ") for " + deliv.deliverableSequence, "error");
-                        return false;
-                    }
+                        if (delivStart < wpStart) {
+                            swal("Validation Error", "Deliverable Start Month must be >= WP Start Month (" + wpStart + ") for " + deliv.deliverableSequence, "error");
+                            return false;
+                        }
 
-                    if (delivEnd > wpEnd) {
-                        swal("Validation Error", "Deliverable End Month must be <= WP End Month (" + wpEnd + ") for " + deliv.deliverableSequence, "error");
-                        return false;
-                    }
+                        if (delivEnd > wpEnd) {
+                            swal("Validation Error", "Deliverable End Month must be <= WP End Month (" + wpEnd + ") for " + deliv.deliverableSequence, "error");
+                            return false;
+                        }
 
-                    if (delivEnd < delivStart) {
-                        swal("Deliverable Details", "End Month must be >= Start Month for " + deliv.deliverableSequence, "info");
-                        return false;
+                        if (delivEnd < delivStart) {
+                            swal("Deliverable Details", "End Month must be >= Start Month for " + deliv.deliverableSequence, "info");
+                            return false;
+                        }
                     }
                 }
             }
@@ -4354,64 +4613,66 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     }
                 }
             }
-            if (count <= 0) {
-                swal("Work Package Details", "Please select at least one partner for " + wp.wpSequence, "info");
-                return;
-            }
-            if (!wp.title || wp.title === "") {
-                swal("Work Package Details", "Please enter title for " + wp.wpSequence, "info");
-                return;
-            }
-            if (!wp.trlFrom || wp.trlFrom === "") {
-                swal("Work Package Details", "Please select TRL From for " + wp.wpSequence, "info");
-                return;
-            }
-            if (!wp.trlTo || wp.trlTo === "") {
-                swal("Work Package Details", "Please select TRL To for " + wp.wpSequence, "info");
-                return;
-            }
-            if (parseInt(wp.trlTo) < parseInt(wp.trlFrom)) {
-                swal("Work Package Details", "TRL To must be >= TRL From for " + wp.wpSequence, "info");
-                return;
-            }
-            if (!wp.wpStartMonth || wp.wpStartMonth === "") {
-                swal("Work Package Details", "Please enter WP Start Month for " + wp.wpSequence, "info");
-                return;
-            }
-            if (!wp.wpEndMonth || wp.wpEndMonth === "") {
-                swal("Work Package Details", "Please enter WP End Month for " + wp.wpSequence, "info");
-                return;
-            }
-            if (parseInt(wp.wpEndMonth) < parseInt(wp.wpStartMonth)) {
-                swal("Work Package Details", "WP End Month must be >= WP Start Month for " + wp.wpSequence, "info");
-                return;
-            }
-            if (wp.deliverables && wp.deliverables.length > 0) {
-                for (var j = 0; j < wp.deliverables.length; j++) {
-                    var deliv = wp.deliverables[j];
-                    if (!deliv.title || deliv.title === "") {
-                        swal("Deliverable Details", "Please enter title for " + deliv.deliverableSequence, "info");
-                        return;
-                    }
-                    if (!deliv.startMonth || deliv.startMonth === "") {
-                        swal("Deliverable Details", "Please enter Start Month for " + deliv.deliverableSequence, "info");
-                        return;
-                    }
-                    if (!deliv.endMonth || deliv.endMonth === "") {
-                        swal("Deliverable Details", "Please enter End Month for " + deliv.deliverableSequence, "info");
-                        return;
-                    }
-                    if (parseInt(deliv.startMonth) < parseInt(wp.wpStartMonth)) {
-                        swal("Validation Error", "Deliverable Start Month must be >= WP Start Month for " + deliv.deliverableSequence, "error");
-                        return;
-                    }
-                    if (parseInt(deliv.endMonth) > parseInt(wp.wpEndMonth)) {
-                        swal("Validation Error", "Deliverable End Month must be <= WP End Month for " + deliv.deliverableSequence, "error");
-                        return;
-                    }
-                    if (parseInt(deliv.endMonth) < parseInt(deliv.startMonth)) {
-                        swal("Deliverable Details", "End Month must be >= Start Month for " + deliv.deliverableSequence, "info");
-                        return;
+            if ($rootScope.secondStage == true) {
+                if (count <= 0) {
+                    swal("Work Package Details", "Please select at least one partner for " + wp.wpSequence, "info");
+                    return;
+                }
+                if (!wp.title || wp.title === "") {
+                    swal("Work Package Details", "Please enter title for " + wp.wpSequence, "info");
+                    return;
+                }
+                if (!wp.trlFrom || wp.trlFrom === "") {
+                    swal("Work Package Details", "Please select TRL From for " + wp.wpSequence, "info");
+                    return;
+                }
+                if (!wp.trlTo || wp.trlTo === "") {
+                    swal("Work Package Details", "Please select TRL To for " + wp.wpSequence, "info");
+                    return;
+                }
+                if (parseInt(wp.trlTo) < parseInt(wp.trlFrom)) {
+                    swal("Work Package Details", "TRL To must be >= TRL From for " + wp.wpSequence, "info");
+                    return;
+                }
+                if (!wp.wpStartMonth || wp.wpStartMonth === "") {
+                    swal("Work Package Details", "Please enter WP Start Month for " + wp.wpSequence, "info");
+                    return;
+                }
+                if (!wp.wpEndMonth || wp.wpEndMonth === "") {
+                    swal("Work Package Details", "Please enter WP End Month for " + wp.wpSequence, "info");
+                    return;
+                }
+                if (parseInt(wp.wpEndMonth) < parseInt(wp.wpStartMonth)) {
+                    swal("Work Package Details", "WP End Month must be >= WP Start Month for " + wp.wpSequence, "info");
+                    return;
+                }
+                if (wp.deliverables && wp.deliverables.length > 0) {
+                    for (var j = 0; j < wp.deliverables.length; j++) {
+                        var deliv = wp.deliverables[j];
+                        if (!deliv.title || deliv.title === "") {
+                            swal("Deliverable Details", "Please enter title for " + deliv.deliverableSequence, "info");
+                            return;
+                        }
+                        if (!deliv.startMonth || deliv.startMonth === "") {
+                            swal("Deliverable Details", "Please enter Start Month for " + deliv.deliverableSequence, "info");
+                            return;
+                        }
+                        if (!deliv.endMonth || deliv.endMonth === "") {
+                            swal("Deliverable Details", "Please enter End Month for " + deliv.deliverableSequence, "info");
+                            return;
+                        }
+                        if (parseInt(deliv.startMonth) < parseInt(wp.wpStartMonth)) {
+                            swal("Validation Error", "Deliverable Start Month must be >= WP Start Month for " + deliv.deliverableSequence, "error");
+                            return;
+                        }
+                        if (parseInt(deliv.endMonth) > parseInt(wp.wpEndMonth)) {
+                            swal("Validation Error", "Deliverable End Month must be <= WP End Month for " + deliv.deliverableSequence, "error");
+                            return;
+                        }
+                        if (parseInt(deliv.endMonth) < parseInt(deliv.startMonth)) {
+                            swal("Deliverable Details", "End Month must be >= Start Month for " + deliv.deliverableSequence, "info");
+                            return;
+                        }
                     }
                 }
             }
@@ -4465,6 +4726,12 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 if (result === 'success') {
                     //Swal.fire('Success', 'Work Packages and Deliverables saved successfully!', 'success');
                     $scope.loadWPDeliverablesData();
+
+                    // Update Gantt chart with saved data
+                    setTimeout(function () {
+                        $scope.updateGanttChart();
+                    }, 300);
+
                 } else {
                     swal("Error", "Failed to save Work Packages and Deliverables: " + result, "error");
                 }

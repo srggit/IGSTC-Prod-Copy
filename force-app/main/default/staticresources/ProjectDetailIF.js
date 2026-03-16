@@ -165,6 +165,16 @@ angular.module('cp_app').controller('ProjectDetailIF_Ctrl', function ($scope, $s
     }
     console.log(file);
     if (file != undefined) {
+      if(file.size > maxFileSize){
+         $scope.showSpinnereditProf = false;    
+          swal(
+            "Info",
+            "File must be less than 1 MB.",
+            "info"
+          );
+          return;
+      }
+      
       if (file.size <= maxFileSize) {
 
         attachmentName = file.name;
@@ -240,23 +250,57 @@ angular.module('cp_app').controller('ProjectDetailIF_Ctrl', function ($scope, $s
         if (event.type === 'exception') {
           console.log("exception");
           console.log(event);
-        } else if (event.status) {
-          if (doneUploading == true) {
-            swal(
-              'success',
-              'Uploaded Successfully!',
-              'success'
-            )
+        }
+        //  else if (event.status) {
+        //   if (doneUploading == true) {
+        //     swal(
+        //       'success',
+        //       'Uploaded Successfully!',
+        //       'success'
+        //     )
 
-            $scope.getProjectdetils();
-            // $scope.disableSubmit = false;
+        //     $scope.getProjectdetils();
+        //     // $scope.disableSubmit = false;
 
-          }
+        //   }
+        //   $scope.showUplaodUserDoc = false;
+        //   // $scope.getCandidateDetails();
+
+        // } 
+        // else if (event.status === true) {
+
+        //   if (doneUploading === true) {
+        //     $scope.showSpinnereditProf = false;
+
+        //     swal(
+        //       'Success',
+        //       'Uploaded Successfully!',
+        //       'success'
+        //     );
+
+        //     $scope.getProjectdetils();
+        //     $scope.showUplaodUserDoc = false;
+        //   }
+         
+        // }
+        // else {
+        //   debugger;
+        //   positionIndex += chunkSize;
+        //   $scope.uploadAttachment(type, userDocId, result);
+        // }
+       else if (event.status === true && doneUploading === true) {
+          $scope.showSpinnereditProf = false;
+
+          swal(
+            'Success',
+            'Uploaded Successfully!',
+            'success'
+          );
+
+          $scope.getProjectdetils();
           $scope.showUplaodUserDoc = false;
-          // $scope.getCandidateDetails();
-
-        } else {
-          debugger;
+        }
+        else if (!doneUploading) {
           positionIndex += chunkSize;
           $scope.uploadAttachment(type, userDocId, result);
         }

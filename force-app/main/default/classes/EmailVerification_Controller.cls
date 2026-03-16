@@ -6,9 +6,9 @@ public withOut sharing class EmailVerification_Controller {
             if(contactRec.size() > 0){
                 contactRec[0].Email_Verified__c = true;
                     update contactRec[0];
-                    return contactRec[0].Campaign__c;
+                    return contactRec[0].Name;
             }
         }
-        return null;
+        return 'verified';
     }
 }

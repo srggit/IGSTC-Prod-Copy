@@ -1341,6 +1341,7 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
     
     //************************************** NEW WP + Deliverables Combined Table **********************************************************
     
+
     @RemoteAction
     public static List<Work_Package__c> getWPWithDeliverables(String proposalId, String proposalStage){
         try{
@@ -1359,6 +1360,208 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
             return new List<Work_Package__c>();
         }
     }
+    
+    // ------------------------------- DATA FOR GANTT CHART -------------------------------------- //
+    @RemoteAction
+    public static Map<String, Object> getGanttChartData(String proposalId, String proposalStage, String wpDeliverablesJSON) {
+        Map<String, Object> response = new Map<String, Object>();
+        
+        try {
+            // Get proposal details for max duration
+            Application_Proposal__c proposal = [
+                SELECT Duration_In_Months_Max_36__c 
+                FROM Application_Proposal__c 
+                WHERE Id = :proposalId
+                LIMIT 1
+            ];
+            
+            Integer maxDuration = proposal?.Duration_In_Months_Max_36__c != null ? 
+                Integer.valueOf(proposal.Duration_In_Months_Max_36__c) : 36;
+            
+            List<Map<String, Object>> ganttData = new List<Map<String, Object>>();
+            
+            // CASE 1: We have unsaved data from the frontend (user is entering data)
+            if (String.isNotBlank(wpDeliverablesJSON)) {
+                List<Object> unsavedData = (List<Object>) JSON.deserializeUntyped(wpDeliverablesJSON);
+                
+                // Get all account IDs from unsaved data to fetch contacts
+                Set<Id> accountIdsFromUnsaved = new Set<Id>();
+                for (Object wpObj : unsavedData) {
+                    Map<String, Object> wpMap = (Map<String, Object>) wpObj;
+                    List<Object> accountList = (List<Object>) wpMap.get('AccountList');
+                    
+                    if (accountList != null) {
+                        for (Object accObj : accountList) {
+                            Map<String, Object> accMap = (Map<String, Object>) accObj;
+                            if (accMap.get('selected') == true) {
+                                String accountId = (String) accMap.get('Id');
+                                if (String.isNotBlank(accountId)) {
+                                    accountIdsFromUnsaved.add(Id.valueOf(accountId));
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Get contacts for these accounts
+                Map<Id, List<String>> accountContactsMap = getContactsForAccounts(proposalId, accountIdsFromUnsaved);
+                
+                // Build Gantt data from unsaved data
+                for (Object wpObj : unsavedData) {
+                    Map<String, Object> wpMap = (Map<String, Object>) wpObj;
+                    
+                    Map<String, Object> wpGanttMap = new Map<String, Object>();
+                    wpGanttMap.put('title', wpMap.get('title'));
+                    wpGanttMap.put('wpSequence', wpMap.get('wpSequence'));
+                    wpGanttMap.put('wpStartMonth', wpMap.get('wpStartMonth'));
+                    wpGanttMap.put('wpEndMonth', wpMap.get('wpEndMonth'));
+                    
+                    // Collect contact initials from selected accounts
+                    Set<String> contactInitials = new Set<String>();
+                    List<Object> accountList = (List<Object>) wpMap.get('AccountList');
+                    if (accountList != null) {
+                        for (Object accObj : accountList) {
+                            Map<String, Object> accMap = (Map<String, Object>) accObj;
+                            if (accMap.get('selected') == true) {
+                                String accountId = (String) accMap.get('Id');
+                                if (accountContactsMap.containsKey(Id.valueOf(accountId))) {
+                                    contactInitials.addAll(accountContactsMap.get(Id.valueOf(accountId)));
+                                }
+                            }
+                        }
+                    }
+                    wpGanttMap.put('contactInitials', new List<String>(contactInitials));
+                    
+                    // Add deliverables
+                    List<Map<String, Object>> deliverablesList = new List<Map<String, Object>>();
+                    List<Object> deliverables = (List<Object>) wpMap.get('deliverables');
+                    if (deliverables != null) {
+                        for (Object delivObj : deliverables) {
+                            Map<String, Object> delivMap = (Map<String, Object>) delivObj;
+                            deliverablesList.add(delivMap);
+                        }
+                    }
+                    wpGanttMap.put('deliverables', deliverablesList);
+                    
+                    ganttData.add(wpGanttMap);
+                }
+            } 
+            // CASE 2: No unsaved data, get from database
+            else {
+                List<Work_Package__c> workPackages = [
+                    SELECT Id, Title__c, WP_Sequence_2__c, Duration_Start_Month__c, Duration_End_Month__c,
+                        (SELECT Id, Title__c, Deliverable_Sequence__c, Duration_Start_Month__c, Duration_End_Month__c 
+                        FROM PI_Deliverables__r 
+                        ORDER BY Deliverable_Sequence__c),
+                        (SELECT Id, Account__c, Account__r.Name FROM Account_Mapping__r)
+                    FROM Work_Package__c 
+                    WHERE Application__c = :proposalId
+                    AND Proposal_Stage__c = :proposalStage
+                    ORDER BY WP_Sequence_2__c
+                ];
+                
+                // Collect all Account IDs
+                Set<Id> allAccountIds = new Set<Id>();
+                for (Work_Package__c wp : workPackages) {
+                    if (wp.Account_Mapping__r != null) {
+                        for (Account_Mapping__c am : wp.Account_Mapping__r) {
+                            if (am.Account__c != null) {
+                                allAccountIds.add(am.Account__c);
+                            }
+                        }
+                    }
+                }
+                
+                // Get contacts for these accounts
+                Map<Id, List<String>> accountContactsMap = getContactsForAccounts(proposalId, allAccountIds);
+                
+                // Build Gantt data from database
+                for (Work_Package__c wp : workPackages) {
+                    Map<String, Object> wpMap = new Map<String, Object>();
+                    wpMap.put('title', wp.Title__c);
+                    wpMap.put('wpSequence', wp.WP_Sequence_2__c);
+                    wpMap.put('wpStartMonth', wp.Duration_Start_Month__c);
+                    wpMap.put('wpEndMonth', wp.Duration_End_Month__c);
+                    
+                    // Collect contact initials
+                    Set<String> contactInitials = new Set<String>();
+                    if (wp.Account_Mapping__r != null) {
+                        for (Account_Mapping__c am : wp.Account_Mapping__r) {
+                            if (am.Account__c != null && accountContactsMap.containsKey(am.Account__c)) {
+                                contactInitials.addAll(accountContactsMap.get(am.Account__c));
+                            }
+                        }
+                    }
+                    wpMap.put('contactInitials', new List<String>(contactInitials));
+                    
+                    // Add deliverables
+                    List<Map<String, Object>> deliverablesList = new List<Map<String, Object>>();
+                    for (PI_Deliverables__c deliv : wp.PI_Deliverables__r) {
+                        Map<String, Object> delivMap = new Map<String, Object>();
+                        delivMap.put('deliverableSequence', deliv.Deliverable_Sequence__c);
+                        delivMap.put('startMonth', deliv.Duration_Start_Month__c);
+                        delivMap.put('endMonth', deliv.Duration_End_Month__c);
+                        deliverablesList.add(delivMap);
+                    }
+                    wpMap.put('deliverables', deliverablesList);
+                    
+                    ganttData.add(wpMap);
+                }
+            }
+            
+            response.put('success', true);
+            response.put('maxDuration', maxDuration);
+            response.put('workPackages', ganttData);
+            
+        } catch (Exception e) {
+            response.put('success', false);
+            response.put('error', e.getMessage());
+            System.debug('Error in getGanttChartData: ' + e.getMessage() + ' Line: ' + e.getLineNumber());
+        }
+        
+        return response;
+    }
+
+    // Helper method to get contact initials for accounts
+    private static Map<Id, List<String>> getContactsForAccounts(String proposalId, Set<Id> accountIds) {
+        Map<Id, List<String>> accountContactsMap = new Map<Id, List<String>>();
+        
+        if (accountIds.isEmpty()) {
+            return accountContactsMap;
+        }
+        
+        List<Applicant_Proposal_Association__c> apas = [
+            SELECT Id, Contact__c, Contact__r.FirstName, Contact__r.LastName, 
+                Contact__r.AccountId
+            FROM Applicant_Proposal_Association__c 
+            WHERE Contact__r.AccountId IN :accountIds 
+            AND Is_Signatory__c = false
+            AND Proposals__c = :proposalId
+        ];
+        
+        for (Applicant_Proposal_Association__c apa : apas) {
+            Id accountId = apa.Contact__r.AccountId;
+            
+            if (!accountContactsMap.containsKey(accountId)) {
+                accountContactsMap.put(accountId, new List<String>());
+            }
+            
+            String firstName = apa.Contact__r.FirstName != null ? apa.Contact__r.FirstName : '';
+            String lastName = apa.Contact__r.LastName != null ? apa.Contact__r.LastName : '';
+            
+            String initials = '';
+            if (firstName != '') initials += firstName.substring(0, 1);
+            if (lastName != '') initials += lastName.substring(0, 1);
+            
+            if (String.isNotBlank(initials)) {
+                accountContactsMap.get(accountId).add(initials.toUpperCase());
+            }
+        }
+        
+        return accountContactsMap;
+    }
+
+    // ----------------------------- GANTT CHART FUNCTIONALITY END ---------------------------------- //
     
     @RemoteAction
     public static String saveWPWithDeliverables(List<WrapperWPWithDeliverables> wrapperList, String proposalId, String proposalStage){

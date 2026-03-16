@@ -40,6 +40,37 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
     CKEDITOR.config.readOnly = $scope.proposalStage;
 
 
+    // ----------- Apply Button Popup Code - Start ------------ //
+    $scope.showDocumentPopup = false;
+    $scope.selectedProgram = null;
+    $rootScope.userSelectedRML = false;
+    $rootScope.userSelectedDSA = false;
+
+    $scope.openDocumentPopup = function () {
+        debugger;
+        //console.log(' ----------- openDocumentPopup ------------ : ', p)
+        //$scope.selectedProgram = p;
+        $scope.showDocumentPopup = true;
+    };
+
+    $scope.dontShowAgain = function () {
+        $rootScope.userSelectedDSA = true;
+        localStorage.setItem('userPopupChoice', 'DSA');
+        //$scope.selectedProgram = p;
+        //$scope.showDocumentPopup = true;
+        //$scope.redirectToForm($scope.selectedProgram);
+    };
+
+    $scope.remindMeLater = function () {
+        $rootScope.userSelectedRML = true;
+        localStorage.setItem('userPopupChoice', 'RML');
+        //$scope.showDocumentPopup = false;
+        //$scope.redirectToForm($scope.selectedProgram);
+    };
+    // ----------- Apply Button Popup Code - Finish ;------------ //
+
+    $scope.userPopupChoice = '';
+
     $scope.getApplicantDetail = function () {
         console.log('Inside getApplicantDetail=======================> ');
         console.log('$rootScope.userId====================>' + $rootScope.userId);
@@ -56,6 +87,9 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                 if (result != null) {
                     var thematicAreaId = [];
                     let proposal = result.proposal;
+
+                    console.log('proposal -----> ', proposal);
+
                     $rootScope.apaId = result.apa?.Id;
                     // Get coordinator status from APA
                     // $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c == true ? 'true' : 'false';
@@ -111,6 +145,13 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                     $scope.applicantDetails = proposal;
                     console.log('#### $scope.applicantDetails : ', $scope.applicantDetails);
 
+                    $scope.userPopupChoice = $scope.applicantDetails.User_Popup_Choice__c;
+
+                    console.log('Popup Choice:', $scope.userPopupChoice);
+
+                    if ($scope.userPopupChoice === 'RML') {
+                        $scope.showDocumentPopup = true;
+                    }
                     //$scope.applicantDetails.Duration_In_Months_Max_36__c = Math.round($scope.applicantDetails.Duration_In_Months_Max_36__c);
                     if ($scope.applicantDetails.Application_Thematic_Area__r != undefined) {
                         $scope.thematicAreaToDisplay = [];
@@ -268,14 +309,14 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
 
         if ($scope.applicantDetails.Acronym__c == undefined || $scope.applicantDetails.Acronym__c == "") {
-            swal("info", "Please Enter Project Acronym.", "info");
+            swal("Info", "Please Enter Project Acronym.", "info");
             $("#Acronym").addClass('border-theme');
             return;
         }
 
         if ($scope.applicantDetails.Acronym__c.length > 300) {
             swal(
-                "info",
+                "Info",
                 "Project Acronym cannot exceed 300 characters.",
                 "info"
             );
@@ -284,14 +325,14 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
 
         if ($scope.applicantDetails.Title_Of__c == undefined || $scope.applicantDetails.Title_Of__c == "") {
-            swal("info", "Please Enter Title of Proposal.", "info");
+            swal("Info", "Please Enter Title of Proposal.", "info");
             $("#title").addClass('border-theme');
             return;
         }
 
         if ($scope.applicantDetails.Title_Of__c.length > 600) {
             swal(
-                "info",
+                "Info",
                 "Title of Proposal cannot exceed 600 characters.",
                 "info"
             );
@@ -300,14 +341,14 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
 
         if ($scope.applicantDetails.Title_In_German__c == undefined || $scope.applicantDetails.Title_In_German__c == "") {
-            swal("info", "Please Enter Title des Antrages(In German).", "info");
+            swal("Info", "Please Enter Title des Antrages(In German).", "info");
             $("#titleG").addClass('border-theme');
             return;
         }
 
         if ($scope.applicantDetails.Title_In_German__c.length > 600) {
             swal(
-                "info",
+                "Info",
                 "Title In German cannot exceed 600 characters.",
                 "info"
             );
@@ -316,13 +357,13 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
 
         if ($scope.applicantDetails.Duration_In_Months_Max_36__c == undefined || $scope.applicantDetails.Duration_In_Months_Max_36__c == "") {
-            swal("info", "Please Enter Project Duration.", "info");
+            swal("Info", "Please Enter Project Duration.", "info");
             $("#txtDuration").addClass('border-theme');
             return;
         }
 
         if ($scope.applicantDetails.Duration_In_Months_Max_36__c < 24 || $scope.applicantDetails.Duration_In_Months_Max_36__c > 36) {
-            swal("info", "Duration must be between 24 to 36 months.", "info");
+            swal("Info", "Duration must be between 24 to 36 months.", "info");
             $("#proposedDate").addClass('border-theme');
             return;
         }
@@ -335,7 +376,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
             }
         }
         if ($scope.selectedTheme.length <= 0) {
-            swal("info", "Please select at least one project theme.", "info");
+            swal("Info", "Please select at least one project theme.", "info");
             return;
         }
 
@@ -353,18 +394,18 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         delete $scope.applicantDetails._charLimitMap;
 
         if ($scope.applicantDetails.KeyWords__c == undefined || $scope.applicantDetails.KeyWords__c == "") {
-            swal("info", "Please Enter Keyword.", "info");
+            swal("Info", "Please Enter Keyword.", "info");
             $("#key").addClass('border-theme');
             return;
         }
 
         if ($scope.applicantDetails.Summary__c == undefined || $scope.applicantDetails.Summary__c == "") {
-            swal("info", "Please Enter Proposal Summary.", "info");
+            swal("Info", "Please Enter Proposal Summary.", "info");
             return;
         }
         if ($scope.applicantDetails.Summary__c != undefined || $scope.applicantDetails.Summary__c != "") {
             if ($scope.objRtf[0].errorStatus) {
-                swal("info", "Summary max. length limit is 1000 character only.", "info");
+                swal("Info", "Summary max. length limit is 1000 character only.", "info");
                 return;
             }
         }
@@ -378,7 +419,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         var yyyy = today.getFullYear();
 
         if (($scope.tentitiveStartDate == undefined || $scope.tentitiveStartDate == '') && $rootScope.secondstage == true) {
-            swal("info", "Please Enter Tentative Date.", "info");
+            swal("Info", "Please Enter Tentative Date.", "info");
             $("#TSD").addClass('border-theme');
             return;
         } else if (($scope.tentitiveStartDate != undefined || $scope.tentitiveStartDate != "") && $rootScope.secondstage == true) {
@@ -389,7 +430,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
 
         if (($scope.tentitiveStartDate != undefined || $scope.tentitiveStartDate != "") && $rootScope.secondstage == true) {
             if (($scope.tentitiveStartDate.getDate() < dd && $scope.tentitiveStartDate.getUTCMonth() + 1 <= mm && $scope.tentitiveStartDate.getUTCFullYear() <= yyyy) && $rootScope.secondstage == true) {
-                swal("info", "Tentative Start Date should not be previous date.");
+                swal("Info", "Tentative Start Date should not be previous date.");
                 $("#TSD").addClass('border-theme');
                 return;
             }
@@ -656,7 +697,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
         var dayDiff = moment().diff('' + Year + '-' + Month + '-' + Day + '', 'days');
         if (dayDiff > 0) {
-            swal('info', 'Tentative date can not be less than today date. ', 'info')
+            swal('Info', 'Tentative date can not be less than today date. ', 'info')
             $scope.tentitiveStartDate = '';
             $scope.$apply();
         }

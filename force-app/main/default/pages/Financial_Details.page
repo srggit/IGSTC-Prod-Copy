@@ -1,6 +1,90 @@
-<apex:page sidebar="false" showHeader="false" standardStylesheets="false">
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="WorkshopController2">
     <html>
     <div ng-controller="financialdetails_ctrl">
+
+        <style>
+            /* ===== info card ===== */
+            .info-card,
+            .summary-card,
+            .table-card {
+                background: #ffffff;
+                margin-bottom: 15px;;
+                border-radius: 14px;
+                padding: 18px;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+                border: 1px solid #eef0f4;
+                /* SAME as participant card */
+            }
+
+            .info-list li {
+                margin-bottom: 10px;
+                line-height: 1.5;
+            }
+
+            /* ===== accordion ===== */
+            .modern-accordion-item {
+                border: none;
+                background: transparent;
+            }
+
+            .modern-accordion-btn {
+                background: #ffffff !important;
+                box-shadow: none !important;
+                border-radius: 12px !important;
+                padding: 16px 18px;
+                border: 1px solid #eef0f4;
+                /* SAME */
+            }
+
+            /* ===== inputs already matched ===== */
+            .modern-input {
+                border-radius: 8px !important;
+                border: 1px solid #dfe3eb !important;
+            }
+
+            /* ===== table header match ===== */
+            .table-modern thead th {
+                background: #f5f7fb;
+                /* SAME as previous */
+                border: none !important;
+                font-weight: 600;
+            }
+
+            /* ===== table card ===== */
+            .table-card {
+                background: #ffffff;
+                border-radius: 12px;
+                padding: 12px;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            }
+
+            /* ===== summary card ===== */
+            .summary-card {
+                background: #ffffff;
+                border-radius: 14px;
+                padding: 14px;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+                border: 1px solid #eef0f4;
+            }
+
+            .btn-add {
+                background: #4c6ef5;
+                border: none;
+                color: white;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+            }
+
+            .btn-remove {
+                background: #ffe3e3;
+                border: none;
+                color: #e03131;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+            }
+        </style>
 
         <head>
             <apex:stylesheet value="{!$Resource.ApplicantPortalCSS}" />
@@ -164,121 +248,206 @@
                     <div class="col-md-12 alert bg-color-list" role="alert">
                         <ul class="font-if">
                             <li>
-                                <i class="fa-solid fa-circle text-success me-3"></i><b>Travel:</b> International Airfare (Travel from home to Venue and back / incl. Visa and medical
-                                insurance), Domestic Travel, Local Transport</li>
+                                <i class="fa-solid fa-circle text-success me-3"></i>
+                                <b>Travel:</b> International Airfare (Travel from home to Venue and back / incl. Visa
+                                and medical
+                                insurance), Domestic Travel, Local Transport
+                            </li>
                             <li>
-                                <i class="fa-solid fa-circle text-success me-3"></i><b>Accommodation:</b> Hotel / Guest House (incl. breakfast)</li>
+                                <i class="fa-solid fa-circle text-success me-3"></i>
+                                <b>Accommodation:</b> Hotel / Guest House (incl. breakfast)
+                            </li>
                             <li>
-                                <i class="fa-solid fa-circle text-success me-3"></i><b>Catering:</b> Official Dinner (only one), Day rate for the meeting (lunch buffet / coffee
-                                break)</li>
+                                <i class="fa-solid fa-circle text-success me-3"></i>
+                                <b>Catering:</b> Official Dinner (only one), Day rate for the meeting (lunch buffet /
+                                coffee
+                                break)
+                            </li>
                             <li>
-                                <i class="fa-solid fa-circle text-success me-3"></i><b>Other:</b> Printing, Technical equipment, Other (please specify)</li>
+                                <i class="fa-solid fa-circle text-success me-3"></i>
+                                <b>Other:</b> Printing, Technical equipment, Other (please specify)
+                            </li>
                             <li>
-                                <i class="fa-solid fa-circle text-success me-3"></i><b>Currency:</b> For workshops in Germany, use currency type – Euro; For workshops in India, use currency type – INR</li>
+                                <i class="fa-solid fa-circle text-success me-3"></i>
+                                <b>Currency:</b> For workshops in Germany, use currency type – Euro; For workshops in
+                                India,
+                                use currency type – INR
+                            </li>
                             <li>
-                                <i class="fa-solid fa-circle text-success me-3"></i>Kindly refer to <a href="https://www.igstc.org/home/open_call" target="_blank"> call text</a> for more guidelines</li>
+                                <i class="fa-solid fa-circle text-success me-3"></i>Kindly refer to
+                                <a href="https://www.igstc.org/home/open_call" target="_blank"> call text</a> for more
+                                guidelines
+                            </li>
                         </ul>
                     </div>
                 </div>
 
                 <!-- <div class="row mt-5 mx-5"> -->
-                    <!-- <div class="col-md-3 p-3 box-shadow-1">
+                <!-- <div class="col-md-3 p-3 box-shadow-1">
                                 <i ng-if="appli.Account__r.BillingCountry=='India'"><apex:image url="{!$Resource.indiaFlag}" styleClass="img-fluid" style="max-width:30px;" /></i>
                                 <i ng-if="appli.Account__r.BillingCountry=='Germany'"><apex:image url="{!$Resource.germanyFlag}" styleClass="img-fluid" style="max-width:30px;" /></i>
                                 <h4 class="pt-1 px-4 color-theme w-75 float-end" style="font-weight:800">{{appli.Account__r.Name}}</h4>
                             </div> -->
 
-                    <div class="row mt-3 mx-5" ng-repeat="applicnt in expenseAllList">
-                        <div class="accordion" stle="background-color: white !important" id="accordionPanelsStayOpenExample{{$index}}">
-                            <div class="accordion-item" style="border: none;">
-                                <div class="col-md-12 box-shadow-1 accordion-header" id="panelsStayOpen-heading{{$index}}" style="padding: none !important;margin-bottom: 1%;">
-                                    <button class="accordion-button" style="background-color: white !important; box-shadow: none !important;" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#panelsStayOpencollapse{{$index}}" aria-expanded="true" aria-controls="panelsStayOpencollapse{{$index}}">
-                                        <h4 class="pb-3 color-theme" style="font-weight:600;">{{applicnt.Name}}</h4>
-                                    </button>
-                                </div>
+                <!-- ===== ACCORDION EXPENSES ===== -->
+                <div class="row mt-3 mx-5" ng-repeat="applicnt in expenseAllList">
 
-                                <div id="panelsStayOpencollapse{{$index}}" ng-clock="true" class="accordion-collapse collapse show mb-3" aria-labelledby="panelsStayOpen-heading{{$index}}">
-                                    <table class="table basic">
+                    <div class="accordion modern-accordion" id="accordionPanelsStayOpenExample{{$index}}">
+
+                        <div class="accordion-item modern-accordion-item">
+
+                            <div class="accordion-header" id="panelsStayOpen-heading{{$index}}">
+                                <button class="accordion-button modern-accordion-btn" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#panelsStayOpencollapse{{$index}}"
+                                    aria-expanded="true">
+
+                                    <h5 class="mb-0 fw-semibold color-theme">
+                                        {{applicnt.Name}}
+                                    </h5>
+
+                                </button>
+                            </div>
+
+                            <div id="panelsStayOpencollapse{{$index}}" class="accordion-collapse collapse show mb-3">
+
+                                <div class="table-card">
+
+                                    <table class="table table-modern">
                                         <thead>
                                             <tr>
-                                                <th class="pb-3 color-theme">Description<span class="text-danger ms-2">*</span></th>
-                                                <th class="pb-3 color-theme">Currency Type</th>
-                                                <th class="pb-3 color-theme">Unit Cost</th>
-                                                <th class="pb-3 color-theme">Number</th>
-                                                <th class="pb-3 color-theme">Total<span class="text-danger ms-2">*</span></th>
+                                                <th>Description
+                                                    <span class="text-danger">*</span>
+                                                </th>
+                                                <th>Currency Type</th>
+                                                <th>Unit Cost</th>
+                                                <th>Number</th>
+                                                <th>Total
+                                                    <span class="text-danger">*</span>
+                                                </th>
                                                 <th ng-hide="proposalStage" class="text-center">
-                                                    <i class="fas fa-plus-circle icon" ng-click="addExpense($index)" style="width:3%; font-size: 24px;"></i>
+                                                    <button class="btn-add" ng-click="addExpense($index)">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
                                                 </th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
                                             <tr ng-repeat="lineItem in applicnt.Expense_Line_Items__r">
+
                                                 <td>
-                                                    <input type="text" class="form-control" ng-model="lineItem.Description__c"
+                                                    <input type="text" class="form-control modern-input"
+                                                        ng-model="lineItem.Description__c"
                                                         ng-disabled="proposalStage" />
                                                 </td>
-                                                <td><select class="form-control" aria-label="Default select example" ng-model="lineItem.Currency_Type2__c" ng-disabled="true">
-                                                    <option ng-repeat="staff in currencyType2">{{staff}}</option>
-                                                </select></td>
+
                                                 <td>
-                                                    <input type="text" number="lineItem.Unit_Price__c" class="form-control" ng-model="lineItem.Unit_Price__c"
+                                                    <!-- <select class="form-control modern-input"
+                                                        ng-model="lineItem.Currency_Type2__c" ng-disabled="true">
+                                                        <option ng-repeat="staff in currencyType2" value="{{staff}}">{{staff}}</option>
+                                                    </select> -->
+                                                    <select class="form-control modern-input"
+                                                            ng-model="lineItem.Currency_Type2__c"
+                                                            ng-options="currency for currency in currencyType2"
+                                                            ng-disabled="true">
+                                                    </select>
+
+                                                </td>
+
+                                                <!-- <td>
+                                                    <input type="text" class="form-control modern-input"
+                                                        ng-model="lineItem.Unit_Price__c" ng-disabled="proposalStage" />
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" class="form-control modern-input"
+                                                        ng-model="lineItem.Multiplier__c" ng-disabled="proposalStage" />
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" class="form-control modern-input"
+                                                        ng-model="lineItem.Total_Expense__c"
+                                                        ng-keyup="calculateTotalOfTotal()"
+                                                        ng-change="calculateTotalOfTotal()"
+                                                        ng-keypress="calculateTotalOfTotal()"
+                                                        ng-disabled="proposalStage" />
+                                                </td> -->
+                                                <td>
+                                                    <input type="number" class="form-control modern-input"
+                                                        ng-model="lineItem.Unit_Price__c"
+                                                        ng-change="calculateTotalOfTotal()"
                                                         ng-disabled="proposalStage" />
                                                 </td>
+
                                                 <td>
-                                                    <input type="text" number="lineItem.Multiplier__c" class="form-control" ng-model="lineItem.Multiplier__c"
+                                                    <input type="number" class="form-control modern-input"
+                                                        ng-model="lineItem.Multiplier__c"
+                                                        ng-change="calculateTotalOfTotal()"
                                                         ng-disabled="proposalStage" />
                                                 </td>
+
                                                 <td>
-                                                    <input type="text" class="form-control" ng-model="lineItem.Total_Expense__c" ng-keyup="calculateTotalOfTotal()" ng-change="calculateTotalOfTotal()" ng-keypress="calculateTotalOfTotal()"
-                                                        ng-disabled="proposalStage" />
+                                                    <input type="text" class="form-control modern-input"
+                                                        ng-value="(lineItem.Unit_Price__c || 0) * (lineItem.Multiplier__c || 0)"
+                                                        readonly="readonly" />
                                                 </td>
-                                                <!-- <td><input type="text" class="form-control" ng-model="lineItem.Unit_Price__c*lineItem.Multiplier__c" ng-disabled="true" /></td> -->
+
                                                 <td ng-hide="proposalStage" class="text-center">
-                                                    <i class="fas fa-times-circle icon" ng-click="deleteExpense($parent.$index,$index)"></i>
+                                                    <button class="btn-remove"
+                                                        ng-click="deleteExpense($parent.$index,$index)">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
                                                 </td>
+
                                             </tr>
                                         </tbody>
                                     </table>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                <!-- </div> -->
-
-                <div class="row mt-5 mx-5">
-                    <div class="px-2">
-                    <table class="table basic">
-                        <thead>
-                            <tr>
-                                <th class="pb-3 color-theme" style="width: 25%">Total</th>
-                                <th class="pb-3 color-theme" style="width: 25%"></th>
-                                <th class="pb-3 color-theme" style="width: 25%"></th>
-                                <th class="pb-3 color-theme" style="width: 25%">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Total funding requested from IGSTC</td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <input type="text" class="form-control" ng-model="IGSTCFunding" ng-disabled="true" />
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>Funding from other sources / own contribution</td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <input type="text" class="form-control" ng-model="OwnFunding" ng-disabled="proposalStage" />
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
                 </div>
+
+
+                <!-- ===== TOTAL SUMMARY ===== -->
+                <div class="row mt-5 mx-5">
+                    <div class="summary-card">
+
+                        <table class="table table-modern mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:25%">Total</th>
+                                    <th style="width:25%"></th>
+                                    <th style="width:25%"></th>
+                                    <th style="width:25%">Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>Total funding requested from IGSTC</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <input type="text" class="form-control modern-input" ng-model="IGSTCFunding"
+                                            ng-disabled="true" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Funding from other sources / own contribution</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <input type="text" class="form-control modern-input" ng-model="OwnFunding"
+                                            ng-disabled="proposalStage" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
                 </div>
 
                 <!-- <div class="container px-4">
@@ -330,11 +499,14 @@
                     <button type="button" class="blue-btn float-end me-4" ng-click="saveLineItems('next')">Save and Next
                         <i class="fa-solid fa-arrow-right ms-3"></i>
                     </button>
-                    <button type="button" class="blue-btn float-end me-2" style="padding: 8px 20px !important;font-size: 16px !important;" ng-click="saveLineItems('partial')">Save As Draft</button>
-                    <button class="btn btn-secondary float-end me-2" style="padding: 8px 20px !important;font-size: 16px !important;" ng-click="redirectPageURL('Participants')"
-                        type="button">
+                    <!-- <button type="button" class="blue-btn float-end me-2"
+                        style="padding: 8px 20px !important;font-size: 16px !important;"
+                        ng-click="saveLineItems('partial')">Save As Draft</button> -->
+                    <button class="btn btn-secondary float-end me-2"
+                        style="padding: 8px 20px !important;font-size: 16px !important;"
+                        ng-click="redirectPageURL('Participants')" type="button">
                         <i class="fa-solid fa-arrow-left me-2"></i>Back</button>
-                        
+
                     <!-- <button type="button" class="blue-bordered-btn float-end me-4" ng-click="redirectPageURL('Participants')">
                                 <i class="fa-solid fa-arrow-left i-padding"></i>Previous</button> &nbsp; -->
                 </div>
@@ -346,3 +518,107 @@
 
     </html>
 </apex:page>
+
+
+
+<!--
+
+                <div class="row mt-3 mx-5" ng-repeat="applicnt in expenseAllList">
+                    <div class="accordion" stle="background-color: white !important" id="accordionPanelsStayOpenExample{{$index}}">
+                        <div class="accordion-item" style="border: none;">
+                            <div class="col-md-12 box-shadow-1 accordion-header" id="panelsStayOpen-heading{{$index}}" style="padding: none !important;margin-bottom: 1%;">
+                                <button class="accordion-button" style="background-color: white !important; box-shadow: none !important;" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#panelsStayOpencollapse{{$index}}" aria-expanded="true" aria-controls="panelsStayOpencollapse{{$index}}">
+                                    <h4 class="pb-3 color-theme" style="font-weight:600;">{{applicnt.Name}}</h4>
+                                </button>
+                            </div>
+
+                            <div id="panelsStayOpencollapse{{$index}}" ng-clock="true" class="accordion-collapse collapse show mb-3" aria-labelledby="panelsStayOpen-heading{{$index}}">
+                                <table class="table basic">
+                                    <thead>
+                                        <tr>
+                                            <th class="pb-3 color-theme">Description
+                                                <span class="text-danger ms-2">*</span>
+                                            </th>
+                                            <th class="pb-3 color-theme">Currency Type</th>
+                                            <th class="pb-3 color-theme">Unit Cost</th>
+                                            <th class="pb-3 color-theme">Number</th>
+                                            <th class="pb-3 color-theme">Total
+                                                <span class="text-danger ms-2">*</span>
+                                            </th>
+                                            <th ng-hide="proposalStage" class="text-center">
+                                                <i class="fas fa-plus-circle icon" ng-click="addExpense($index)" style="width:3%; font-size: 24px;"></i>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="lineItem in applicnt.Expense_Line_Items__r">
+                                            <td>
+                                                <input type="text" class="form-control" ng-model="lineItem.Description__c" ng-disabled="proposalStage" />
+                                            </td>
+                                            <td>
+                                                <select class="form-control" aria-label="Default select example" ng-model="lineItem.Currency_Type2__c" ng-disabled="true">
+                                                    <option ng-repeat="staff in currencyType2">{{staff}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" number="lineItem.Unit_Price__c" class="form-control" ng-model="lineItem.Unit_Price__c" ng-disabled="proposalStage"
+                                                />
+                                            </td>
+                                            <td>
+                                                <input type="text" number="lineItem.Multiplier__c" class="form-control" ng-model="lineItem.Multiplier__c" ng-disabled="proposalStage"
+                                                />
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" ng-model="lineItem.Total_Expense__c" ng-keyup="calculateTotalOfTotal()" ng-change="calculateTotalOfTotal()"
+                                                    ng-keypress="calculateTotalOfTotal()" ng-disabled="proposalStage" />
+                                            </td>
+                                            <!-- <td><input type="text" class="form-control" ng-model="lineItem.Unit_Price__c*lineItem.Multiplier__c" ng-disabled="true" /></td>
+                                            <td ng-hide="proposalStage" class="text-center">
+                                                <i class="fas fa-times-circle icon" ng-click="deleteExpense($parent.$index,$index)"></i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- </div>
+
+                <div class="row mt-5 mx-5">
+                    <div class="px-2">
+                        <table class="table basic">
+                            <thead>
+                                <tr>
+                                    <th class="pb-3 color-theme" style="width: 25%">Total</th>
+                                    <th class="pb-3 color-theme" style="width: 25%"></th>
+                                    <th class="pb-3 color-theme" style="width: 25%"></th>
+                                    <th class="pb-3 color-theme" style="width: 25%">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total funding requested from IGSTC</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <input type="text" class="form-control" ng-model="IGSTCFunding" ng-disabled="true" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Funding from other sources / own contribution</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <input type="text" class="form-control" ng-model="OwnFunding" ng-disabled="proposalStage" />
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            -->

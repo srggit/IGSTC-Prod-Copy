@@ -154,7 +154,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
         var typeOfFile = fileName.split(".");
         lengthOfType = typeOfFile.length;
         if (typeOfFile[lengthOfType - 1] != "pdf") {
-            swal('info', 'Please choose pdf file only.', 'info');
+            swal('Info', 'Please choose pdf file only.', 'info');
             return;
         }
         console.log(file);
@@ -176,29 +176,29 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                     if (fileSize < maxStringSize) {
                         $scope.uploadAttachment(type, userDocId, fileId);
                     } else {
-                        swal('info', 'Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".', 'info');
+                        swal('Info', 'Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".', 'info');
                         return;
                     }
 
                 }
                 fileReader.onerror = function (e) {
-                    swal('info', 'There was an error reading the file.  Please try again.', 'info');
+                    swal('Info', 'There was an error reading the file.  Please try again.', 'info');
                     return;
                 }
                 fileReader.onabort = function (e) {
-                    swal('info', 'There was an error reading the file.  Please try again.', 'info');
+                    swal('Info', 'There was an error reading the file.  Please try again.', 'info');
                     return;
                 }
 
                 fileReader.readAsBinaryString(file);  //Read the body of the file
 
             } else {
-                swal('info', 'Your file is too large.  Please try again.', 'info');
+                swal('Info', 'Your file is too large.  Please try again.', 'info');
                 return;
                 $scope.showSpinnereditProf = false;
             }
         } else {
-            swal('info', 'You must choose a file before trying to upload it', 'info');
+            swal('Info', 'You must choose a file before trying to upload it', 'info');
             return;
             $scope.showSpinnereditProf = false;
         }
@@ -230,7 +230,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                         $scope.getProjectdetils();
 
                         swal(
-                            'success',
+                            'Success',
                             'Uploaded Successfully!',
                             'success'
                         )
@@ -757,9 +757,27 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                         });
                     } else {
                         // No existing contact found — only existing contacts can be added
-                        swal("Contact Not Found", "No existing contact found with this email. Only existing contacts can be added as partners.", "info");
-                        $scope.searchEmail = '';
-                        $scope.$apply();
+                        // swal("Contact Not Found", "No existing contact found with this email. Only existing contacts can be added as partners.", "info");
+                        // $scope.searchEmail = '';
+                        // $scope.$apply();
+                        swal({
+                        title: "Contact Not Found",
+                        content: {
+                            element: "div",
+                            attributes: {
+                                innerHTML: `
+                                    <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
+                                        No existing contact found with this email. Only existing contacts can be added as partners.
+                                    </p>
+                                `
+                            }
+                        },
+                        icon: "info",
+                        button: "OK"
+                    });
+
+                    $scope.searchEmail = '';
+                    $scope.$apply();
                     }
                 } else {
                     // In case of error
@@ -1325,13 +1343,13 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             }
 
             if ($scope.allPartners[i].Name == undefined || $scope.allPartners[i].Name == "") {
-                swal("info", "Please Enter Institution/Industry Name.");
+                swal("Info", "Please Enter Institution/Industry Name.");
                 // $("#inst"+i+"").addClass('border-theme');
                 return;
             }
 
             if ($scope.allPartners[i].BillingCountry == undefined || $scope.allPartners[i].BillingCountry == "") {
-                swal("info", "Please select Country.");
+                swal("Info", "Please select Country.");
                 // $("#country"+i+"").addClass('border-theme');
                 return;
             }
@@ -1341,25 +1359,25 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             //     return;
             // }
             if ($scope.allPartners[i].Academia__c == false && $scope.allPartners[i].Industry__c == false) {
-                swal("info", "Please Select either Academia or Industry.");
+                swal("Info", "Please select either Academia or Industry.");
                 return;
             }
 
             if ($scope.allPartners[i].Is_Coordinator__c) {
                 if ($scope.allPartners[i].BillingStreet == undefined || $scope.allPartners[i].BillingStreet == "") {
-                    swal("info", "Please Enter Address for Coordinator.");
+                    swal("Info", "Please enter Address for Coordinator.");
                     return;
                 }
                 if ($scope.allPartners[i].BillingCity == undefined || $scope.allPartners[i].BillingCity == "") {
-                    swal("info", "Please Enter City for Coordinator.");
+                    swal("Info", "Please enter City for Coordinator.");
                     return;
                 }
                 if ($scope.allPartners[i].BillingState == undefined || $scope.allPartners[i].BillingState == "") {
-                    swal("info", "Please Select State for Coordinator.");
+                    swal("Info", "Please select State for Coordinator.");
                     return;
                 }
                 if ($scope.allPartners[i].BillingPostalCode == undefined || $scope.allPartners[i].BillingPostalCode == "") {
-                    swal("info", "Please Enter Postal/Zip Code for Coordinator.");
+                    swal("Info", "Please enter Postal/Zip Code for Coordinator.");
                     return;
                 }
 
@@ -1390,27 +1408,27 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             if ($scope.allPartners[i].Contacts != undefined) {
                 for (var j = 0; j < $scope.allPartners[i].Contacts.length; j++) {
                     if ($scope.allPartners[i].Contacts[j].Title == undefined || $scope.allPartners[i].Contacts[j].Title == "" || $scope.allPartners[i].Contacts[j].Title == null) {
-                        swal("info", "Please select Salutation.");
+                        swal("Info", "Please select Salutation.");
                         // $("#head"+j+"").addClass('border-theme');
                         return;
                     }
                     if ($scope.allPartners[i].Contacts[j].FirstName == undefined || $scope.allPartners[i].Contacts[j].FirstName == "") {
-                        swal("info", "Please Enter First Name.");
+                        swal("Info", "Please enter First Name.");
                         // $("#head"+j+"").addClass('border-theme');
                         return;
                     }
                     if ($scope.allPartners[i].Contacts[j].LastName == undefined || $scope.allPartners[i].Contacts[j].LastName == "") {
-                        swal("info", "Please Enter Last Name.");
+                        swal("Info", "Please enter Last Name.");
                         // $("#head"+j+"").addClass('border-theme');
                         return;
                     }
                     if ($scope.allPartners[i].Contacts[j].Designation__c == undefined || $scope.allPartners[i].Contacts[j].Designation__c == "") {
-                        swal("info", "Please Enter Current Position/Designation.");
+                        swal("Info", "Please enter Current Position/Designation.");
                         // $("#head"+j+"").addClass('border-theme');
                         return;
                     }
                     if ($scope.allPartners[i].Contacts[j].Department == undefined || $scope.allPartners[i].Contacts[j].Department == "") {
-                        swal("info", "Please Enter Department/Division.");
+                        swal("Info", "Please enter Department/Division.");
                         // $("#dept"+j+"").addClass('border-theme');
                         return;
                     }
@@ -1440,13 +1458,13 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                     // ===================== EXTRA VALIDATIONS END ===================== //
 
                     if ($scope.allPartners[i].Contacts[j].Email == undefined || $scope.allPartners[i].Contacts[j].Email == "") {
-                        swal("info", "Please Enter Email.");
+                        swal("Info", "Please enter Email.");
                         // $("#email"+j+"").addClass('border-theme');
                         return;
                     } else {
                         if ($scope.valid($scope.allPartners[i].Contacts[j].Email)) {
                             swal(
-                                'info',
+                                'Info',
                                 'Check Your Registered Email.',
                                 'info'
                             );
@@ -1456,7 +1474,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                     }
 
                     if ($scope.allPartners[i].Contacts[j].Phone == undefined || $scope.allPartners[i].Contacts[j].Phone == "") {
-                        swal("info", "Please Check Phone Number.");
+                        swal("Info", "Please check Phone Number.");
                         // $("#phone"+i+"").addClass('border-theme');
                         return;
                     }
@@ -1595,11 +1613,31 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                     return;
                 }
                 swal({
+                    // title: "Success",
+                    // text: $scope.successmessage,
+                    // icon: "success",
+                    // button: "OK",
+                    // //buttons: true,
+                    // dangerMode: false,
                     title: "Success",
-                    text: $scope.successmessage,
+                    content: {
+                        element: "div",
+                        attributes: {
+                            innerHTML: `
+                                <p style="margin-bottom:15px;">
+                                    Coordinators and Partner details have been saved successfully.
+                                </p>
+
+                                <p style="margin-bottom:6px;"><b>Next Step:</b></p>
+
+                                <p style="margin-left:12px;margin-bottom:4px;">
+                                    * Please complete the Coordinator’s Personal and Address details on the next page.
+                                </p>
+                            `
+                        }
+                    },
                     icon: "success",
                     button: "OK",
-                    //buttons: true,
                     dangerMode: false,
                 }).then((willDelete) => {
                     if (willDelete) {
@@ -1720,7 +1758,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             if ($scope.allCoordinatorDetails[i].Contacts[0].Email != undefined) {
 
                 if ($scope.emailList.indexOf($scope.allCoordinatorDetails[i].Contacts[0].Email) != -1) {
-                    swal("info", "DUPLICATE Email, Please check.", "info");
+                    swal("Info", "DUPLICATE Email, Please check.", "info");
                     return;
                 }
                 else {

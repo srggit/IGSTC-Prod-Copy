@@ -235,27 +235,27 @@ angular.module('cp_app').controller('financialCtrl', function ($scope, $rootScop
             TotalContri = parseInt(TotalContri) + parseInt(SecondAccountIGSTCContr[i]);
         }
         if (FisrtAccountCountry == 'Germany' && TotalContri > 500000) {
-            swal('info', 'For German partners max. limit for IGSTC funding is €500,000', 'info');
+            swal('Info', 'For German partners max. limit for IGSTC funding is €500,000', 'info');
             //$("#total"+i+"").addClass('border-theme');
             return false;
         }
         else {
             if (FirstAccountAcademia) {
                 if (TotalContri > 35000000) {
-                    swal('info', 'For Indian partners max. limit for IGSTC funding is Rs. 35,000,000', 'info');
+                    swal('Info', 'For Indian partners max. limit for IGSTC funding is Rs. 35,000,000', 'info');
                     //$("#total"+i+"").addClass('border-theme');
                     $scope.disableBtn = true;
                     return false;
                 }
             } else {
                 if (FisrtAccountIGSTContri > 15000000) {
-                    swal('info', 'For Indian industry max. limit for IGSTC funding is Rs. 15,000,000', 'info');
+                    swal('Info', 'For Indian industry max. limit for IGSTC funding is Rs. 15,000,000', 'info');
                     //$("#total"+i+"").addClass('border-theme');
                     $scope.disableBtn = true;
                     return false;
                 }
                 if (TotalContri > 35000000) {
-                    swal('info', 'For Indian partners max. limit for IGSTC funding is Rs. 35,000,000', 'info');
+                    swal('Info', 'For Indian partners max. limit for IGSTC funding is Rs. 35,000,000', 'info');
                     //$("#total"+i+"").addClass('border-theme');
                     $scope.disableBtn = true;
                     return false;
@@ -542,13 +542,13 @@ angular.module('cp_app').controller('financialCtrl', function ($scope, $rootScop
 
                     // Basic validations
                     if (contribution.Own_Contribution__c == undefined || contribution.Own_Contribution__c === "") {
-                        swal("Financial Details", "Please Enter Own Contribution.");
+                        swal("Financial Details", "Please enter Own Contribution.");
                         $("#own" + i).addClass('border-theme');
                         return;
                     }
 
                     if (contribution.IGSTC_Contribution__c == undefined || contribution.IGSTC_Contribution__c === "") {
-                        swal("Financial Details", "Please Enter IGSTC Contribution.");
+                        swal("Financial Details", "Please enter IGSTC Contribution.");
                         $("#igstc" + i).addClass('border-theme');
                         return;
                     }
