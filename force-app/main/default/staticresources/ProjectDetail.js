@@ -2135,23 +2135,430 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     // }
     // readCharacter() is defined later with signature (event, index, maxLimit)
 
+    // $scope.saveDetails = function () {
+    //     debugger;
+
+    //     // if ($scope.proposalFieldsDetails) {
+    //     //     var popupChoice = localStorage.getItem('userPopupChoice');
+    //     //     console.log('popupChoice =================>  ', popupChoice);
+
+    //     //     if (popupChoice) {
+    //     //         $scope.proposalFieldsDetails.User_Popup_Choice__c = popupChoice;
+    //     //     }
+    //     // }
+
+    //     if ($scope.doc.userDocument.Status__c !== 'Uploaded') {
+    //         // console.log('File already uploaded !!');
+    //         swal({
+    //             title: "Info",
+    //             // text: "A file must be uploaded before saving.",
+    //             text: "Please upload Project Proposal before saving.",
+    //             icon: "info",
+    //             button: "OK",
+    //         });
+    //         return;
+    //     }
+
+    //     if (
+    //         $rootScope.mailingCountry === 'India'
+    //         && !$rootScope.secondStage
+    //         && !(
+    //             $scope.grantAcceptanceUndertakingDoc
+    //             && $scope.grantAcceptanceUndertakingDoc.userDocument
+    //             && $scope.grantAcceptanceUndertakingDoc.userDocument.Status__c === 'Uploaded'
+    //         )
+    //     ) {
+    //         swal({
+    //             title: "Info",
+    //             text: "Please upload Undertaking Format of Grant Acceptance before saving.",
+    //             icon: "info",
+    //             button: "OK",
+    //         });
+    //         return;
+    //     }
+
+    //     if (
+    //         !$rootScope.secondStage
+    //         && !(
+    //             $scope.sensitivitySecurityUndertakingDoc
+    //             && $scope.sensitivitySecurityUndertakingDoc.userDocument
+    //             && $scope.sensitivitySecurityUndertakingDoc.userDocument.Status__c === 'Uploaded'
+    //         )
+    //     ) {
+    //         swal({
+    //             title: "Info",
+    //             text: "Please upload Undertaking for Sensitivity Security Regulations before saving.",
+    //             icon: "info",
+    //             button: "OK",
+    //         });
+    //         return;
+    //     }
+
+
+    //     // ---------------------- FIELD REQUIRED VALIDATION ---------------------------- //
+
+    //     // **************************************** Stage 1 required fields ****************************************
+    //     if ($scope.proposalFieldsDetails.Research_Approach_Objectives__c == undefined || $scope.proposalFieldsDetails.Research_Approach_Objectives__c == "") {
+    //         swal(
+    //             'Info',
+    //             'Please fill Main objectives of the research approach (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+    //     if ($scope.proposalFieldsDetails.Current_State_Of_The_Art__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art__c == "") {
+    //         swal(
+    //             'Info',
+    //             'Please fill Current state of the art in the field (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+    //     if ($scope.proposalFieldsDetails.Project_Description__c == undefined || $scope.proposalFieldsDetails.Project_Description__c == "") {
+    //         swal(
+    //             'Info',
+    //             'Please fill Project description including work packages/work distribution amongst partners. Comment on starting TRL and expected TRL at end of the project (max. chars 12000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+    //     if ($scope.proposalFieldsDetails.Expected_Deliverables__c == undefined || $scope.proposalFieldsDetails.Expected_Deliverables__c == "") {
+    //         swal(
+    //             'Info',
+    //             'Please fill Expected deliverables as bullet points (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+    //     if ($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == "") {
+    //         swal(
+    //             'Info',
+    //             'Please fill Reasons for and benefits of cooperation - including previous collaboration with the partner country (max. chars 6000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+    //     if ($scope.proposalFieldsDetails.Equipment__c == undefined || $scope.proposalFieldsDetails.Equipment__c == "") {
+    //         swal(
+    //             'Info',
+    //             'Please fill Equipment (if equipment to be purchased, please justify briefly the need) (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+    //     if ($scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == undefined || $scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == "") {
+    //         swal(
+    //             'Info',
+    //             'Please fill Brief profile of each partner institution with emphasis on research activities (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     // **************************************** Stage 2 required fields ****************************************
+    //     if (($scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == undefined || $scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Main objectives of the research approach (max. chars 4000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Current state of the art in the field (max. chars 6000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Project_Description_Stage_2__c == undefined || $scope.proposalFieldsDetails.Project_Description_Stage_2__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Detailed project description (max. chars 20000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+    //     if (($scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == undefined || $scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Risk assessment & mitigation strategy and Criteria for abandoning the project (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Reasons for and benefits of cooperation for each partner (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Innovative_Aspects__c == undefined || $scope.proposalFieldsDetails.Innovative_Aspects__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Innovative aspects / IP and future potential utilization plan (max. chars 10000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == undefined || $scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Market assessment of proposed technology/product (max. chars 12000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Future_Commercialization_Plan__c == undefined || $scope.proposalFieldsDetails.Future_Commercialization_Plan__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Future commercialization plan and expected timeline (max. chars 12000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == undefined || $scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Data Management and Sharing Protocols (max. chars 5000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == undefined || $scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Involvement of young scientists / research scholars (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Necessity_Of_Funding__c == undefined || $scope.proposalFieldsDetails.Necessity_Of_Funding__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Necessity of funding (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Tentative_plans_for_networking__c == undefined || $scope.proposalFieldsDetails.Tentative_plans_for_networking__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Tentative Plans For Network Meetings and Exchange Visits (including duration) (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == undefined || $scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Plan for the utilisation and preservation of project-acquired equipment after the completion of the project. (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+    //     if (($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == undefined || $scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == "") && $rootScope.secondStage == true) {
+    //         swal(
+    //             'Info',
+    //             'Please fill Profile of the academic institutions (max. chars 3000).',
+    //             'info'
+    //         );
+    //         return;
+    //     }
+
+
+    //     // ---------------------- CHARACTER LIMIT VALIDATION ---------------------------- //
+
+    //     // Recalculate character counts at save-time to ensure validation always runs
+    //     if ($rootScope.stage === '1st Stage') {
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Research_Approach_Objectives__c, 0, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Current_State_Of_The_Art__c, 1, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Project_Description__c, 2, 12000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Expected_Deliverables__c, 3, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c, 4, 6000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Equipment__c, 5, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c, 6, 3000);
+    //     }
+
+    //     if ($rootScope.stage === '2nd Stage' && $rootScope.secondStage == true) {
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c, 0, 4000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c, 1, 6000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Project_Description_Stage_2__c, 2, 20000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c, 3, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c, 4, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Innovative_Aspects__c, 5, 10000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c, 6, 12000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Future_Commercialization_Plan__c, 7, 12000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c, 8, 5000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c, 9, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Necessity_Of_Funding__c, 10, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Tentative_plans_for_networking__c, 11, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c, 12, 3000);
+    //         $scope.readCharacter($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c, 13, 10000);
+    //     }
+
+    //     // Stage 1 field char limit checks (only for 1st Stage)
+    //     if ($rootScope.stage === '1st Stage') {
+    //         // indices match readCharacter() calls in ProjectDetail.page
+    //         var charLimitErrors = [
+    //             { index: 0, limit: 3000, field: 'Research_Approach_Objectives__c', label: 'Main objectives of the research proposal' },
+    //             { index: 1, limit: 3000, field: 'Current_State_Of_The_Art__c', label: 'Current state of the art' },
+    //             { index: 2, limit: 12000, field: 'Project_Description__c', label: 'Project description' },
+    //             { index: 3, limit: 3000, field: 'Expected_Deliverables__c', label: 'Expected deliverables' },
+    //             { index: 4, limit: 6000, field: 'Reasons_For_And_Benefits_Of_Cooperation__c', label: 'Reasons for and benefits of cooperation' },
+    //             { index: 5, limit: 3000, field: 'Equipment__c', label: 'Equipment' },
+    //             { index: 6, limit: 3000, field: 'Brief_Statement_of_Purpose__c', label: 'Brief statement of purpose / reasons for cooperation' }
+    //         ];
+
+    //         for (var ci = 0; ci < charLimitErrors.length; ci++) {
+    //             var entry = charLimitErrors[ci];
+    //             if ($scope.objRtf[entry.index] && $scope.objRtf[entry.index].errorStatus) {
+    //                 swal('Info', 'Character limit exceeded for "' + entry.label + '". Maximum allowed is ' + entry.limit + ' characters.', 'info');
+    //                 return;
+    //             }
+    //         }
+    //     }
+
+    //     // Stage 2 additional field char limit checks (only for 2nd Stage)
+    //     if ($rootScope.stage === '2nd Stage' && $rootScope.secondStage == true) {
+    //         var charLimitErrorsS2 = [
+    //             { index: 0, limit: 4000, label: 'Main objectives of the research approach (Stage 2)' },
+    //             { index: 1, limit: 6000, label: 'Current state of the art (Stage 2)' },
+    //             { index: 2, limit: 20000, label: 'Project description (Stage 2)' },
+    //             { index: 3, limit: 3000, label: 'Risk assessment and mitigation strategy' },
+    //             { index: 4, limit: 3000, label: 'Reasons for and benefits of cooperation (Stage 2)' },
+    //             { index: 5, limit: 10000, label: 'Innovative aspects' },
+    //             { index: 6, limit: 12000, label: 'Market assessment of proposed technology' },
+    //             { index: 7, limit: 12000, label: 'Future commercialization plan' },
+    //             { index: 8, limit: 5000, label: 'Data management and sharing protocols' },
+    //             { index: 9, limit: 3000, label: 'Involvement of young scientists' },
+    //             { index: 10, limit: 3000, label: 'Necessity of funding' },
+    //             { index: 11, limit: 3000, label: 'Tentative plans for networking' },
+    //             { index: 12, limit: 3000, label: 'Plan for utilisation and preservation' },
+    //             { index: 13, limit: 10000, label: 'Profile of the academic institutions' }
+    //         ];
+
+    //         for (var ci2 = 0; ci2 < charLimitErrorsS2.length; ci2++) {
+    //             var entry2 = charLimitErrorsS2[ci2];
+    //             if ($scope.objRtf[entry2.index] && $scope.objRtf[entry2.index].errorStatus) {
+    //                 swal('Info', 'Character limit exceeded for "' + entry2.label + '". Maximum allowed is ' + entry2.limit + ' characters.', 'info');
+    //                 return;
+    //             }
+    //         }
+    //     }
+
+    //     // ---------------------- END CHARACTER LIMIT VALIDATION ---------------------------- //
+
+    //     // ---------------------- CHECKING PROPOSAL REQUIRED FIELDS ---------------------------- //
+
+
+    //     // Validate Quotation for Equipment / Accessories is uploaded - Stage 1
+    //     // if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
+    //     //     if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
+    //     //         swal({
+    //     //             title: "Info",
+    //     //             text: "Please upload Quotation for Equipment / Accessories - Stage 1 before saving.",
+    //     //             icon: "info",
+    //     //             button: "OK",
+    //     //         });
+    //     //         return;
+    //     //     }
+    //     // }
+
+    //     // Validate Financial Statement Report is uploaded - Stage 2
+    //     if ($rootScope.stage === '2nd Stage' && ($rootScope.mailingCountry === 'India')) {
+    //         if (!$scope.auditedFinancialDoc || !$scope.auditedFinancialDoc.userDocument || $scope.auditedFinancialDoc.userDocument.Status__c !== 'Uploaded') {
+    //             swal({
+    //                 title: "Info",
+    //                 text: "Please upload Financial Statement Report - Stage 2 before saving.",
+    //                 icon: "info",
+    //                 button: "OK",
+    //             });
+    //             return;
+    //         }
+    //     }
+
+    //     // Validate Quotation for Equipment / Accessories is uploaded - Stage 2
+    //     if ($rootScope.stage === '2nd Stage' && $rootScope.mailingCountry === 'India') {
+    //         if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
+    //             swal({
+    //                 title: "Info",
+    //                 text: "Please upload Quotation for Equipment / Accessories - Stage 2 before saving.",
+    //                 icon: "info",
+    //                 button: "OK",
+    //             });
+    //             return;
+    //         }
+    //     }
+
+    //     $("#btnSubmit").html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...');
+    //     ApplicantPortal_Contoller.insertProjectDetails($scope.proposalFieldsDetails, function (result, event) {
+    //         $("#btnSubmit").html('<i class="fa-solid fa-check me-2"></i>Save and Next');
+    //         if (event.status) {
+    //             debugger;
+
+    //             // Save Work Package Details
+    //             $scope.saveWorkPackageDetailsInternal(function (wpSuccess) {
+    //                 let messageText;
+
+    //                 messageText = $rootScope.secondStage
+    //                     ? `Project Details have been saved successfully.
+
+    //                     Next Step:
+    //                     Please fill in the Expense Table Info.`
+    //                     : `Project Details have been saved successfully.
+
+    //                     Next Step:
+    //                     Please upload signature in Declaration Page.`;
+    //                 // Please fill in the Declaration Info.
+    //                 swal({
+    //                     title: "Success",
+    //                     text: messageText,
+    //                     icon: "success",
+    //                     button: "OK",
+    //                     dangerMode: false,
+    //                 }).then((willDelete) => {
+    //                     if (willDelete) {
+    //                         if ($rootScope.secondStage) {
+    //                             $scope.redirectPageURL('ExpenseDeclaration');
+    //                         } else {
+    //                             $scope.redirectPageURL('Declartion_2plus2');
+    //                         }
+    //                     } else {
+    //                         return;
+    //                     }
+    //                 });
+    //             });
+    //         }
+    //     },
+    //         { escape: true }
+    //     )
+    // }
+
     $scope.saveDetails = function () {
         debugger;
 
-        // if ($scope.proposalFieldsDetails) {
-        //     var popupChoice = localStorage.getItem('userPopupChoice');
-        //     console.log('popupChoice =================>  ', popupChoice);
+        // ==================== DOCUMENT UPLOAD VALIDATIONS ====================
 
-        //     if (popupChoice) {
-        //         $scope.proposalFieldsDetails.User_Popup_Choice__c = popupChoice;
-        //     }
-        // }
-
+        // Check if Project Proposal is uploaded
         if ($scope.doc.userDocument.Status__c !== 'Uploaded') {
-            // console.log('File already uploaded !!');
             swal({
                 title: "Info",
-                // text: "A file must be uploaded before saving.",
                 text: "Please upload Project Proposal before saving.",
                 icon: "info",
                 button: "OK",
@@ -2159,6 +2566,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             return;
         }
 
+        // Check Grant Acceptance Undertaking (India, Stage 1 only)
         if (
             $rootScope.mailingCountry === 'India'
             && !$rootScope.secondStage
@@ -2177,6 +2585,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             return;
         }
 
+        // Check Sensitivity Security Undertaking (Stage 1 only)
         if (
             !$rootScope.secondStage
             && !(
@@ -2194,195 +2603,101 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             return;
         }
 
+        // ==================== PROJECT DETAILS FIELD VALIDATIONS ====================
 
-        // ---------------------- FIELD REQUIRED VALIDATION ---------------------------- //
-
-        // **************************************** Stage 1 required fields ****************************************
-        if ($scope.proposalFieldsDetails.Research_Approach_Objectives__c == undefined || $scope.proposalFieldsDetails.Research_Approach_Objectives__c == "") {
-            swal(
-                'Info',
-                'Please fill Main objectives of the research approach (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-        if ($scope.proposalFieldsDetails.Current_State_Of_The_Art__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art__c == "") {
-            swal(
-                'Info',
-                'Please fill Current state of the art in the field (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-        if ($scope.proposalFieldsDetails.Project_Description__c == undefined || $scope.proposalFieldsDetails.Project_Description__c == "") {
-            swal(
-                'Info',
-                'Please fill Project description including work packages/work distribution amongst partners. Comment on starting TRL and expected TRL at end of the project (max. chars 12000).',
-                'info'
-            );
-            return;
-        }
-        if ($scope.proposalFieldsDetails.Expected_Deliverables__c == undefined || $scope.proposalFieldsDetails.Expected_Deliverables__c == "") {
-            swal(
-                'Info',
-                'Please fill Expected deliverables as bullet points (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-        if ($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == "") {
-            swal(
-                'Info',
-                'Please fill Reasons for and benefits of cooperation - including previous collaboration with the partner country (max. chars 6000).',
-                'info'
-            );
-            return;
-        }
-        if ($scope.proposalFieldsDetails.Equipment__c == undefined || $scope.proposalFieldsDetails.Equipment__c == "") {
-            swal(
-                'Info',
-                'Please fill Equipment (if equipment to be purchased, please justify briefly the need) (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-        if ($scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == undefined || $scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == "") {
-            swal(
-                'Info',
-                'Please fill Brief profile of each partner institution with emphasis on research activities (max. chars 3000).',
-                'info'
-            );
-            return;
+        // Stage 1 required fields
+        if (!$rootScope.secondStage) {
+            if ($scope.proposalFieldsDetails.Research_Approach_Objectives__c == undefined || $scope.proposalFieldsDetails.Research_Approach_Objectives__c == "") {
+                swal('Info', 'Please fill Main objectives of the research approach (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Current_State_Of_The_Art__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art__c == "") {
+                swal('Info', 'Please fill Current state of the art in the field (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Project_Description__c == undefined || $scope.proposalFieldsDetails.Project_Description__c == "") {
+                swal('Info', 'Please fill Project description including work packages/work distribution amongst partners. Comment on starting TRL and expected TRL at end of the project (max. chars 12000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Expected_Deliverables__c == undefined || $scope.proposalFieldsDetails.Expected_Deliverables__c == "") {
+                swal('Info', 'Please fill Expected deliverables as bullet points (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Cooperation__c == "") {
+                swal('Info', 'Please fill Reasons for and benefits of cooperation - including previous collaboration with the partner country (max. chars 6000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Equipment__c == undefined || $scope.proposalFieldsDetails.Equipment__c == "") {
+                swal('Info', 'Please fill Equipment (if equipment to be purchased, please justify briefly the need) (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == undefined || $scope.proposalFieldsDetails.Brief_Statement_of_Purpose__c == "") {
+                swal('Info', 'Please fill Brief profile of each partner institution with emphasis on research activities (max. chars 3000).', 'info');
+                return;
+            }
         }
 
-        // **************************************** Stage 2 required fields ****************************************
-        if (($scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == undefined || $scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Main objectives of the research approach (max. chars 4000).',
-                'info'
-            );
-            return;
+        // Stage 2 required fields
+        if ($rootScope.secondStage == true) {
+            if ($scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == undefined || $scope.proposalFieldsDetails.Main_Objective_Research_Approach_S2__c == "") {
+                swal('Info', 'Please fill Main objectives of the research approach (max. chars 4000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == "") {
+                swal('Info', 'Please fill Current state of the art in the field (max. chars 6000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Project_Description_Stage_2__c == undefined || $scope.proposalFieldsDetails.Project_Description_Stage_2__c == "") {
+                swal('Info', 'Please fill Detailed project description (max. chars 20000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == undefined || $scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == "") {
+                swal('Info', 'Please fill Risk assessment & mitigation strategy and Criteria for abandoning the project (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == "") {
+                swal('Info', 'Please fill Reasons for and benefits of cooperation for each partner (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Innovative_Aspects__c == undefined || $scope.proposalFieldsDetails.Innovative_Aspects__c == "") {
+                swal('Info', 'Please fill Innovative aspects / IP and future potential utilization plan (max. chars 10000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == undefined || $scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == "") {
+                swal('Info', 'Please fill Market assessment of proposed technology/product (max. chars 12000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Future_Commercialization_Plan__c == undefined || $scope.proposalFieldsDetails.Future_Commercialization_Plan__c == "") {
+                swal('Info', 'Please fill Future commercialization plan and expected timeline (max. chars 12000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == undefined || $scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == "") {
+                swal('Info', 'Please fill Data Management and Sharing Protocols (max. chars 5000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == undefined || $scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == "") {
+                swal('Info', 'Please fill Involvement of young scientists / research scholars (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Necessity_Of_Funding__c == undefined || $scope.proposalFieldsDetails.Necessity_Of_Funding__c == "") {
+                swal('Info', 'Please fill Necessity of funding (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Tentative_plans_for_networking__c == undefined || $scope.proposalFieldsDetails.Tentative_plans_for_networking__c == "") {
+                swal('Info', 'Please fill Tentative Plans For Network Meetings and Exchange Visits (including duration) (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == undefined || $scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == "") {
+                swal('Info', 'Please fill Plan for the utilisation and preservation of project-acquired equipment after the completion of the project. (max. chars 3000).', 'info');
+                return;
+            }
+            if ($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == undefined || $scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == "") {
+                swal('Info', 'Please fill Profile of the academic institutions (max. chars 3000).', 'info');
+                return;
+            }
         }
 
-        if (($scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == undefined || $scope.proposalFieldsDetails.Current_State_Of_The_Art_Stage_2__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Current state of the art in the field (max. chars 6000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Project_Description_Stage_2__c == undefined || $scope.proposalFieldsDetails.Project_Description_Stage_2__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Detailed project description (max. chars 20000).',
-                'info'
-            );
-            return;
-        }
-        if (($scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == undefined || $scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Risk assessment & mitigation strategy and Criteria for abandoning the project (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == undefined || $scope.proposalFieldsDetails.Reasons_For_And_Benefits_Of_Corp_Stage2__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Reasons for and benefits of cooperation for each partner (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Innovative_Aspects__c == undefined || $scope.proposalFieldsDetails.Innovative_Aspects__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Innovative aspects / IP and future potential utilization plan (max. chars 10000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == undefined || $scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Market assessment of proposed technology/product (max. chars 12000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Future_Commercialization_Plan__c == undefined || $scope.proposalFieldsDetails.Future_Commercialization_Plan__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Future commercialization plan and expected timeline (max. chars 12000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == undefined || $scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Data Management and Sharing Protocols (max. chars 5000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == undefined || $scope.proposalFieldsDetails.Involvement_Of_Young_Scientists__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Involvement of young scientists / research scholars (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Necessity_Of_Funding__c == undefined || $scope.proposalFieldsDetails.Necessity_Of_Funding__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Necessity of funding (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Tentative_plans_for_networking__c == undefined || $scope.proposalFieldsDetails.Tentative_plans_for_networking__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Tentative Plans For Network Meetings and Exchange Visits (including duration) (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == undefined || $scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Plan for the utilisation and preservation of project-acquired equipment after the completion of the project. (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-
-        if (($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == undefined || $scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c == "") && $rootScope.secondStage == true) {
-            swal(
-                'Info',
-                'Please fill Profile of the academic institutions (max. chars 3000).',
-                'info'
-            );
-            return;
-        }
-
-
-        // ---------------------- CHARACTER LIMIT VALIDATION ---------------------------- //
+        // ==================== CHARACTER LIMIT VALIDATIONS ====================
 
         // Recalculate character counts at save-time to ensure validation always runs
         if ($rootScope.stage === '1st Stage') {
@@ -2409,20 +2724,19 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.readCharacter($scope.proposalFieldsDetails.Necessity_Of_Funding__c, 10, 3000);
             $scope.readCharacter($scope.proposalFieldsDetails.Tentative_plans_for_networking__c, 11, 3000);
             $scope.readCharacter($scope.proposalFieldsDetails.Plan_For_Utilisation_and_Preservation__c, 12, 3000);
-            $scope.readCharacter($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c, 13, 10000);
+            $scope.readCharacter($scope.proposalFieldsDetails.Profile_Of_The_Academic_Institutions__c, 13, 3000);
         }
 
-        // Stage 1 field char limit checks (only for 1st Stage)
+        // Check character limit errors for Stage 1
         if ($rootScope.stage === '1st Stage') {
-            // indices match readCharacter() calls in ProjectDetail.page
             var charLimitErrors = [
-                { index: 0, limit: 3000, field: 'Research_Approach_Objectives__c', label: 'Main objectives of the research proposal' },
-                { index: 1, limit: 3000, field: 'Current_State_Of_The_Art__c', label: 'Current state of the art' },
-                { index: 2, limit: 12000, field: 'Project_Description__c', label: 'Project description' },
-                { index: 3, limit: 3000, field: 'Expected_Deliverables__c', label: 'Expected deliverables' },
-                { index: 4, limit: 6000, field: 'Reasons_For_And_Benefits_Of_Cooperation__c', label: 'Reasons for and benefits of cooperation' },
-                { index: 5, limit: 3000, field: 'Equipment__c', label: 'Equipment' },
-                { index: 6, limit: 3000, field: 'Brief_Statement_of_Purpose__c', label: 'Brief statement of purpose / reasons for cooperation' }
+                { index: 0, limit: 3000, label: 'Main objectives of the research proposal' },
+                { index: 1, limit: 3000, label: 'Current state of the art' },
+                { index: 2, limit: 12000, label: 'Project description' },
+                { index: 3, limit: 3000, label: 'Expected deliverables' },
+                { index: 4, limit: 6000, label: 'Reasons for and benefits of cooperation' },
+                { index: 5, limit: 3000, label: 'Equipment' },
+                { index: 6, limit: 3000, label: 'Brief statement of purpose / reasons for cooperation' }
             ];
 
             for (var ci = 0; ci < charLimitErrors.length; ci++) {
@@ -2434,7 +2748,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             }
         }
 
-        // Stage 2 additional field char limit checks (only for 2nd Stage)
+        // Check character limit errors for Stage 2
         if ($rootScope.stage === '2nd Stage' && $rootScope.secondStage == true) {
             var charLimitErrorsS2 = [
                 { index: 0, limit: 4000, label: 'Main objectives of the research approach (Stage 2)' },
@@ -2450,7 +2764,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 { index: 10, limit: 3000, label: 'Necessity of funding' },
                 { index: 11, limit: 3000, label: 'Tentative plans for networking' },
                 { index: 12, limit: 3000, label: 'Plan for utilisation and preservation' },
-                { index: 13, limit: 10000, label: 'Profile of the academic institutions' }
+                { index: 13, limit: 3000, label: 'Profile of the academic institutions' }
             ];
 
             for (var ci2 = 0; ci2 < charLimitErrorsS2.length; ci2++) {
@@ -2462,30 +2776,14 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             }
         }
 
-        // ---------------------- END CHARACTER LIMIT VALIDATION ---------------------------- //
-
-        // ---------------------- CHECKING PROPOSAL REQUIRED FIELDS ---------------------------- //
-
-
-        // Validate Quotation for Equipment / Accessories is uploaded - Stage 1
-        // if ($rootScope.stage === '1st Stage' && $rootScope.mailingCountry === 'India') {
-        //     if (!$scope.quotationEquipmentDoc || !$scope.quotationEquipmentDoc.userDocument || $scope.quotationEquipmentDoc.userDocument.Status__c !== 'Uploaded') {
-        //         swal({
-        //             title: "Info",
-        //             text: "Please upload Quotation for Equipment / Accessories - Stage 1 before saving.",
-        //             icon: "info",
-        //             button: "OK",
-        //         });
-        //         return;
-        //     }
-        // }
+        // ==================== DOCUMENT UPLOAD VALIDATIONS (Stage specific) ====================
 
         // Validate Financial Statement Report is uploaded - Stage 2
         if ($rootScope.stage === '2nd Stage' && ($rootScope.mailingCountry === 'India')) {
             if (!$scope.auditedFinancialDoc || !$scope.auditedFinancialDoc.userDocument || $scope.auditedFinancialDoc.userDocument.Status__c !== 'Uploaded') {
                 swal({
                     title: "Info",
-                    text: "Please upload Financial Statement Report - Stage 2 before saving.",
+                    text: "Please upload Budget Report - Stage 2 before saving.",
                     icon: "info",
                     button: "OK",
                 });
@@ -2506,9 +2804,20 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             }
         }
 
+        // ==================== NEW: WORK PACKAGE & DELIVERABLES VALIDATION ====================
+        // This runs before any database operations, preventing save if validation fails
+
+        if (!validateWPDeliverablesBeforeSave()) {
+            return; // Stop execution if validation fails
+        }
+
+        // ==================== PROCEED WITH SAVING ====================
+
         $("#btnSubmit").html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...');
+
         ApplicantPortal_Contoller.insertProjectDetails($scope.proposalFieldsDetails, function (result, event) {
             $("#btnSubmit").html('<i class="fa-solid fa-check me-2"></i>Save and Next');
+
             if (event.status) {
                 debugger;
 
@@ -2517,15 +2826,9 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     let messageText;
 
                     messageText = $rootScope.secondStage
-                        ? `Project Details have been saved successfully.
+                        ? `Project Details have been saved successfully.\n\nNext Step:\nPlease fill in the Expense Table Info.`
+                        : `Project Details have been saved successfully.\n\nNext Step:\nPlease upload signature in Declaration Page.`;
 
-                        Next Step:
-                        Please fill in the Expense Table Info.`
-                        : `Project Details have been saved successfully.
-
-                        Next Step:
-                        Please upload signature in Declaration Page.`;
-                    // Please fill in the Declaration Info.
                     swal({
                         title: "Success",
                         text: messageText,
@@ -2539,15 +2842,131 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                             } else {
                                 $scope.redirectPageURL('Declartion_2plus2');
                             }
-                        } else {
-                            return;
                         }
                     });
                 });
             }
         },
-            { escape: true }
-        )
+            { escape: true });
+    }
+
+    // ==================== NEW HELPER FUNCTION FOR WP + DELIVERABLES VALIDATION ====================
+    function validateWPDeliverablesBeforeSave() {
+        debugger;
+
+        // Skip validation if no work packages exist (old functionality)
+        if (!$scope.wpDeliverablesTableList || $scope.wpDeliverablesTableList.length === 0) {
+            return true;
+        }
+
+        var objData = $scope.wpDeliverablesTableList;
+
+        for (var i = 0; i < objData.length; i++) {
+            var wp = objData[i];
+
+            // Partner validation
+            var count = 0;
+            if (wp.AccountList) {
+                for (var k = 0; k < wp.AccountList.length; k++) {
+                    if (wp.AccountList[k].selected == true) {
+                        count++;
+                    }
+                }
+            }
+            if (count <= 0) {
+                swal("Work Package Details", "Please select at least one partner for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            // Title validation
+            if (!wp.title || wp.title.trim() === "") {
+                swal("Work Package Details", "Please enter title for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            // TRL validations
+            if (!wp.trlFrom || wp.trlFrom === "") {
+                swal("Work Package Details", "Please select TRL From for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            if (!wp.trlTo || wp.trlTo === "") {
+                swal("Work Package Details", "Please select TRL To for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            if (parseInt(wp.trlTo) < parseInt(wp.trlFrom)) {
+                swal("Work Package Details", "TRL To must be >= TRL From for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            // Month validations
+            if (!wp.wpStartMonth || wp.wpStartMonth === "") {
+                swal("Work Package Details", "Please enter WP Start Month for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            if (!wp.wpEndMonth || wp.wpEndMonth === "") {
+                swal("Work Package Details", "Please enter WP End Month for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            if (parseInt(wp.wpEndMonth) < parseInt(wp.wpStartMonth)) {
+                swal("Work Package Details", "WP End Month must be >= WP Start Month for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            // Duration validation against max duration
+            var wpDuration = parseInt(wp.wpEndMonth) - parseInt(wp.wpStartMonth) + 1;
+            if (wpDuration > parseInt($rootScope.maxDurationInMonths)) {
+                swal("Work Package Details", "WP Duration cannot exceed " + $rootScope.maxDurationInMonths + " months for " + wp.wpSequence, "info");
+                return false;
+            }
+
+            // Deliverables validation
+            if (wp.deliverables && wp.deliverables.length > 0) {
+                for (var j = 0; j < wp.deliverables.length; j++) {
+                    var deliv = wp.deliverables[j];
+
+                    if (!deliv.title || deliv.title.trim() === "") {
+                        swal("Deliverable Details", "Please enter title for " + deliv.deliverableSequence, "info");
+                        return false;
+                    }
+
+                    if (!deliv.startMonth || deliv.startMonth === "") {
+                        swal("Deliverable Details", "Please enter Start Month for " + deliv.deliverableSequence, "info");
+                        return false;
+                    }
+
+                    if (!deliv.endMonth || deliv.endMonth === "") {
+                        swal("Deliverable Details", "Please enter End Month for " + deliv.deliverableSequence, "info");
+                        return false;
+                    }
+
+                    var delivStart = parseInt(deliv.startMonth);
+                    var delivEnd = parseInt(deliv.endMonth);
+                    var wpStart = parseInt(wp.wpStartMonth);
+                    var wpEnd = parseInt(wp.wpEndMonth);
+
+                    if (delivStart < wpStart) {
+                        swal("Validation Error", "Deliverable Start Month must be >= WP Start Month (" + wpStart + ") for " + deliv.deliverableSequence, "error");
+                        return false;
+                    }
+
+                    if (delivEnd > wpEnd) {
+                        swal("Validation Error", "Deliverable End Month must be <= WP End Month (" + wpEnd + ") for " + deliv.deliverableSequence, "error");
+                        return false;
+                    }
+
+                    if (delivEnd < delivStart) {
+                        swal("Deliverable Details", "End Month must be >= Start Month for " + deliv.deliverableSequence, "info");
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
