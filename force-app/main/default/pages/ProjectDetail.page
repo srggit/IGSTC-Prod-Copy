@@ -1920,7 +1920,11 @@
                                                         <input type="number" class="form-control form-control-sm"
                                                             ng-model="deliv.startMonth"
                                                             ng-change="validateDeliverableMonths(wp,deliv)"
-                                                            ng-disabled="proposalStage || !isCoordinator" />
+                                                            ng-disabled="proposalStage || !isCoordinator"
+                                                            placeholder="Start Month" />
+                                                        <small class="text-danger" ng-if="deliv.startMonthError">
+                                                            Must be &gt;= {{wp.wpStartMonth}}
+                                                        </small>
 
                                                     </td>
 
@@ -1928,7 +1932,11 @@
                                                         <input type="number" class="form-control form-control-sm"
                                                             ng-model="deliv.endMonth"
                                                             ng-change="validateDeliverableMonths(wp,deliv)"
-                                                            ng-disabled="proposalStage || !isCoordinator" />
+                                                            ng-disabled="proposalStage || !isCoordinator"
+                                                            placeholder="End Month" />
+                                                        <small class="text-danger" ng-if="deliv.endMonthError">
+                                                            Must be &lt;= {{wp.wpEndMonth}}
+                                                        </small>
                                                     </td>
 
                                                     <td class="text-center" ng-hide="!isCoordinator">
@@ -1952,23 +1960,26 @@
 
                             <!-- GANTT CHART SECTION -->
                             <!-- GANTT CHART SECTION - Keep Bootstrap classes only on text, not on container -->
+                            <!--
                             <div class="mt-5">
                                 <h4 class="mb-0">
                                     <i class="fas fa-chart-gantt me-2"></i>
                                     Work Package &amp; Deliverables Gantt Chart
                                 </h4>
-                                <!-- Remove card-body class -->
+                                <!-- Remove card-body class 
                                 <div style="padding: 0; margin-top: 15px;">
-                                    <!-- Gantt Chart Container -->
-                                    <div id="ganttChartContainer" style="overflow-x: auto; padding: 0; margin: 0;">
-                                        <div id="ganttChart" style="padding: 0; margin: 0;"></div>
-                                    </div>
-                                </div>
+                                    <!-- Gantt Chart Container 
+                            <div id="ganttChartContainer" style="overflow-x: auto; padding: 0; margin: 0;">
+                                <div id="ganttChart" style="padding: 0; margin: 0;"></div>
                             </div>
+                        </div>
+                    </div>
+                    -->
                         </div>
 
 
                         <!-- GANTT CHART SECTION -->
+                        <!--
                         <div class="card mt-5">
                             <div class="card-header bg-primary text-white">
                                 <h4 class="mb-0">
@@ -1977,14 +1988,15 @@
                                 </h4>
                             </div>
                             <div class="card-body">
-                                <!-- Gantt Chart Container -->
+                                <!-- Gantt Chart Container 
                                 <div id="ganttChartContainer" style="overflow-x: auto;">
                                     <div id="ganttChart" class="gantt-chart">
-                                        <!-- Chart will be rendered here by JavaScript -->
+                                        <!-- Chart will be rendered here by JavaScript 
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        -->
                         <!-- ==================== END NEW TABLE ==================== -->
 
                         <div class="col-md-12 mt-5 ">
@@ -2554,35 +2566,35 @@
                                 </div>
                                 -->
                                 <!-- Letter of Consent Upload -->
-                                <div class="row mt-4 ">
-                                    <div class="col-md-6 ">
-                                        <div class="input-group ms-4 ">
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <div class="input-group ms-4">
                                             <label class="font-if ">Upload Letter of Consent</label>
-                                            <input type="file " accept=".pdf " class="form-control " ng-disabled="uploadDisable
+                                            <input type="file" accept=".pdf" class="form-control" ng-disabled="uploadDisable
                                                             || isUploadingLetterOfConsent || (letterOfConsentDoc.userDocument.Status__c=='Uploaded'
-                                                            && currentProposalStage=='Submitted' ) "
-                                                id="letterOfConsentFile " />
-                                            <span class="input-group-btn pt-3 " ng-hide="uploadDisable ">
-                                                <button class="btn btn-success mt-4 py-3 " ng-click="uploadLetterOfConsent()
-                                                            " type="button " ng-disabled="isUploadingLetterOfConsent || (letterOfConsentDoc.userDocument.Status__c=='Uploaded'
-                                                            && currentProposalStage=='Submitted' ) ">
-                                                    <span ng-if="!isUploadingLetterOfConsent ">Upload</span>
-                                                    <span ng-if="isUploadingLetterOfConsent ">
-                                                        <i class="fa fa-spinner fa-spin "></i> Uploading...
+                                                            && currentProposalStage=='Submitted')"
+                                                id="letterOfConsentFile" />
+                                            <span class="input-group-btn pt-3 " ng-hide="uploadDisable">
+                                                <button class="btn btn-success mt-4 py-3" ng-click="uploadLetterOfConsent()
+                                                            " type="button" ng-disabled="isUploadingLetterOfConsent || (letterOfConsentDoc.userDocument.Status__c=='Uploaded'
+                                                            && currentProposalStage=='Submitted')">
+                                                    <span ng-if="!isUploadingLetterOfConsent">Upload</span>
+                                                    <span ng-if="isUploadingLetterOfConsent">
+                                                        <i class="fa fa-spinner fa-spin"></i> Uploading...
                                                     </span>
                                                 </button>
                                             </span>
                                         </div>
-                                        <div ng-if="letterOfConsentDoc.userDocument.Status__c=='Uploaded' && !isUploadingLetterOfConsent
-                                                            " class="alert alert-success ms-4 mt-2 py-2 ">
-                                            <i class="fa fa-check-circle "></i> Letter of Consent uploaded successfully.
+                                        <div ng-if="letterOfConsentDoc.userDocument.Status__c=='Uploaded' && !isUploadingLetterOfConsent"
+                                            class="alert alert-success ms-4 mt-2 py-2">
+                                            <i class="fa fa-check-circle"></i> Letter of Consent uploaded successfully.
                                         </div>
                                     </div>
-                                    <div class="col-md-2 "
-                                        ng-show="letterOfConsentDoc.userDocument.Status__c=='Uploaded' ">
-                                        <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingLetterOfConsent}
-                                                            " href="{{letterOfConsentPreviewLink}} "
-                                            target="_blank ">View</a>
+                                    <div class="col-md-2"
+                                        ng-show="letterOfConsentDoc.userDocument.Status__c=='Uploaded'">
+                                        <a class="blue-btn float-end mt-5 py-3"
+                                            ng-class="{ 'disabled': isUploadingLetterOfConsent}"
+                                            href="{{letterOfConsentPreviewLink}}" target="_blank">View</a>
                                     </div>
                                 </div>
                             </div>
@@ -2687,36 +2699,36 @@
                     <div class="row mt-5 " ng-show="stage==='1st Stage' && mailingCountry==='India' ">
                         <div class="col-md-6 ">
                             <div class="input-group ms-4 ">
-                                <label class="font-if ">Upload Undertaking of Grant Acceptance (max 3.5 Mb)
+                                <label class="font-if">Upload Undertaking of Grant Acceptance (max 3.5 Mb)
                                     <span class="ms-2 text-danger ">*</span>
                                 </label>
-                                <input type="file " accept=".pdf " class="form-control " ng-disabled="isUploadingGrantAcceptanceUndertaking
+                                <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingGrantAcceptanceUndertaking
                                                             || currentProposalStage=='Submitted' "
-                                    id="grantAcceptanceUndertakingFileStage1 " />
-                                <span class="input-group-btn pt-3 ">
-                                    <button class="btn btn-success mt-4 py-3 " ng-click="uploadGrantAcceptanceUndertaking()
-                                                            " type="button "
-                                        ng-disabled="isUploadingGrantAcceptanceUndertaking || currentProposalStage=='Submitted' ">
-                                        <span ng-if="!isUploadingGrantAcceptanceUndertaking ">Upload</span>
-                                        <span ng-if="isUploadingGrantAcceptanceUndertaking ">
-                                            <i class="fa fa-spinner fa-spin "></i> Uploading...
+                                    id="grantAcceptanceUndertakingFileStage1" />
+                                <span class="input-group-btn pt-3">
+                                    <button class="btn btn-success mt-4 py-3" ng-click="uploadGrantAcceptanceUndertaking()
+                                                            " type="button"
+                                        ng-disabled="isUploadingGrantAcceptanceUndertaking || currentProposalStage=='Submitted'">
+                                        <span ng-if="!isUploadingGrantAcceptanceUndertaking">Upload</span>
+                                        <span ng-if="isUploadingGrantAcceptanceUndertaking">
+                                            <i class="fa fa-spinner fa-spin"></i> Uploading...
                                         </span>
                                     </button>
                                 </span>
                             </div>
-                            <div class="alert alert-success ms-4 mt-2 py-2 " ng-if="grantAcceptanceUndertakingDoc && grantAcceptanceUndertakingDoc.userDocument
+                            <div class="alert alert-success ms-4 mt-2 py-2" ng-if="grantAcceptanceUndertakingDoc && grantAcceptanceUndertakingDoc.userDocument
                                                             && grantAcceptanceUndertakingDoc.userDocument.Status__c=='Uploaded'
-                                                            && !isUploadingGrantAcceptanceUndertaking ">
+                                                            && !isUploadingGrantAcceptanceUndertaking">
                                 <i class="fa fa-check-circle "></i> Undertaking Format of Grant Acceptance - Uploaded
                                 successfully.
                             </div>
                         </div>
                         <div class="col-md-2 "
                             ng-show="grantAcceptanceUndertakingDoc && grantAcceptanceUndertakingDoc.userDocument
-                                                            && grantAcceptanceUndertakingDoc.userDocument.Status__c=='Uploaded' ">
-                            <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingGrantAcceptanceUndertaking}
-                                                            " href="{{grantAcceptanceUndertakingPreviewLink}} "
-                                target="_blank ">View</a>
+                                                            && grantAcceptanceUndertakingDoc.userDocument.Status__c=='Uploaded'">
+                            <a class="blue-btn float-end mt-5 py-3" ng-class="{'disabled': isUploadingGrantAcceptanceUndertaking}
+                                                            " href="{{grantAcceptanceUndertakingPreviewLink}}"
+                                target="_blank">View</a>
                         </div>
                     </div>
 
@@ -2724,143 +2736,141 @@
                     <div class="row mt-5 " ng-show="stage==='1st Stage' ">
                         <div class="col-md-6 ">
                             <div class="input-group ms-4 ">
-                                <label class="font-if ">Upload Undertaking for Sensitivity Security Regulations (max 3.5
+                                <label class="font-if">Upload Undertaking for Sensitivity Security Regulations (max 3.5
                                     Mb)
                                     <span class="ms-2 text-danger ">*</span>
                                 </label>
-                                <input type="file " accept=".pdf " class="form-control " ng-disabled="isUploadingSensitivitySecurityUndertaking
-                                                            || currentProposalStage=='Submitted' "
-                                    id="sensitivitySecurityUndertakingFileStage1 " />
-                                <span class="input-group-btn pt-3 ">
-                                    <button class="btn btn-success mt-4 py-3 " ng-click="uploadSensitivitySecurityUndertaking()
-                                                            " type="button " ng-disabled="isUploadingSensitivitySecurityUndertaking
-                                                            || currentProposalStage=='Submitted' ">
-                                        <span ng-if="!isUploadingSensitivitySecurityUndertaking ">Upload</span>
-                                        <span ng-if="isUploadingSensitivitySecurityUndertaking ">
-                                            <i class="fa fa-spinner fa-spin "></i> Uploading...
+                                <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingSensitivitySecurityUndertaking
+                                                            || currentProposalStage=='Submitted'"
+                                    id="sensitivitySecurityUndertakingFileStage1" />
+                                <span class="input-group-btn pt-3">
+                                    <button class="btn btn-success mt-4 py-3"
+                                        ng-click="uploadSensitivitySecurityUndertaking()" type="button" ng-disabled="isUploadingSensitivitySecurityUndertaking
+                                                            || currentProposalStage=='Submitted'">
+                                        <span ng-if="!isUploadingSensitivitySecurityUndertaking">Upload</span>
+                                        <span ng-if="isUploadingSensitivitySecurityUndertaking">
+                                            <i class="fa fa-spinner fa-spin"></i> Uploading...
                                         </span>
                                     </button>
                                 </span>
                             </div>
-                            <div class="alert alert-success ms-4 mt-2 py-2 " ng-if="sensitivitySecurityUndertakingDoc &&
+                            <div class="alert alert-success ms-4 mt-2 py-2" ng-if="sensitivitySecurityUndertakingDoc &&
                                                             sensitivitySecurityUndertakingDoc.userDocument && sensitivitySecurityUndertakingDoc.userDocument.Status__c=='Uploaded'
-                                                            && !isUploadingSensitivitySecurityUndertaking ">
-                                <i class="fa fa-check-circle "></i> Undertaking for Sensitivity Security Regulations -
+                                                            && !isUploadingSensitivitySecurityUndertaking">
+                                <i class="fa fa-check-circle"></i> Undertaking for Sensitivity Security Regulations -
                                 Uploaded successfully.
                             </div>
                         </div>
                         <div class="col-md-2 "
                             ng-show="sensitivitySecurityUndertakingDoc && sensitivitySecurityUndertakingDoc.userDocument
-                                                            && sensitivitySecurityUndertakingDoc.userDocument.Status__c=='Uploaded' ">
-                            <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingSensitivitySecurityUndertaking}
-                                                            " href="{{sensitivitySecurityUndertakingPreviewLink}} "
-                                target="_blank ">View</a>
+                                                            && sensitivitySecurityUndertakingDoc.userDocument.Status__c=='Uploaded'">
+                            <a class="blue-btn float-end mt-5 py-3" ng-class="{ 'disabled': isUploadingSensitivitySecurityUndertaking}
+                                                            " href="{{sensitivitySecurityUndertakingPreviewLink}}"
+                                target="_blank">View</a>
                         </div>
                     </div>
 
                     <!-- Financial Statement Report Upload Section (APA level) - Stage 2 -->
-                    <div class="row mt-5 " ng-show="stage==='2nd Stage' && (mailingCountry==='India' || mailingCountry==='Germany'
-                                                            ) ">
-                        <div class="col-md-6 ">
-                            <div class="input-group ms-4 ">
-                                <label class="font-if ">Upload Budget Report - Stage 2
-                                    <span ng-if="mailingCountry==='India' " class="ms-2 text-danger ">*</span>
+                    <div class="row mt-5"
+                        ng-show="stage==='2nd Stage' && (mailingCountry==='India' || mailingCountry==='Germany')">
+                        <div class="col-md-6">
+                            <div class="input-group ms-4">
+                                <label class="font-if">Upload Budget Report - Stage 2
+                                    <span ng-if="mailingCountry==='India'" class="ms-2 text-danger">*</span>
                                 </label>
-                                <input type="file " accept=".pdf " class="form-control " ng-disabled="isUploadingFinancialStatement
-                                                            || currentProposalStage=='Submitted' "
-                                    id="auditedFinancialFileStage2 " />
-                                <span class="input-group-btn pt-3 ">
-                                    <button class="btn btn-success mt-4 py-3 " ng-click="uploadAuditedFinancial()
-                                                            " type="button "
-                                        ng-disabled="isUploadingFinancialStatement || currentProposalStage=='Submitted' ">
-                                        <span ng-if="!isUploadingFinancialStatement ">Upload</span>
-                                        <span ng-if="isUploadingFinancialStatement ">
-                                            <i class="fa fa-spinner fa-spin "></i> Uploading...
+                                <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingFinancialStatement
+                                                            || currentProposalStage=='Submitted'"
+                                    id="auditedFinancialFileStage2" />
+                                <span class="input-group-btn pt-3">
+                                    <button class="btn btn-success mt-4 py-3" ng-click="uploadAuditedFinancial()"
+                                        type="button"
+                                        ng-disabled="isUploadingFinancialStatement || currentProposalStage=='Submitted'">
+                                        <span ng-if="!isUploadingFinancialStatement">Upload</span>
+                                        <span ng-if="isUploadingFinancialStatement">
+                                            <i class="fa fa-spinner fa-spin"></i> Uploading...
                                         </span>
                                     </button>
                                 </span>
                             </div>
-                            <div class="progress ms-4 mt-2 " ng-show="showFinancialStatementProgressBar " style="height:
-                                                            20px; ">
-                                <div class="progress-bar progress-bar-striped active " role="progressbar
-                                                            " aria-valuenow="{{financialStatementUploadProgress}} "
-                                    aria-valuemin="0 " aria-valuemax="100 " ng-style="{ 'width': financialStatementUploadProgress
-                                                            + '%' } ">
+                            <div class="progress ms-4 mt-2" ng-show="showFinancialStatementProgressBar" style="height:
+                                                            20px;">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                    aria-valuenow="{{financialStatementUploadProgress}}" aria-valuemin="0"
+                                    aria-valuemax="100" ng-style="{'width': financialStatementUploadProgress
+                                                            + '%'}">
                                     <span
-                                        style="font-size:14px; font-weight:bold; ">{{financialStatementUploadProgress}}%</span>
+                                        style="font-size:14px; font-weight:bold;">{{financialStatementUploadProgress}}%</span>
                                 </div>
                             </div>
                             <div ng-if="auditedFinancialDoc && auditedFinancialDoc.userDocument && auditedFinancialDoc.userDocument.Status__c=='Uploaded'
-                                                            && !isUploadingFinancialStatement "
-                                class="alert alert-success ms-4 mt-2 py-2 ">
-                                <i class="fa fa-check-circle "></i> Budget Report - Stage 2 uploaded successfully.
+                                                            && !isUploadingFinancialStatement"
+                                class="alert alert-success ms-4 mt-2 py-2">
+                                <i class="fa fa-check-circle"></i> Budget Report - Stage 2 uploaded successfully.
 
                             </div>
                         </div>
-                        <div class="col-md-2 "
-                            ng-show="auditedFinancialDoc && auditedFinancialDoc.userDocument && auditedFinancialDoc.userDocument.Status__c=='Uploaded' ">
-                            <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingFinancialStatement}
-                                                            " href="{{auditedFinancialPreviewLink}} "
-                                target="_blank ">View</a>
+                        <div class="col-md-2"
+                            ng-show="auditedFinancialDoc && auditedFinancialDoc.userDocument && auditedFinancialDoc.userDocument.Status__c=='Uploaded'">
+                            <a class="blue-btn float-end mt-5 py-3 "
+                                ng-class="{ 'disabled': isUploadingFinancialStatement}"
+                                href="{{auditedFinancialPreviewLink}}" target="_blank ">View</a>
                         </div>
                     </div>
 
                     <!-- Quotation for Equipment/Accessories Upload Section (APA level) - Stage 2 -->
-                    <div class="row mt-5 " ng-show="stage==='2nd Stage' && mailingCountry==='India' ">
-                        <div class="col-md-6 ">
-                            <div class="input-group ms-4 ">
-                                <label class="font-if ">Upload Quotation for Equipment / Accessories - Stage 2
-                                    <span class="ms-2 text-danger ">*</span>
+                    <div class="row mt-5" ng-show="stage==='2nd Stage' && mailingCountry==='India'">
+                        <div class="col-md-6">
+                            <div class="input-group ms-4">
+                                <label class="font-if">Upload Quotation for Equipment / Accessories - Stage 2
+                                    <span class="ms-2 text-danger">*</span>
                                 </label>
-                                <input type="file " accept=".pdf " class="form-control " ng-disabled="isUploadingQuotation
-                                                            || currentProposalStage=='Submitted' "
-                                    id="quotationEquipmentFileStage2 " />
-                                <span class="input-group-btn pt-3 ">
-                                    <button class="btn btn-success mt-4 py-3 " ng-click="uploadQuotationEquipment()
-                                                            " type="button "
-                                        ng-disabled="isUploadingQuotation || currentProposalStage=='Submitted' ">
-                                        <span ng-if="!isUploadingQuotation ">Upload</span>
-                                        <span ng-if="isUploadingQuotation ">
-                                            <i class="fa fa-spinner fa-spin "></i> Uploading...
+                                <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingQuotation
+                                                            || currentProposalStage=='Submitted'"
+                                    id="quotationEquipmentFileStage2" />
+                                <span class="input-group-btn pt-3">
+                                    <button class="btn btn-success mt-4 py-3" ng-click="uploadQuotationEquipment()"
+                                        type="button"
+                                        ng-disabled="isUploadingQuotation || currentProposalStage=='Submitted'">
+                                        <span ng-if="!isUploadingQuotation">Upload</span>
+                                        <span ng-if="isUploadingQuotation">
+                                            <i class="fa fa-spinner fa-spin"></i> Uploading...
                                         </span>
                                     </button>
                                 </span>
                             </div>
-                            <div class="progress ms-4 mt-2 " ng-show="showQuotationEquipmentProgressBar " style="height:
-                                                            20px; ">
-                                <div class="progress-bar progress-bar-striped active " role="progressbar
-                                                            " aria-valuenow="{{quotationEquipmentUploadProgress}} "
-                                    aria-valuemin="0 " aria-valuemax="100 " ng-style="{ 'width': quotationEquipmentUploadProgress
-                                                            + '%' } ">
+                            <div class="progress ms-4 mt-2" ng-show="showQuotationEquipmentProgressBar" style="height:
+                                                            20px;">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                    aria-valuenow="{{quotationEquipmentUploadProgress}}" aria-valuemin="0 "
+                                    aria-valuemax="100 " ng-style="{ 'width': quotationEquipmentUploadProgress
+                                                            + '%' }">
                                     <span
-                                        style="font-size:14px; font-weight:bold; ">{{quotationEquipmentUploadProgress}}%</span>
+                                        style="font-size:14px; font-weight:bold;">{{quotationEquipmentUploadProgress}}%</span>
                                 </div>
                             </div>
                             <div ng-if="quotationEquipmentDoc && quotationEquipmentDoc.userDocument && quotationEquipmentDoc.userDocument.Status__c=='Uploaded'
-                                                            && !isUploadingQuotation "
-                                class="alert alert-success ms-4 mt-2 py-2 ">
-                                <i class="fa fa-check-circle "></i> Quotation for Equipment / Accessories - Stage 2
+                                                            && !isUploadingQuotation"
+                                class="alert alert-success ms-4 mt-2 py-2">
+                                <i class="fa fa-check-circle"></i> Quotation for Equipment / Accessories - Stage 2
                                 uploaded successfully.
                             </div>
                         </div>
-                        <div class="col-md-2 " ng-show="quotationEquipmentDoc && quotationEquipmentDoc.userDocument &&
-                                                            quotationEquipmentDoc.userDocument.Status__c=='Uploaded' ">
-                            <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingQuotation}
-                                                            " href="{{quotationEquipmentPreviewLink}} "
-                                target="_blank ">View</a>
+                        <div class="col-md-2" ng-show="quotationEquipmentDoc && quotationEquipmentDoc.userDocument &&
+                                                            quotationEquipmentDoc.userDocument.Status__c=='Uploaded'">
+                            <a class="blue-btn float-end mt-5 py-3 " ng-class="{ 'disabled': isUploadingQuotation}"
+                                href="{{quotationEquipmentPreviewLink}}" target="_blank ">View</a>
                         </div>
                     </div>
 
 
 
-                    <div class="row my-5 mt-5 " ng-if="!proposalStage ">
-                        <div class="col-md-12 ">
-                            <button class="blue-btn float-end " id="btnSubmit " ng-click="saveDetails() "
-                                type="button ">
-                                <i class="fa-solid fa-check me-2 "></i>Save and Next</button>
-                            <button class="btn btn-secondary float-end me-2 " style="padding: 8px 20px !important;font-size:
-                                                            16px !important; " ng-click="redirectPageURL(
-                                                            'Financial_Overview') " type="button ">Back</button>
+                    <div class="row my-5 mt-5" ng-if="!proposalStage">
+                        <div class="col-md-12">
+                            <button class="blue-btn float-end" id="btnSubmit" ng-click="saveDetails()" type="button">
+                                <i class="fa-solid fa-check me-2"></i>Save and Next</button>
+                            <button class="btn btn-secondary float-end me-2" style="padding: 8px 20px !important;font-size:
+                                                            16px !important;" ng-click="redirectPageURL(
+                                                            'Financial_Overview')" type="button">Back</button>
                         </div>
                     </div>
                 </div>
