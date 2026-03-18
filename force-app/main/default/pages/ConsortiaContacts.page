@@ -616,6 +616,7 @@
 
                             </div>
                         </div>
+                        
                         <div class="vertical-scroll">
                             <div class="progress-icon">
                                 <i class="fas fa-file-invoice"></i>
@@ -630,9 +631,10 @@
                                 </div>
                             </div>
                             <div class="mb-5">
-                                <ng-ckeditor id="publication"  ng-model="allDetailList.Publications_Patents__c" name="ckEditor" ng-config="config"></ng-ckeditor>
+                                <ng-ckeditor id="publication"  ng-model="allDetailList.Publications_Patents__c" name="ckEditor" ng-config="config" ng-disabled="proposalStage"></ng-ckeditor>
                             </div>
                         </div>
+                   
                         <div class="row mb-3" ng-if="!proposalStage">
                             <div class="col-md-12">
                                 <button class="blue-btn float-end" id="btnSubmit" ng-click="saveAllDetails()" type="button">

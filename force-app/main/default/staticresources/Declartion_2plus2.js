@@ -351,6 +351,20 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
 
     $scope.SubmitApplication = function () {
         debugger;
+
+        if (
+            $rootScope.secondStage &&
+            !$rootScope.expenseDetailsSubmitted
+        ) {
+            showInfo('Please submit Expense Details before submitting the application.');
+            // swal(
+            //     'Info',
+            //     'Please submit Expense Details before submitting the application.',
+            //     'info'
+            // );
+            return;
+        }
+
         var year = 0;
         var month = 0;
         var day = 0;
@@ -397,17 +411,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         console.log('$rootScope.secondStage : ', $rootScope.secondStage);
         console.log('$rootScope.isCoordinator : ', $rootScope.isCoordinator);
 
-        if (
-            $rootScope.secondStage &&
-            !$rootScope.expenseDetailsSubmitted
-        ) {
-            swal(
-                'Info',
-                'Please submit Expense Details before submitting the application.',
-                'info'
-            );
-            return;
-        }
+
 
         swal({
             title: "Are you sure?",
@@ -453,19 +457,19 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
                                 //     'Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.',
                                 //     'warning'
                                 swal({
-                                title: "Success",
-                                content: {
-                                    element: "div",
-                                    attributes: {
-                                        innerHTML: `
+                                    title: "Success",
+                                    content: {
+                                        element: "div",
+                                        attributes: {
+                                            innerHTML: `
                                             <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
                                                 Your data has been saved successfully. You cannot Submit until all partners have submitted the Application.
                                             </p>
                                         `
-                                    }
-                                },
-                                icon: "warning",
-                                button: "OK"
+                                        }
+                                    },
+                                    icon: "warning",
+                                    button: "OK"
                                 }).then(function () {
 
                                     setTimeout(function () {
@@ -476,7 +480,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
                                 });
                             }
 
-                            
+
 
                             // } else {
                             //     // Swal.fire(
@@ -504,7 +508,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
             });
     }
 
-   
+
 
     $scope.saveDetails = function () {
         debugger;
@@ -559,6 +563,20 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
 
     $scope.saveAndSubmit = function () {
         debugger;
+
+        if (
+            $rootScope.secondStage &&
+            !$rootScope.expenseDetailsSubmitted
+        ) {
+            showInfo('Please submit Expense Details before submitting the application.');
+            // swal(
+            //     'Info',
+            //     'Please submit Expense Details before submitting the application.',
+            //     'info'
+            // );
+            return;
+        }
+
         var year = 0;
         var month = 0;
         var day = 0;
@@ -596,19 +614,7 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         //     }
         // }
 
-        function showInfo(message) {
-            swal({
-                title: "Info",
-                content: {
-                    element: "div",
-                    attributes: {
-                        innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
-                    }
-                },
-                icon: "info",
-                button: "OK"
-            });
-        }
+
         if ($scope.SignDate != undefined && $scope.SignDate != '') {
             year = $scope.SignDate.getUTCFullYear();
             month = $scope.SignDate.getUTCMonth() + 1;
@@ -701,6 +707,20 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
             link.click();
         }
     };
+
+    function showInfo(message) {
+        swal({
+            title: "Info",
+            content: {
+                element: "div",
+                attributes: {
+                    innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                }
+            },
+            icon: "info",
+            button: "OK"
+        });
+    }
 
 
 });

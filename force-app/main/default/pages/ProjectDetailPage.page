@@ -259,16 +259,20 @@
                                 can fill the Basic Project Details.</li>
                             <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i>Click on the Consortium
                                 Details from the Timeline above to fill your respective Details.</li>
-                        </div>
-                    </div>
-                    <div ng-if="bulletCondition">
-                        <div class="alert bg-color-list font-if" role="alert">
                             <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i>Kindly do not change
                                 <i>Project Acronym</i>, <i>Project Title</i> and <i>Subtopics</i> which were filled in
                                 the first stage of the proposal.
                             </li>
                         </div>
                     </div>
+                    <!-- <div ng-if="bulletCondition">
+                        <div class="alert bg-color-list font-if" role="alert">
+                            <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i>Kindly do not change
+                                <i>Project Acronym</i>, <i>Project Title</i> and <i>Subtopics</i> which were filled in
+                                the first stage of the proposal.
+                            </li>
+                        </div>
+                    </div> -->
                 </div>
                 <!-- </div> -->
 

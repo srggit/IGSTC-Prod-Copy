@@ -94,12 +94,18 @@ export default class WorkPackageDeliverablesGanttChart extends LightningElement 
                             const firstInitial = (contact.FirstName || '').charAt(0).toUpperCase();
                             const lastInitial = (contact.LastName || '').charAt(0).toUpperCase();
                             const initials = `${firstInitial}${lastInitial}`;
+                            const fullName = `${contact.FirstName || ''} ${contact.LastName || ''}`.trim();
+
                             if (initials.length > 1) {
-                                contactInitials.push(initials);
+                                contactInitials.push({
+                                    initials: initials,
+                                    fullName: fullName
+                                });
                             }
                         });
                     }
 
+                    // Then in the return object:
                     return {
                         id: wp.Id,
                         title: wp.title,
@@ -107,7 +113,7 @@ export default class WorkPackageDeliverablesGanttChart extends LightningElement 
                         wpStyle: `grid-column:${wpStart} / ${wpEnd + 1};`,
                         deliverables,
                         contacts: wp.contacts || [],
-                        contactInitials: contactInitials
+                        contactInitials: contactInitials  // Now an array of objects
                     };
 
                 });

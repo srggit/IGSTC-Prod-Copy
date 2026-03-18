@@ -888,6 +888,254 @@
                         </div>
                     </div>
 
+                    <div class="mt-5">
+                        <div class="col-md-12">
+                            <div class="wp-deliverable-section">
+
+                                <!-- Header -->
+                                <div class="wp-header d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="mb-0">
+                                        <b>Work Package (WP) with Deliverables (D)</b>
+                                    </h4>
+
+                                    <button type="button" class="btn btn-primary add-wp-btn" ng-click="addNewWP()"
+                                        ng-if="!proposalStage" ng-hide="!isCoordinator">
+                                        <i class="fas fa-plus"></i> Add Work Package
+                                    </button>
+                                </div>
+
+                                <div class="text-muted mb-3">
+                                    Total Work Packages: {{wpDeliverablesTableList.length}}
+                                </div>
+
+
+                                <!-- Work Packages -->
+                                <div ng-repeat="wp in wpDeliverablesTableList" style="margin-bottom: 10px;">
+
+                                    <!-- WP Header -->
+                                    <div class="wp-title-row">
+
+                                        <div class="wp-title">
+                                            {{wp.wpSequence}} : {{wp.title || 'New Work Package'}}
+                                        </div>
+
+                                        <i class="fa-solid fa-circle-xmark remove-wp" ng-click="removeWP($index)"
+                                            ng-if="!proposalStage" ng-hide="!isCoordinator"></i>
+
+                                    </div>
+
+                                    <!-- WP Table -->
+                                    <table class="table wp-table"
+                                        ng-class="{'hide-coordinator-column': !isCoordinator}">
+
+                                        <thead>
+                                            <tr>
+                                                <th style="width:8%">WP Id</th>
+                                                <th style="width:20%">WP Title</th>
+                                                <th style="width:15%">TRL</th>
+                                                <th style="width:20%">Responsible Partners</th>
+                                                <th style="width:10%">Start Month</th>
+                                                <th style="width:10%" ng-class="{'no-border-right': !isCoordinator}">End
+                                                    Month</th>
+                                                <th style="width:5%" ng-hide="!isCoordinator"></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                            <!-- WP Row -->
+                                            <tr class="wp-main-row">
+
+                                                <td>
+                                                    <strong>{{wp.wpSequence}}</strong>
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" class="form-control" ng-model="wp.title"
+                                                        ng-disabled="proposalStage || !isCoordinator"
+                                                        placeholder="Enter WP title" />
+                                                </td>
+
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <select class="form-control me-1" ng-model="wp.trlFrom"
+                                                            ng-options="option for option in trlOptions"
+                                                            ng-disabled="proposalStage || !isCoordinator">
+                                                            <option value="">From</option>
+                                                        </select>
+
+                                                        <span class="mx-1">to</span>
+
+                                                        <select class="form-control ms-1" ng-model="wp.trlTo"
+                                                            ng-options="option for option in trlOptions"
+                                                            ng-disabled="proposalStage || !isCoordinator">
+                                                            <option value="">To</option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="dropdown">
+
+                                                        <button class="btn btn-light dropdown-toggle w-100"
+                                                            data-bs-toggle="dropdown"
+                                                            ng-disabled="proposalStage || !isCoordinator"
+                                                            ng-hide="proposalStage || !isCoordinator">
+                                                            Select Partners
+                                                        </button>
+
+                                                        <ul class="dropdown-menu partner-dropdown">
+
+                                                            <li ng-repeat="acc in wp.AccountList">
+
+                                                                <label class="dropdown-item">
+
+                                                                    <input type="checkbox" ng-model="acc.selected"
+                                                                        ng-disabled="proposalStage || !isCoordinator" />
+
+                                                                    <span class="ms-2">{{acc.Name}}</span>
+
+                                                                </label>
+
+                                                            </li>
+
+                                                        </ul>
+
+                                                        <!-- Show selected partners as badges - AUTOMATIC UPDATES -->
+                                                        <div class="selected-partners mt-2"
+                                                            ng-if="(wp.AccountList | filter:{selected:true}).length > 0">
+                                                            <span class="badge bg-badge me-1 rounded-pill px-3 py-2"
+                                                                ng-repeat="partner in wp.AccountList | filter:{selected:true}"
+                                                                title="{{partner.Name}}">
+                                                                {{partner.Name | limitTo:15}}{{partner.Name.length >
+                                                                15 ? '...' : ''}}
+                                                            </span>
+                                                        </div>
+
+                                                        <!-- Show message when no partners selected -->
+                                                        <div class="text-muted small mt-1"
+                                                            ng-if="(wp.AccountList | filter:{selected:true}).length === 0">
+                                                            No partners selected
+                                                        </div>
+
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" ng-model="wp.wpStartMonth"
+                                                        ng-disabled="proposalStage || !isCoordinator"
+                                                        ng-change="validateWorkPackageMonths(wp)"
+                                                        placeholder="Start Month" />
+                                                </td>
+
+                                                <td ng-class="{'no-border-right': !isCoordinator}">
+                                                    <input type="number" class="form-control" ng-model="wp.wpEndMonth"
+                                                        ng-disabled="proposalStage || !isCoordinator"
+                                                        ng-change="validateWorkPackageMonths(wp)"
+                                                        placeholder="End Month" />
+                                                    <small class="text-danger" ng-if="wp.endMonthStartError">
+                                                        Must be &gt;= {{wp.wpStartMonth}}
+                                                    </small>
+                                                    <small class="text-danger" ng-if="wp.endMonthMaxDurationError">
+                                                        Must be &lt;= {{maxDurations}}
+                                                    </small>
+                                                </td>
+
+                                                <!-- Add Deliverable Button -->
+                                                <td class="text-center" ng-hide="!isCoordinator">
+
+                                                    <button class="add-deliverable-btn"
+                                                        ng-click="addNewDeliverable($index)">
+
+                                                        <i class="fas fa-plus"></i>
+
+                                                    </button>
+
+                                                </td>
+
+                                            </tr>
+
+
+                                            <!-- Deliverables -->
+                                            <tr ng-repeat="deliv in wp.deliverables" class="deliverable-row">
+
+                                                <td></td>
+
+                                                <td class="deliverable-id">
+                                                    {{deliv.deliverableSequence}}
+                                                </td>
+
+                                                <td colspan="2">
+
+                                                    <input type="text" class="form-control form-control-sm"
+                                                        ng-model="deliv.title"
+                                                        ng-disabled="proposalStage || !isCoordinator"
+                                                        placeholder="Deliverable description" />
+
+                                                </td>
+
+                                                <td>
+
+                                                    <input type="number" class="form-control form-control-sm"
+                                                        ng-model="deliv.startMonth"
+                                                        ng-change="validateDeliverableMonths(wp,deliv)"
+                                                        ng-disabled="proposalStage || !isCoordinator"
+                                                        placeholder="Start Month" />
+                                                    <small class="text-danger" ng-if="deliv.startMonthError">
+                                                        Must be &gt;= {{wp.wpStartMonth}}
+                                                    </small>
+
+                                                </td>
+
+                                                <td ng-class="{'no-border-right': !isCoordinator}">
+                                                    <input type="number" class="form-control form-control-sm"
+                                                        ng-model="deliv.endMonth"
+                                                        ng-change="validateDeliverableMonths(wp,deliv)"
+                                                        ng-disabled="proposalStage || !isCoordinator"
+                                                        placeholder="End Month" />
+                                                    <small class="text-danger" ng-if="deliv.endMonthError">
+                                                        Must be &lt;= {{wp.wpEndMonth}}
+                                                    </small>
+                                                </td>
+
+                                                <td class="text-center" ng-hide="!isCoordinator">
+
+                                                    <i class="fa-solid fa-circle-xmark remove-deliverable"
+                                                        ng-click="removeDeliverable($parent.$index,$index)"
+                                                        style="color: red;"></i>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- GANTT CHART SECTION -->
+                        <!-- GANTT CHART SECTION - Keep Bootstrap classes only on text, not on container -->
+
+                        <div class="mt-5" style="margin-left: 5px; margin-right: 5px;">
+                            <h4 class="mb-0 mt-5">
+                                <i class="fas fa-chart-gantt me-2"></i>
+                                Work Package &amp; Deliverables Gantt Chart
+                            </h4>
+                            <!-- Remove card-body class -->
+                            <div style="padding: 0; margin-top: 15px;">
+                                <!-- Gantt Chart Container -->
+                                <!-- <div id="ganttChartContainer" style="overflow-x: auto; padding: 0; margin: 0;"> -->
+                                <div id="ganttChart" style="padding: 0; margin: 0;"></div>
+                                <!-- </div> -->
+                            </div>
+                        </div>
+
+                    </div>
+
 
                     <!-- ###################### NEW FIELDS ADDED HERE - FOR STAGE 1 ###################### -->
                     <div class="mb-4" ng-show="stage === '1st Stage'">
@@ -1756,246 +2004,7 @@
                                 </div>
                             </div>
                         </div>
-                        -->
-                        <div class="mt-5">
-                            <div class="col-md-12">
-                                <div class="wp-deliverable-section">
-
-                                    <!-- Header -->
-                                    <div class="wp-header d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="mb-0">
-                                            <b>Work Package (WP) with Deliverables (D)</b>
-                                        </h4>
-
-                                        <button type="button" class="btn btn-primary add-wp-btn" ng-click="addNewWP()"
-                                            ng-if="!proposalStage" ng-hide="!isCoordinator">
-                                            <i class="fas fa-plus"></i> Add Work Package
-                                        </button>
-                                    </div>
-
-                                    <div class="text-muted mb-3">
-                                        Total Work Packages: {{wpDeliverablesTableList.length}}
-                                    </div>
-
-
-                                    <!-- Work Packages -->
-                                    <div ng-repeat="wp in wpDeliverablesTableList" style="margin-bottom: 10px;">
-
-                                        <!-- WP Header -->
-                                        <div class="wp-title-row">
-
-                                            <div class="wp-title">
-                                                {{wp.wpSequence}} : {{wp.title || 'New Work Package'}}
-                                            </div>
-
-                                            <i class="fa-solid fa-circle-xmark remove-wp" ng-click="removeWP($index)"
-                                                ng-if="!proposalStage" ng-hide="!isCoordinator"></i>
-
-                                        </div>
-
-                                        <!-- WP Table -->
-                                        <table class="table wp-table"
-                                            ng-class="{'hide-coordinator-column': !isCoordinator}">
-
-                                            <thead>
-                                                <tr>
-                                                    <th style="width:8%">WP Id</th>
-                                                    <th style="width:20%">WP Title</th>
-                                                    <th style="width:15%">TRL</th>
-                                                    <th style="width:20%">Responsible Partners</th>
-                                                    <th style="width:10%">Start Month</th>
-                                                    <th style="width:10%"
-                                                        ng-class="{'no-border-right': !isCoordinator}">End Month</th>
-                                                    <th style="width:5%" ng-hide="!isCoordinator"></th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-
-                                                <!-- WP Row -->
-                                                <tr class="wp-main-row">
-
-                                                    <td>
-                                                        <strong>{{wp.wpSequence}}</strong>
-                                                    </td>
-
-                                                    <td>
-                                                        <input type="text" class="form-control" ng-model="wp.title"
-                                                            ng-disabled="proposalStage || !isCoordinator"
-                                                            placeholder="Enter WP title" />
-                                                    </td>
-
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <select class="form-control me-1" ng-model="wp.trlFrom"
-                                                                ng-options="option for option in trlOptions"
-                                                                ng-disabled="proposalStage || !isCoordinator">
-                                                                <option value="">From</option>
-                                                            </select>
-
-                                                            <span class="mx-1">to</span>
-
-                                                            <select class="form-control ms-1" ng-model="wp.trlTo"
-                                                                ng-options="option for option in trlOptions"
-                                                                ng-disabled="proposalStage || !isCoordinator">
-                                                                <option value="">To</option>
-                                                            </select>
-                                                        </div>
-                                                    </td>
-
-                                                    <td>
-                                                        <div class="dropdown">
-
-                                                            <button class="btn btn-light dropdown-toggle w-100"
-                                                                data-bs-toggle="dropdown"
-                                                                ng-disabled="proposalStage || !isCoordinator"
-                                                                ng-hide="proposalStage || !isCoordinator">
-                                                                Select Partners
-                                                            </button>
-
-                                                            <ul class="dropdown-menu partner-dropdown">
-
-                                                                <li ng-repeat="acc in wp.AccountList">
-
-                                                                    <label class="dropdown-item">
-
-                                                                        <input type="checkbox" ng-model="acc.selected"
-                                                                            ng-disabled="proposalStage || !isCoordinator" />
-
-                                                                        <span class="ms-2">{{acc.Name}}</span>
-
-                                                                    </label>
-
-                                                                </li>
-
-                                                            </ul>
-
-                                                            <!-- Show selected partners as badges - AUTOMATIC UPDATES -->
-                                                            <div class="selected-partners mt-2"
-                                                                ng-if="(wp.AccountList | filter:{selected:true}).length > 0">
-                                                                <span class="badge bg-badge me-1 rounded-pill px-3 py-2"
-                                                                    ng-repeat="partner in wp.AccountList | filter:{selected:true}"
-                                                                    title="{{partner.Name}}">
-                                                                    {{partner.Name | limitTo:15}}{{partner.Name.length >
-                                                                    15 ? '...' : ''}}
-                                                                </span>
-                                                            </div>
-
-                                                            <!-- Show message when no partners selected -->
-                                                            <div class="text-muted small mt-1"
-                                                                ng-if="(wp.AccountList | filter:{selected:true}).length === 0">
-                                                                No partners selected
-                                                            </div>
-
-                                                        </div>
-                                                    </td>
-
-                                                    <td>
-                                                        <input type="number" class="form-control"
-                                                            ng-model="wp.wpStartMonth"
-                                                            ng-disabled="proposalStage || !isCoordinator" />
-                                                    </td>
-
-                                                    <td ng-class="{'no-border-right': !isCoordinator}">
-                                                        <input type="number" class="form-control"
-                                                            ng-model="wp.wpEndMonth"
-                                                            ng-disabled="proposalStage || !isCoordinator" />
-                                                    </td>
-
-                                                    <!-- Add Deliverable Button -->
-                                                    <td class="text-center" ng-hide="!isCoordinator">
-
-                                                        <button class="add-deliverable-btn"
-                                                            ng-click="addNewDeliverable($index)">
-
-                                                            <i class="fas fa-plus"></i>
-
-                                                        </button>
-
-                                                    </td>
-
-                                                </tr>
-
-
-                                                <!-- Deliverables -->
-                                                <tr ng-repeat="deliv in wp.deliverables" class="deliverable-row">
-
-                                                    <td></td>
-
-                                                    <td class="deliverable-id">
-                                                        {{deliv.deliverableSequence}}
-                                                    </td>
-
-                                                    <td colspan="2">
-
-                                                        <input type="text" class="form-control form-control-sm"
-                                                            ng-model="deliv.title"
-                                                            ng-disabled="proposalStage || !isCoordinator"
-                                                            placeholder="Deliverable description" />
-
-                                                    </td>
-
-                                                    <td>
-
-                                                        <input type="number" class="form-control form-control-sm"
-                                                            ng-model="deliv.startMonth"
-                                                            ng-change="validateDeliverableMonths(wp,deliv)"
-                                                            ng-disabled="proposalStage || !isCoordinator"
-                                                            placeholder="Start Month" />
-                                                        <small class="text-danger" ng-if="deliv.startMonthError">
-                                                            Must be &gt;= {{wp.wpStartMonth}}
-                                                        </small>
-
-                                                    </td>
-
-                                                    <td ng-class="{'no-border-right': !isCoordinator}">
-                                                        <input type="number" class="form-control form-control-sm"
-                                                            ng-model="deliv.endMonth"
-                                                            ng-change="validateDeliverableMonths(wp,deliv)"
-                                                            ng-disabled="proposalStage || !isCoordinator"
-                                                            placeholder="End Month" />
-                                                        <small class="text-danger" ng-if="deliv.endMonthError">
-                                                            Must be &lt;= {{wp.wpEndMonth}}
-                                                        </small>
-                                                    </td>
-
-                                                    <td class="text-center" ng-hide="!isCoordinator">
-
-                                                        <i class="fa-solid fa-circle-xmark remove-deliverable"
-                                                            ng-click="removeDeliverable($parent.$index,$index)"
-                                                            style="color: red;"></i>
-
-                                                    </td>
-
-                                                </tr>
-
-                                            </tbody>
-
-                                        </table>
-
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <!-- GANTT CHART SECTION -->
-                            <!-- GANTT CHART SECTION - Keep Bootstrap classes only on text, not on container -->
-
-                            <div class="mt-5" style="margin-left: 10px; margin-right: 5px;">
-                                <h4 class="mb-0 mt-5">
-                                    <i class="fas fa-chart-gantt me-2"></i>
-                                    Work Package &amp; Deliverables Gantt Chart
-                                </h4>
-                                <!-- Remove card-body class -->
-                                <div style="padding: 0; margin-top: 15px;">
-                                    <!-- Gantt Chart Container -->
-                                    <!-- <div id="ganttChartContainer" style="overflow-x: auto; padding: 0; margin: 0;"> -->
-                                    <div id="ganttChart" style="padding: 0; margin: 0;"></div>
-                                    <!-- </div> -->
-                                </div>
-                            </div>
-
-                        </div>
+                    -->
 
 
                         <!-- GANTT CHART SECTION -->

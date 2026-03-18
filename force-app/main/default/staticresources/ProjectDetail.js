@@ -191,6 +191,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         $scope.isCoordinator = $rootScope.isCoordinator;
                         $rootScope.stage = result.stage;
                         $rootScope.maxDurationInMonths = result.durationInMonths;
+                        $scope.maxDurations = result.durationInMonths;
                         $rootScope.mailingCountry = result.mailingCountry;
                         $rootScope.secondStage = $rootScope.stage == '2nd Stage' ? true : false;
 
@@ -1614,9 +1615,27 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         fileReader.onloadend = function (e) {
             var attachmentData = window.btoa(this.result);
 
-            swal({
+            // swal({
+            //     title: "Confirm Upload",
+            //     text: "Are you sure you want to upload the Undertaking Format of Grant Acceptance & Signing of Agreement?",
+            //     icon: "warning",
+            //     buttons: {
+            //         cancel: "Cancel",
+            //         confirm: { text: "Upload", value: true }
+            //     }
+            // }).then((willUpload) => {
+                swal({
                 title: "Confirm Upload",
-                text: "Are you sure you want to upload the Undertaking Format of Grant Acceptance & Signing of Agreement?",
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML: `
+                            <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
+                                Are you sure you want to upload the Undertaking Format of Grant Acceptance & Signing of Agreement?
+                            </p>
+                        `
+                    }
+                },
                 icon: "warning",
                 buttons: {
                     cancel: "Cancel",
@@ -1640,7 +1659,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         attachmentData, fileName, null, userDocId,
                         function (result, event) {
                             if (event.status) {
-                                swal('Success', 'Grant acceptance uploaded successfully!', 'success');
+                                swal('Success', 'Grant Acceptance uploaded successfully!', 'success');
                                 $scope.loadAPAUserDocs();
                             } else {
                                 swal('Error', 'Error uploading file. Please try again.', 'error');
@@ -1723,15 +1742,33 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         fileReader.onloadend = function (e) {
             var attachmentData = window.btoa(this.result);
 
-            swal({
-                title: "Confirm Upload",
-                text: "Are you sure you want to upload the Undertaking for Sensitivity Security Regulations?",
-                icon: "warning",
-                buttons: {
-                    cancel: "Cancel",
-                    confirm: { text: "Upload", value: true }
-                }
-            }).then((willUpload) => {
+            // swal({
+            //     title: "Confirm Upload",
+            //     text: "Are you sure you want to upload the Undertaking for Sensitivity Security Regulations?",
+            //     icon: "warning",
+            //     buttons: {
+            //         cancel: "Cancel",
+            //         confirm: { text: "Upload", value: true }
+            //     }
+            // }).then((willUpload) => {
+                swal({
+                    title: "Confirm Upload",
+                    content: {
+                        element: "div",
+                        attributes: {
+                            innerHTML: `
+                                <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
+                                    Are you sure you want to upload the Undertaking for Sensitivity Security Regulations?
+                                </p>
+                            `
+                        }
+                    },
+                    icon: "warning",
+                    buttons: {
+                        cancel: "Cancel",
+                        confirm: { text: "Upload", value: true }
+                    }
+                }).then((willUpload) => {
                 if (willUpload) {
                     var userDocId = $scope.sensitivitySecurityUndertakingDoc ? $scope.sensitivitySecurityUndertakingDoc.userDocument.Id : '';
 
@@ -1749,7 +1786,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         attachmentData, fileName, null, userDocId,
                         function (result, event) {
                             if (event.status) {
-                                swal('Success', 'Sensitivity security undertaking uploaded successfully!', 'success');
+                                swal('Success', 'Sensitivity Security undertaking uploaded successfully!', 'success');
                                 $scope.loadAPAUserDocs();
                             } else {
                                 swal('Error', 'Error uploading file. Please try again.', 'error');
@@ -1838,7 +1875,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             //         confirm: { text: "Upload", value: true }
             //     }
             // }).then((willUpload) => {
-                swal({
+            swal({
                 title: "Confirm Upload",
                 content: {
                     element: "div",
@@ -2064,24 +2101,24 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             //         confirm: { text: "Upload", value: true }
             //     }
             // }).then((willUpload) => {
-                swal({
-                    title: "Confirm Upload",
-                    content: {
-                        element: "div",
-                        attributes: {
-                            innerHTML: `
+            swal({
+                title: "Confirm Upload",
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML: `
                                 <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
                                     Are you sure you want to upload the Quotation For Equipment/Accessories?
                                 </p>
                             `
-                        }
-                    },
-                    icon: "warning",
-                    buttons: {
-                        cancel: "Cancel",
-                        confirm: { text: "Upload", value: true }
                     }
-                }).then((willUpload) => {
+                },
+                icon: "warning",
+                buttons: {
+                    cancel: "Cancel",
+                    confirm: { text: "Upload", value: true }
+                }
+            }).then((willUpload) => {
                 if (willUpload) {
                     var userDocId = $scope.quotationEquipmentDoc ? $scope.quotationEquipmentDoc.userDocument.Id : '';
 
@@ -3540,18 +3577,18 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 for (var j = 0; j < $scope.input[i].Existing_Grants__r.length; j++) {
 
                     if ($scope.input[i].Existing_Grants__r[j].Title__c == undefined || $scope.input[i].Existing_Grants__r[j].Title__c == "") {
-                        swal("Existing Grants", "Please Enter Title.", "info");
+                        swal("Existing Grants", "Please enter Title.", "info");
                         // if (callback) callback(false);
                         return;
                     }
 
                     if ($scope.input[i].Existing_Grants__r[j].Funding_Agency__c == undefined || $scope.input[i].Existing_Grants__r[j].Funding_Agency__c == "") {
-                        swal("Existing Grants", "Please Enter Funding Agency.", "info");
+                        swal("Existing Grants", "Please enter Funding Agency.", "info");
                         // if (callback) callback(false);
                         return;
                     }
                     if ($scope.input[i].Existing_Grants__r[j].Budget__c == undefined || $scope.input[i].Existing_Grants__r[j].Budget__c == "" || $scope.input[i].Existing_Grants__r[j].Budget__c <= 0) {
-                        swal("Existing Grants", "Please Enter Budget.", "info");
+                        swal("Existing Grants", "Please enter Budget.", "info");
                         // if (callback) callback(false);
                         return;
                     }
@@ -3560,7 +3597,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     var startDate = $scope.input[i].Existing_Grants__r[j].Starting_Date__c;
 
                     if (!startDate || isNaN(new Date(startDate).getTime())) {
-                        swal("Existing Grants", "Please Enter Starting Date.", "info");
+                        swal("Existing Grants", "Please enter Starting Date.", "info");
                         return;
                     }
                     // if ($scope.input[i].Existing_Grants__r[j].Starting_Date__c == undefined || $scope.input[i].Existing_Grants__r[j].Starting_Date__c == "") {
@@ -3569,7 +3606,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     //     return;
                     // }
                     if ($scope.input[i].Existing_Grants__r[j].Duration__c == undefined || $scope.input[i].Existing_Grants__r[j].Duration__c == "" || $scope.input[i].Existing_Grants__r[j].Duration__c <= 0) {
-                        swal("Existing Grants", "Please Enter Duration(Number in months).", "info");
+                        swal("Existing Grants", "Please enter Duration(Number in months).", "info");
                         // if (callback) callback(false);
                         return;
                     }
@@ -4178,19 +4215,19 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         for (var i = 0; i < $scope.input.length; i++) {
             for (var j = 0; j < $scope.input[i].Existing_Grants__r.length; j++) {
                 if ($scope.input[i].Existing_Grants__r[j].Funding_Agency__c == undefined || $scope.input[i].Existing_Grants__r[j].Funding_Agency__c == "") {
-                    swal("Existing Grants", "Please Enter Funding Agency.", "info");
+                    swal("Existing Grants", "Please enter Funding Agency.", "info");
                     return;
                 }
                 if ($scope.input[i].Existing_Grants__r[j].Budget__c == undefined || $scope.input[i].Existing_Grants__r[j].Budget__c == "") {
-                    swal("Existing Grants", "Please Enter Budget.", "info");
+                    swal("Existing Grants", "Please enter Budget.", "info");
                     return;
                 }
                 if ($scope.input[i].Existing_Grants__r[j].Starting_Date__c == undefined || $scope.input[i].Existing_Grants__r[j].Starting_Date__c == "") {
-                    swal("Existing Grants", "Please Enter Starting Date.", "info");
+                    swal("Existing Grants", "Please enter Starting Date.", "info");
                     return;
                 }
                 if ($scope.input[i].Existing_Grants__r[j].Duration__c == undefined || $scope.input[i].Existing_Grants__r[j].Duration__c == "") {
-                    swal("Existing Grants", "Please Enter Duration(Number in months).", "info");
+                    swal("Existing Grants", "Please enter Duration(Number in months).", "info");
                     return;
                 }
             }
@@ -4527,6 +4564,29 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         if (wp.wpEndMonth && deliverable.endMonth) {
             if (parseInt(deliverable.endMonth) > parseInt(wp.wpEndMonth)) {
                 deliverable.endMonthError = true;
+            }
+        }
+    };
+
+    $scope.validateWorkPackageMonths = function (wp) {
+        wp.startMonthError = false;
+        wp.endMonthMaxDurationError = false;
+        wp.endMonthStartError = false;
+        if (wp.wpStartMonth && wp.wpEndMonth) {
+            if (parseInt(wp.wpStartMonth) < parseInt(wp.wpEndMonth)) {
+                wp.startMonthError = true;
+            }
+        }
+
+        if (wp.wpEndMonth) {
+            if (parseInt(wp.wpEndMonth) < parseInt(wp.wpStartMonth)) {
+                wp.endMonthStartError = true;
+            }
+        }
+
+        if (wp.wpEndMonth) {
+            if (parseInt(wp.wpEndMonth) > parseInt($scope.maxDurations)) {
+                wp.endMonthMaxDurationError = true;
             }
         }
     };

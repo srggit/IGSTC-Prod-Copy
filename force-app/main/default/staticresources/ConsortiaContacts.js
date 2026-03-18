@@ -34,6 +34,11 @@ angular.module('cp_app').controller('ConsortiaContacts_Ctrl', function ($scope, 
         )
     }
 
+    $scope.config = {
+            readOnly: false,
+            height: 200
+        };
+
     if (localStorage.getItem('apaId')) {
         var apaId = localStorage.getItem('apaId');
         $scope.apaId = apaId;

@@ -43,6 +43,7 @@
                         </div>
 
                         <!-- Work Packages -->
+
                         <template for:each={workPackages} for:item="wp">
 
                             <div key={wp.id} class="wp-block">
@@ -55,10 +56,10 @@
                                         <div class="wp-title">
                                             {wp.title}
                                             <!-- Contact Initials Badges -->
-                                            <template for:each={wp.contactInitials} for:item="initials">
-                                                <span key={initials} class="contact-badges-inline contact-badge"
-                                                    title={initials}>
-                                                    {initials}
+                                            <template for:each={wp.contactInitials} for:item="contact">
+                                                <span key={contact.initials} class="contact-badges-inline contact-badge"
+                                                    title={contact.fullName}>
+                                                    {contact.initials}
                                                 </span>
                                             </template>
                                         </div>

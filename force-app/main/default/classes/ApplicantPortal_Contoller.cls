@@ -1351,7 +1351,7 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
                        (SELECT Id, Account__c FROM Account_Mapping__r)
                 FROM Work_Package__c 
                 WHERE Application__c = :proposalId
-                AND Proposal_Stage__c = :proposalStage
+                //AND Proposal_Stage__c = :proposalStage
                 ORDER BY WP_Sequence_2__c
             ];
             return workPackageList;

@@ -679,7 +679,8 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
         var email = ($scope.searchEmail || '').trim();
 
         if (email === '') {
-            swal("Info", "Please enter an email to search for an existing contact before adding a partner.", "info");
+           // swal("Info", "Please enter an email to search for an existing contact before adding a partner.", "info");
+            showInfo('Please enter an email to search for an existing contact before adding a partner.');
             return;
         }
 
@@ -1492,19 +1493,20 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             }
         }
         if ($scope.allPartners.length < 4 && isCoordinator == 'true') {
-            swal("Info", "Minimum four partners & Maximum six Partners can be added.", "info");
+           // swal("Info", "Minimum four partners & Maximum six Partners can be added.", "info");
+            showInfo('Minimum four partners & Maximum six Partners can be added.')
             return;
         }
         if ($scope.allPartners.length > 6) {
-            swal("Info", "Maximum six partners are allowed.", "info");
+            showInfo('Maximum six partners are allowed.')
             return;
         }
         if ($scope.allPartners.length == 4 && (IndianCount < 2 || IndianCount > 2) && isCoordinator == 'true') {
-            swal("Info", "Indian partner should be equal german partner", "info");
+            showInfo('Indian partner should be equal german partner')
             return;
         }
         if ($scope.allPartners.length == 6 && (IndianCount < 3 || IndianCount > 3) && isCoordinator == 'true') {
-            swal("Info", "Indian and german partner must be in 2+2 or 3+3 format", "info");
+            showInfo('Indian and german partner must be in 2+2 or 3+3 format')
             return;
         }
 
@@ -1912,6 +1914,20 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             targetObj._charLimitMap[fieldName] = false;
         }
     };
+
+    function showInfo(message) {
+        swal({
+            title: "Info",
+            content: {
+                element: "div",
+                attributes: {
+                    innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                }
+            },
+            icon: "info",
+            button: "OK"
+        });
+    }
 
 
     /*

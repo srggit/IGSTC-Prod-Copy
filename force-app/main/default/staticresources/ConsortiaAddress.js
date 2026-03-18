@@ -407,6 +407,11 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
             $("#dept").addClass('border-theme');
             return;
         }
+         if(contact0.Designation__c == undefined || contact0.Designation__c == ""){
+            swal("Address Details", "Please enter Designation.");
+            $("#designation").addClass('border-theme');
+            return;
+        }
 
         if ($scope.addressDetails.BillingStreet == undefined || $scope.addressDetails.BillingStreet == "") {
             swal("Address Details", "Please enter Street.");

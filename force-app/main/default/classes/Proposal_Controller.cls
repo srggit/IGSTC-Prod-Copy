@@ -3200,7 +3200,8 @@ return workPackageList;
             (SELECT Id,Name From Accounts__r) 
             FROM Work_Package__c 
             WHERE Application__c =: proposalId
-            AND Proposal_Stage__c =: proposalStage];
+            //AND Proposal_Stage__c =: proposalStage
+            ];
         
         system.debug('workPackageList ::'+workPackageList);
         return workPackageList;
