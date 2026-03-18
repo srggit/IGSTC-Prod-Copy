@@ -1,6 +1,36 @@
 angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $rootScope) {
     debugger;
 
+    // Page spinner control
+    $scope.showPageSpinner = true;
+
+    // Track loading completion
+    $scope.loadingOperations = {
+        proposalStage: false,
+        proposalAccounts: false,
+        wpDetails: false,
+        wpDeliverables: false
+    };
+
+    // Function to check if all loading is complete
+    $scope.checkLoadingComplete = function () {
+        const allLoaded = Object.values($scope.loadingOperations).every(status => status === true);
+        if (allLoaded) {
+            $scope.showPageSpinner = false;
+            console.log('All data loaded, hiding spinner');
+            $scope.$applyAsync();
+        }
+    };
+
+    // Function to mark a loading operation as complete
+    $scope.markLoadingComplete = function (operation) {
+        if ($scope.loadingOperations.hasOwnProperty(operation)) {
+            $scope.loadingOperations[operation] = true;
+            console.log('Loading operation completed:', operation);
+            $scope.checkLoadingComplete();
+        }
+    };
+
     // Fetching the proposalId from Local Storage
     if (localStorage.getItem('proposalId')) {
         $rootScope.proposalId = localStorage.getItem('proposalId');
@@ -201,6 +231,9 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                                 && $rootScope.isCoordinator === true
                             );
                     });
+
+                    // Mark proposal stage loading as complete
+                    $scope.markLoadingComplete('proposalStage');
                 }
 
                 console.log('$rootScope.currentProposalStage : ', $rootScope.currentProposalStage);
@@ -244,9 +277,14 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     $scope.updateGanttChart();
                 }, 1000);
 
+                // Mark proposal accounts loading as complete
+                $scope.markLoadingComplete('proposalAccounts');
+
                 $scope.$applyAsync();
             } else {
                 console.error('Error fetching partner accounts:', event.message);
+                // Still mark as complete even on error to avoid spinner hanging
+                $scope.markLoadingComplete('proposalAccounts');
             }
         });
     }
@@ -616,7 +654,15 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         "AccountList": JSON.parse(JSON.stringify($scope.defaultAccountList))
                     });
                 }
+
+                // Mark WP details loading as complete
+                $scope.markLoadingComplete('wpDetails');
+
                 $scope.$applyAsync();
+            } else {
+                console.error('Error fetching WP details:', event.message);
+                // Still mark as complete even on error to avoid spinner hanging
+                $scope.markLoadingComplete('wpDetails');
             }
         }, { escape: true });
     }
@@ -1624,7 +1670,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             //         confirm: { text: "Upload", value: true }
             //     }
             // }).then((willUpload) => {
-                swal({
+            swal({
                 title: "Confirm Upload",
                 content: {
                     element: "div",
@@ -1751,24 +1797,24 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             //         confirm: { text: "Upload", value: true }
             //     }
             // }).then((willUpload) => {
-                swal({
-                    title: "Confirm Upload",
-                    content: {
-                        element: "div",
-                        attributes: {
-                            innerHTML: `
+            swal({
+                title: "Confirm Upload",
+                content: {
+                    element: "div",
+                    attributes: {
+                        innerHTML: `
                                 <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
                                     Are you sure you want to upload the Undertaking for Sensitivity Security Regulations?
                                 </p>
                             `
-                        }
-                    },
-                    icon: "warning",
-                    buttons: {
-                        cancel: "Cancel",
-                        confirm: { text: "Upload", value: true }
                     }
-                }).then((willUpload) => {
+                },
+                icon: "warning",
+                buttons: {
+                    cancel: "Cancel",
+                    confirm: { text: "Upload", value: true }
+                }
+            }).then((willUpload) => {
                 if (willUpload) {
                     var userDocId = $scope.sensitivitySecurityUndertakingDoc ? $scope.sensitivitySecurityUndertakingDoc.userDocument.Id : '';
 

@@ -643,16 +643,23 @@ angular.module('cp_app').controller('financialCtrl', function ($scope, $rootScop
                 //     }
                 // });
 
+                $scope.successmessage =
+                    "<div style='text-align: center;'>" +
+                    "<div style='margin-bottom: 20px;'>Your Financial details have been saved successfully.</div>" +
+                    "<div style='font-weight: bold; margin-bottom: 10px;'>Next Step:</div>" +
+                    "<div style='margin-bottom: 5px;'>Please add Project details information.</div>" +
+                    "</div>";
+
                 swal({
                     title: "Success",
-                    text:
-                        "Your Financial details have been saved successfully.\n\n" +
-                        "Next Step:\n" +
-                        "Please upload the Project Proposal information.",
+                    content: {
+                        element: "div",
+                        attributes: {
+                            innerHTML: $scope.successmessage
+                        }
+                    },
                     icon: "success",
-                    button: "OK",
-                    // buttons: true,
-                    dangerMode: false
+                    button: "OK"
                 }).then((willDelete) => {
                     if (willDelete) {
                         $scope.redirectPageURL('ProjectDetail');

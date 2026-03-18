@@ -679,7 +679,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
         var email = ($scope.searchEmail || '').trim();
 
         if (email === '') {
-           // swal("Info", "Please enter an email to search for an existing contact before adding a partner.", "info");
+            // swal("Info", "Please enter an email to search for an existing contact before adding a partner.", "info");
             showInfo('Please enter an email to search for an existing contact before adding a partner.');
             return;
         }
@@ -762,23 +762,23 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                         // $scope.searchEmail = '';
                         // $scope.$apply();
                         swal({
-                        title: "Contact Not Found",
-                        content: {
-                            element: "div",
-                            attributes: {
-                                innerHTML: `
+                            title: "Contact Not Found",
+                            content: {
+                                element: "div",
+                                attributes: {
+                                    innerHTML: `
                                     <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
                                         No existing contact found with this email. Only existing contacts can be added as partners.
                                     </p>
                                 `
-                            }
-                        },
-                        icon: "info",
-                        button: "OK"
-                    });
+                                }
+                            },
+                            icon: "info",
+                            button: "OK"
+                        });
 
-                    $scope.searchEmail = '';
-                    $scope.$apply();
+                        $scope.searchEmail = '';
+                        $scope.$apply();
                     }
                 } else {
                     // In case of error
@@ -1493,7 +1493,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             }
         }
         if ($scope.allPartners.length < 4 && isCoordinator == 'true') {
-           // swal("Info", "Minimum four partners & Maximum six Partners can be added.", "info");
+            // swal("Info", "Minimum four partners & Maximum six Partners can be added.", "info");
             showInfo('Minimum four partners & Maximum six Partners can be added.')
             return;
         }
@@ -1601,7 +1601,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             $scope.successmessage =
                 "Coordinators and Partner details have been saved successfully.\n\n" +
                 "Next Step:\n" +
-                "* Please complete the Coordinator’s Personal and Address details on the next page.";
+                "Please complete the Coordinator’s Personal and Address details on the next page.";
 
             if (isCoordinator == 'false') {
                 $scope.successmessage = "Partner details have been saved successfully.";
@@ -1632,8 +1632,8 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
 
                                 <p style="margin-bottom:6px;"><b>Next Step:</b></p>
 
-                                <p style="margin-left:12px;margin-bottom:4px;">
-                                    * Please complete the Coordinator’s Personal and Address details on the next page.
+                                <p style="margin-left:10px; margin-right: 10px; margin-bottom:4px;">
+                                    Please complete the Coordinator’s Personal and Address details on the next page.
                                 </p>
                             `
                         }

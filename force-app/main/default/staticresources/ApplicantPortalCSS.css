@@ -3653,3 +3653,42 @@ input[type=number] {
 .add-wp-btn{
     border-radius:6px;
 }
+
+.bullet-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.bullet-list li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.bullet-icon {
+    font-size: 8px !important;  /* Small bullet size */
+    margin-right: 10px;
+    margin-top: 6px;
+    color: #28a745;  /* Green color */
+    flex-shrink: 0;
+}
+
+.bullet-list.nested {
+    margin-left: 20px;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.bullet-icon-small {
+    font-size: 6px !important;  /* Even smaller for nested */
+    margin-right: 8px;
+    margin-top: 6px;
+    color: #6c757d;  /* Gray color */
+    flex-shrink: 0;
+}
+
+/* To ensure the bullet aligns properly with text */
+.bullet-list li i {
+    display: inline-block;
+    vertical-align: middle;
+}

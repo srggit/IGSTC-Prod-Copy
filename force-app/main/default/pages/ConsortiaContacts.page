@@ -403,7 +403,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label class="font-if">
-                                        <b>Education</b>
+                                        <b>Education (Reverse chronological order)</b>
                                     </label>
                                 </div>
                             </div>
@@ -415,18 +415,28 @@
                                             <tr>
                                                 <th class="pb-3 color-theme">Degree
                                                     <span class="required-asterisk" style="color:red;">*</span>
+                                                    <br/>
+                                                    <span style="font-size: 8px; font-weight: normal; color: #666; margin-left: 4px;"></span>
                                                 </th>
-                                                <th class="pb-3 color-theme">Institution (Max. char 255)
+                                                <th class="pb-3 color-theme">Institution
                                                     <span class="required-asterisk" style="color:red;">*</span>
+                                                    <br/>
+                                                    <span style="font-size: 8px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 255)</span>
                                                 </th>
-                                                <th class="pb-3 color-theme">Specialization (Max. char 255)
+                                                <th class="pb-3 color-theme">Specialization
                                                     <span class="required-asterisk" style="color:red;">*</span>
+                                                    <br/>
+                                                    <span style="font-size: 8px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 255)</span>
                                                 </th>
-                                                <th class="pb-3 color-theme">Start Year (Max. char 4)
+                                                <th class="pb-3 color-theme">Start Year
                                                     <span class="required-asterisk" style="color:red;">*</span>
+                                                    <br/>
+                                                    <span style="font-size: 8px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 4)</span>
                                                 </th>
-                                                <th class="pb-3 color-theme">End Year (Max. char 4)
+                                                <th class="pb-3 color-theme">End Year
                                                     <span class="required-asterisk" style="color:red;">*</span>
+                                                    <br/>
+                                                    <span style="font-size: 8px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 4)</span>
                                                 </th>
                                                 <th ng-hide="proposalStage" class="text-center">
                                                     <i class="fas fa-plus-circle icon" ng-click="addEducationRow()"></i>
@@ -517,7 +527,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label class="font-if">
-                                        <b>Employment</b>
+                                        <b>Employment (Reverse Chronological order) </b>
                                     </label>
                                 </div>
                             </div>
@@ -616,7 +626,7 @@
 
                             </div>
                         </div>
-                        
+
                         <div class="vertical-scroll">
                             <div class="progress-icon">
                                 <i class="fas fa-file-invoice"></i>
@@ -631,10 +641,10 @@
                                 </div>
                             </div>
                             <div class="mb-5">
-                                <ng-ckeditor id="publication"  ng-model="allDetailList.Publications_Patents__c" name="ckEditor" ng-config="config" ng-disabled="proposalStage"></ng-ckeditor>
+                                <ng-ckeditor id="publication" ng-model="allDetailList.Publications_Patents__c" name="ckEditor" ng-config="config" ng-disabled="proposalStage"></ng-ckeditor>
                             </div>
                         </div>
-                   
+
                         <div class="row mb-3" ng-if="!proposalStage">
                             <div class="col-md-12">
                                 <button class="blue-btn float-end" id="btnSubmit" ng-click="saveAllDetails()" type="button">

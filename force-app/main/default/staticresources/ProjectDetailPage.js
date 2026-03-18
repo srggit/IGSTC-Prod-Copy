@@ -496,15 +496,23 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
             }
             */
 
-            $scope.successmessage = "Basic Details have been saved successfully.\n\n" +
-                "Next Step:\n" +
-                "* Please add Coordinator details\n" +
-                "* Submit once all Project Partners are added";
+            $scope.successmessage =
+                "<div style='margin-bottom:15px;'>Basic Details have been saved successfully.</div>" +
+                "<div style='text-align:center; font-weight:bold; font-size:16px; margin:15px 0 10px 0;'>Next Step:</div>" +
+                "<div style='text-align:center; padding-left:20px;'>" +
+                "<div style='margin-bottom:8px;'><span style='display:inline-block; margin-right:8px;'></span> Please add Coordinator details.</div>" +
+                "<div><span style='display:inline-block; margin-right:8px;'></span> Save & Next once all Project Partners are added.</div>" +
+                "</div>";
 
             if (event.status && result != null) {
                 swal({
                     title: "Success",
-                    text: $scope.successmessage,
+                    content: {
+                        element: "div",
+                        attributes: {
+                            innerHTML: $scope.successmessage
+                        }
+                    },
                     icon: "success",
                     button: "OK"
                     // buttons: {

@@ -9176,7 +9176,7 @@ return null;
                                   FROM Applicant_Proposal_Associations__r WHERE Id = :apaId), // New query added.to get APA Fields.
                                  (SELECT Name,Degree__c,Start_Year__c,End_Year__c,CGPA__c,End_Date__c,Start_Date__c,Institution_Name__c,Area_of_specialization__c,Percentage__c,Percentage_cgpa__c 
                                   FROM Education_Details__r where Applicant_Proposal_Association__c =:apaId ORDER BY End_Year__c DESC),
-                                 (SELECT Id,Organization_Name__c,Position__c,Start_Year__c,End_Year__c FROM Employment_Details__r  where Applicant_Proposal_Association__c =:apaId)
+                                 (SELECT Id,Organization_Name__c,Position__c,Start_Year__c,End_Year__c FROM Employment_Details__r  where Applicant_Proposal_Association__c =:apaId ORDER BY End_Year__c DESC)
                                  FROM Contact WHERE Login_Hash_Code__c=: hashcode ];
         return ContactRecord;
     }
