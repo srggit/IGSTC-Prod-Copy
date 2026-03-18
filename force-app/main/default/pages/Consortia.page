@@ -757,7 +757,7 @@
                                             -->
                                             <div class="col-md-3">
                                                 <label class="font-if">
-                                                    Project Partner (First Name) (Max. char 40 cord)
+                                                    Project Partner (First Name) (Max. char 40)
                                                     <span class="ms-2 text-danger">*</span>
                                                 </label>
 
@@ -937,7 +937,7 @@
 
                                             <div class="col-md-3">
                                                 <label class="font-if">
-                                                    HomePage URL (Max. 255 chars)<span class="ms-2 text-danger">*</span>
+                                                    HomePage URL (Max. char 255)<span class="ms-2 text-danger">*</span>
                                                 </label>
 
                                                 <input type="text" id="home{{$index}}" ng-model="account.Website"

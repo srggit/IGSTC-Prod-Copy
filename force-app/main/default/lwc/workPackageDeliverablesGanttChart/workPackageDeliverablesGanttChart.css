@@ -184,3 +184,46 @@
     opacity: 0.8;
 }
 
+.contact-badge.slds-has-tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.contact-badge .slds-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    white-space: nowrap;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.contact-badge:hover .slds-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.contact-badge .slds-tooltip__content {
+    background: #16325c;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Add arrow for tooltip */
+.contact-badge .slds-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #16325c transparent transparent transparent;
+}
