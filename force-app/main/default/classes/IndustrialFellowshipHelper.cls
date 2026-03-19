@@ -1173,7 +1173,8 @@ return 'SUCCESS';
                 proposalRec.Layman_title_of_project__c = hostDetails.Layman_title_of_project__c;
                 proposalRec.Layman_abstract_of_proposed_work__c = hostDetails.Layman_abstract_of_proposed_work__c;
                 proposalRec.Non_Technical_Title_Of_Project__c = hostDetails.Non_Technical_Title_Of_Project__c;
-                proposalRec.Non_Technical_Abstract_Of_Proposed_Work__c = hostDetails.Non_Technical_Abstract_Of_Proposed_Work__c;
+                //proposalRec.Non_Technical_Abstract_Of_Proposed_Work__c = hostDetails.Non_Technical_Abstract_Of_Proposed_Work__c;
+                proposalRec.Innovative_Aspects__c = hostDetails.Innovative_Aspects__c;
                 proposalRec.Acronym__c = hostDetails.Acronym__c;
                 proposalRec.Project_Description__c = hostDetails.Project_Description__c;
                 proposalRec.Work_elements_to_be_completed_by_Indian__c = hostDetails.Work_elements_to_be_completed_by_Indian__c;
@@ -1245,7 +1246,8 @@ return 'SUCCESS';
                     Layman_title_of_project__c = hostDetails.Layman_title_of_project__c,
                     Layman_abstract_of_proposed_work__c = hostDetails.Layman_abstract_of_proposed_work__c,
                     Non_Technical_Title_Of_Project__c = hostDetails.Non_Technical_Title_Of_Project__c,
-                    Non_Technical_Abstract_Of_Proposed_Work__c = hostDetails.Non_Technical_Abstract_Of_Proposed_Work__c,
+                    //Non_Technical_Abstract_Of_Proposed_Work__c = hostDetails.Non_Technical_Abstract_Of_Proposed_Work__c,
+                    Innovative_Aspects__c = hostDetails.Innovative_Aspects__c,
                     Acronym__c = hostDetails.Acronym__c,
                     Project_Description__c = hostDetails.Project_Description__c,
                     Work_elements_to_be_completed_by_Indian__c = hostDetails.Work_elements_to_be_completed_by_Indian__c,

@@ -971,7 +971,7 @@
 
                                         <thead>
                                             <tr>
-                                                <th style="width:8%">WP Id</th>
+                                                <th style="width:8%">WP ID</th>
                                                 <th style="width:20%">WP Title</th>
                                                 <th style="width:15%">TRL</th>
                                                 <th style="width:20%">Responsible Partners</th>
@@ -1594,7 +1594,7 @@
                         <div class="col-md-12 mt-5 ">
                             <label class="pb-3 color-theme ">
                                 <b>Detailed project description (max. chars 20000)
-                                    <span class="required-asterisk text-danger ">*</span>
+                                    <!-- <span class="required-asterisk text-danger ">*</span> -->
                                 </b>
                                 <i>(Work packages indicating the involvement of the partners in each work package/
                                     indicate
@@ -1612,14 +1612,13 @@
                                     </b>
                                 </small>
                             </div>
-                            <div id="panelsStayOpen-collapseOne " class="accordion-collapse collapse show
-                        " aria-labelledby="panelsStayOpen-headingOne ">
-                                <ng-ckeditor ng-model="proposalFieldsDetails.Project_Description_Stage_2__c
-                        " ng-change="readCharacter(proposalFieldsDetails.Project_Description_Stage_2__c,2, 20000) "
-                                    name="ckSummary2 " id="ckSummary " ng-config="config"
-                                    maxlength="20000 "></ng-ckeditor>
+                            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show
+                        " aria-labelledby="panelsStayOpen-headingOne">
+                                <ng-ckeditor ng-model="proposalFieldsDetails.Project_Description_Stage_2__c" ng-change="readCharacter(proposalFieldsDetails.Project_Description_Stage_2__c,2, 20000)"
+                                    name="ckSummary2" id="ckSummary" ng-config="config"
+                                    maxlength="20000"></ng-ckeditor>
                                 <span>Total characters : {{objRtf[2].charCount}}</span>
-                                <span class="text-danger " ng-if="objRtf[2].errorStatus ">maximum character limit is
+                                <span class="text-danger" ng-if="objRtf[2].errorStatus">maximum character limit is
                                     20000</span>
                             </div>
                         </div>
@@ -2176,7 +2175,7 @@
                         <div class="col-md-12 mt-5 ">
                             <label class="pb-3 color-theme ">
                                 <b>Market assessment of proposed technology/product (max. chars 12000)
-                                    <span class="required-asterisk text-danger ">*</span>
+                                    <!-- <span class="required-asterisk text-danger ">*</span> -->
                                 </b>
                                 <i>
                                     (it may include brief survey on similar existing technologies/product,
@@ -2210,7 +2209,7 @@
                         <div class="col-md-12 mt-5 ">
                             <label class="pb-3 color-theme ">
                                 <b>Future commercialization plan and expected timeline (max. chars 12000)
-                                    <span class="required-asterisk text-danger ">*</span>
+                                    <!-- <span class="required-asterisk text-danger ">*</span> -->
                                 </b>
                             </label>
                             <div>
@@ -2893,7 +2892,7 @@
                     <div class="row mt-5" ng-show="stage==='2nd Stage' && mailingCountry==='India'">
                         <div class="col-md-6">
                             <div class="input-group ms-4">
-                                <label class="font-if">Upload Quotation for Equipment / Accessories - Stage 2
+                                <label class="font-if">Upload Quotations for Equipment / Accessories - Stage 2
                                     <span class="ms-2 text-danger">*</span>
                                 </label>
                                 <input type="file" accept=".pdf" class="form-control" ng-disabled="isUploadingQuotation

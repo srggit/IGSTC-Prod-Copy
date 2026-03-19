@@ -1632,7 +1632,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
 
                                 <p style="margin-bottom:6px;"><b>Next Step:</b></p>
 
-                                <p style="margin-left:10px; margin-right: 10px; margin-bottom:4px;">
+                                <p style="margin-left:12px;margin-bottom:4px;">
                                     Please complete the Coordinator’s Personal and Address details on the next page.
                                 </p>
                             `

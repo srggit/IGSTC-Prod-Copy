@@ -634,15 +634,25 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
                     ApplicantPortal_Contoller.submitPartner2plus2($scope.decDetails, year, month, day, $rootScope.proposalId, function (result, event) {
                         if (event.status) {
                             debugger;
-                            Swal.fire(
-                                'Success',
-                                'Your Application has been submitted successfully.',
-                                'success'
-                            );
-                            $scope.proposalStage = true;
-                            $scope.redirectPageURL('Home');
-                            $scope.decDetails = result;
-                            $scope.$apply();
+                            // swal(
+                            //     'Success',
+                            //     'Your Application has been submitted successfully.',
+                            //     'success'
+                            // );
+                            // showSuccess('Your Application has been submitted successfully.');
+                            // $scope.proposalStage = true;
+                            // $scope.redirectPageURL('Home');
+                            // $scope.decDetails = result;
+                            // $scope.$apply();
+
+                            showSuccess('Your Application has been submitted successfully.')
+                                .then(function () {
+                                    // This code executes after user clicks OK
+                                    $scope.proposalStage = true;
+                                    $scope.redirectPageURL('Home');
+                                    $scope.decDetails = result;
+                                    $scope.$apply();
+                                });
                         }
                     },
                         { escape: true }
@@ -718,6 +728,20 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
                 }
             },
             icon: "info",
+            button: "OK"
+        });
+    }
+
+    function showSuccess(message) {
+        return swal({  // Add return here
+            title: "Success",
+            content: {
+                element: "div",
+                attributes: {
+                    innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                }
+            },
+            icon: "success",
             button: "OK"
         });
     }

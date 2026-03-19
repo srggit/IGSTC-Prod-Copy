@@ -25,10 +25,10 @@ public class IndustrialFellowshipModel {
 
 
     //******************Changed By Karthik KE ********************************/
-   public Contact getContactDetailsFellowDet(String loginHashCode){
+   public Contact getContactDetailsFellowDet(String loginHashCode,String ProposalId){
         return [SELECT Id,Name,FirstName,LastName,Uploaded__c,Industrial_Fellowship_Type__c,(SELECT Id, Name ,Proposals__r.Title_Of__c,Proposals__r.Duration_In_Months_Max_36__c,Proposals__r.Research_Approach_Objectives__c,Proposals__r.Host_industry__c,
                 Proposals__r.Brief_Statement_of_Purpose__c,Proposals__r.Expected_Deliverables__c,Proposals__r.Proposed_area__c,Proposals__r.Parent_organisation__c,Proposals__r.Campaign__r.EndDate,
-                Proposals__r.Fellowship_Duration__c,Proposals__r.Work_plan__c  FROM Applicant_Proposal_Associations__r Where Proposals__r.RecordType_Name__c='Industrial Fellowship'),(SELECT Id,FirstName,LastName,Addess_same_as__c,MailingCity,MailingState,MailingCountry,MailingPostalCode,MailingStreet,OtherStreet,OtherCity,OtherState,OtherCountry,OtherPostalCode,Position_of_the_Mentor__c,Brief_portfolio__c,Email from Contacts__r),
+                Proposals__r.Fellowship_Duration__c,Proposals__r.Work_plan__c  FROM Applicant_Proposal_Associations__r Where Proposals__c=: ProposalId),(SELECT Id,FirstName,LastName,Addess_same_as__c,MailingCity,MailingState,MailingCountry,MailingPostalCode,MailingStreet,OtherStreet,OtherCity,OtherState,OtherCountry,OtherPostalCode,Position_of_the_Mentor__c,Brief_portfolio__c,Email from Contacts__r),
                 (SELECT Id,FirstName,LastName,Email,Addess_same_as__c,MailingCity,MailingState,MailingCountry,MailingPostalCode,MailingStreet,Position_of_the_Mentor__c,Brief_portfolio__c,OtherStreet,OtherCity,OtherState,OtherCountry,OtherPostalCode from Contacts1__r) FROM Contact WHERE Login_Hash_Code__c=: loginHashCode Limit 1];
     }
    //**********************************************************************************/
@@ -135,8 +135,8 @@ public class IndustrialFellowshipModel {
                 appProposal = [SELECT Id, Host_Project_Title__c, Host_Abstract_Of_Project__c, Host_Funding_Source__c, Actual_Application_Start_Date__c, Actual_Application_End_Date__c, 
                     Title_Of__c, Broad_area_of_research__c, Duration_In_Months_Max_36__c, KeyWords__c, Layman_abstract_of_proposed_work__c, Layman_title_of_project__c,
                     Non_Technical_Title_Of_Project__c, Non_Technical_Abstract_Of_Proposed_Work__c, Acronym__c, Project_Description__c,
-                    Work_elements_to_be_completed_by_Indian__c, Work_elements_to_be_completed_by_German__c,
-                    Linkages_and_convergence_of_work_element__c, References__c
+                    Work_elements_to_be_completed_by_Indian__c, Work_elements_to_be_completed_by_German__c, 
+                    Linkages_and_convergence_of_work_element__c, References__c, Innovative_Aspects__c
                     FROM Application_Proposal__c 
                     WHERE Id =: proposalId 
                     Limit 1];

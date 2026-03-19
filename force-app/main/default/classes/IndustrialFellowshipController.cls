@@ -34,9 +34,9 @@ public withOut sharing class IndustrialFellowshipController {
         return instanceIFH.saveContactEmployement(loginHashCode,con,emp,apaId);
     }
     @RemoteAction
-    public static Contact getContactDetailsFellowDet(String loginHashCode){
+    public static Contact getContactDetailsFellowDet(String loginHashCode,String ProposalId){
         IndustrialFellowshipModel instanceIFM=new IndustrialFellowshipModel();
-        return instanceIFM.getContactDetailsFellowDet(loginHashCode);
+        return instanceIFM.getContactDetailsFellowDet(loginHashCode,ProposalId);
     }
     @RemoteAction
     public static String saveFellowshipDetails(String loginHashCode,Contact[] con,Contact pContact)

@@ -51,6 +51,24 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
           console.log('Loaded proposalId from localStorage:', $rootScope.apaId);
      }
 
+     /**
+     * Fetches proposal stage from Apex on page load
+     */
+     $scope.getProposalStage = function () {
+          debugger;
+          if ($rootScope.apaId && $rootScope.proposalId) {
+               ApplicantPortal_Contoller.getProposalStageUsingProposalId($rootScope.proposalId, $rootScope.apaId, function (result, event) {
+                    debugger;
+                    if (event.status && result) {
+                         $scope.proposalStage = (result.proposalStage != 'Draft' && result.proposalStage != null && result.proposalStage != undefined);
+                         $rootScope.proposalStage = $scope.proposalStage;
+                         $scope.$apply();
+                    }
+               }, { escape: true });
+          }
+     }
+     $scope.getProposalStage();
+
      // $scope.getApplicantStatusFromAPA = function () {
      //      debugger;
 
@@ -123,10 +141,15 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
                     if (result.Non_Technical_Title_Of_Project__c != undefined || result.Non_Technical_Title_Of_Project__c != "") {
                          result.Non_Technical_Title_Of_Project__c = result.Non_Technical_Title_Of_Project__c ? result.Non_Technical_Title_Of_Project__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : result.Non_Technical_Title_Of_Project__c;
                     }
-                    if (result.Non_Technical_Abstract_Of_Proposed_Work__c != undefined || result.Non_Technical_Abstract_Of_Proposed_Work__c != "") {
-                         result.Non_Technical_Abstract_Of_Proposed_Work__c = result.Non_Technical_Abstract_Of_Proposed_Work__c ? result.Non_Technical_Abstract_Of_Proposed_Work__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : result.Non_Technical_Abstract_Of_Proposed_Work__c;
+                    /* if (result.Non_Technical_Abstract_Of_Proposed_Work__c != undefined || result.Non_Technical_Abstract_Of_Proposed_Work__c != "") {
+                          result.Non_Technical_Abstract_Of_Proposed_Work__c = result.Non_Technical_Abstract_Of_Proposed_Work__c ? result.Non_Technical_Abstract_Of_Proposed_Work__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : result.Non_Technical_Abstract_Of_Proposed_Work__c;
+                          // Initialize character count for Non Technical Abstract RTF field
+                          $scope.readCharacter(result.Non_Technical_Abstract_Of_Proposed_Work__c, 1);
+                     }*/
+                    if (result.Innovative_Aspects__c != undefined || result.Innovative_Aspects__c != "") {
+                         result.Innovative_Aspects__c = result.Innovative_Aspects__c ? result.Innovative_Aspects__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : result.Innovative_Aspects__c;
                          // Initialize character count for Non Technical Abstract RTF field
-                         $scope.readCharacter(result.Non_Technical_Abstract_Of_Proposed_Work__c, 1);
+                         $scope.readCharacter(result.Innovative_Aspects__c, 1);
                     }
                     if (result.Acronym__c != undefined || result.Acronym__c != "") {
                          result.Acronym__c = result.Acronym__c ? result.Acronym__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : result.Acronym__c;
@@ -291,7 +314,12 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
                return;
           }
 
-          if ($scope.objContact.Non_Technical_Abstract_Of_Proposed_Work__c == undefined || $scope.objContact.Non_Technical_Abstract_Of_Proposed_Work__c == "") {
+          /* if ($scope.objContact.Non_Technical_Abstract_Of_Proposed_Work__c == undefined || $scope.objContact.Non_Technical_Abstract_Of_Proposed_Work__c == "") {
+                swal("Info", "Please Enter Non Technical Abstract of Proposed Work.", "info");
+                $("#nonTechnicalAbstract").addClass('border-theme');
+                return;
+           }*/
+          if ($scope.objContact.Innovative_Aspects__c == undefined || $scope.objContact.Innovative_Aspects__c == "") {
                swal("Info", "Please Enter Non Technical Abstract of Proposed Work.", "info");
                $("#nonTechnicalAbstract").addClass('border-theme');
                return;
@@ -536,7 +564,7 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
                                    // localStorage.setItem('proposalId', result.proposalId);
                                    // localStorage.setItem('apaId', result.apa.Id);
                                    swal({
-                                        title: "SUCCESS",
+                                        title: "Success",
                                         text: 'Paired Project Details have been saved successfully.',
                                         icon: "success",
                                         button: "ok!",
@@ -792,7 +820,12 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
                return;
           }
           console.log(file);
-          maxFileSize = maxSize;
+          // Convert string parameters to numbers for proper comparison
+          maxFileSize = parseInt(maxSize, 10);
+          minFileSize = parseInt(minFileSize, 10);
+          console.log('File size:', file.size, 'bytes (', (file.size / 1024).toFixed(2), 'KB)');
+          console.log('Max file size:', maxFileSize, 'bytes (', (maxFileSize / 1024).toFixed(2), 'KB)');
+          console.log('Min file size:', minFileSize, 'bytes (', (minFileSize / 1024).toFixed(2), 'KB)');
           if (file != undefined) {
                if (file.size <= maxFileSize) {
                     if (file.size < minFileSize) {
@@ -929,19 +962,25 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
                debugger;
                attachmentBody = attachment.substring(positionIndex);
                doneUploading = true;
+               console.log("Final chunk - Uploading " + attachmentBody.length + " chars from position " + positionIndex + " to end (total: " + fileSize + ")");
           } else {
                attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+               console.log("Chunk " + Math.floor(positionIndex / chunkSize) + 1 + " - Uploading " + attachmentBody.length + " chars from position " + positionIndex + " to " + (positionIndex + chunkSize) + " (total: " + fileSize + ")");
           }
           console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
           ApplicantPortal_Contoller.doCUploadAttachmentProjectDet(
                attachmentBody, attachmentName, fileId, userDocId,
                function (result, event) {
                     console.log(result);
+                    console.log("Event status:", event.status, "Done uploading:", doneUploading);
                     if (event.type === 'exception') {
                          console.log("exception");
                          console.log(event);
+                         swal('Error', 'An error occurred during upload. Please try again.', 'error');
+                         $scope.showSpinnereditProf = false;
                     } else if (event.status) {
                          if (doneUploading == true) {
+                              // All chunks uploaded successfully
                               $scope.getProjectDetails();
                               swal(
                                    'Success',
@@ -949,12 +988,19 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
                                    'success'
                               )
                               $scope.getProjectDetails();
+                              $scope.showUplaodUserDoc = false;
+                              $scope.showSpinnereditProf = false;
+                         } else {
+                              // More chunks to upload - continue
+                              console.log("Continuing with next chunk. Position:", positionIndex, "File size:", fileSize);
+                              positionIndex += chunkSize;
+                              $scope.uploadImageAttachment(type, userDocId, result);
                          }
-                         $scope.showUplaodUserDoc = false;
                     } else {
-                         debugger;
-                         positionIndex += chunkSize;
-                         $scope.uploadImageAttachment(type, userDocId, result);
+                         // Request failed
+                         console.log("Upload failed. Event:", event);
+                         swal('Error', 'Upload failed. Please try again.', 'error');
+                         $scope.showSpinnereditProf = false;
                     }
                },
                { buffer: true, escape: true, timeout: 120000 }
@@ -984,7 +1030,8 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
           //userDocId = 'a0xe10000001L7FAAU';
           //type = 'PDF Upload Testing';
 
-          var maxFileSize = fileSizeFun;
+          // Convert string parameter to number for proper comparison
+          var maxFileSize = parseInt(fileSizeFun, 10);
           $scope.showSpinnereditProf = true;
           var file;
 
@@ -1007,6 +1054,8 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
                return;
           }
           console.log(file);
+          console.log('File size:', file.size, 'bytes (', (file.size / 1024).toFixed(2), 'KB)');
+          console.log('Max file size:', maxFileSize, 'bytes (', (maxFileSize / 1024).toFixed(2), 'KB)');
           if (file != undefined) {
                if (file.size <= maxFileSize) {
 
@@ -1121,7 +1170,7 @@ angular.module('cp_app').controller('HostProjectDetailInWiserCtrl', function ($s
                     } else if (event.status) {
                          if (doneUploading == true) {
                               swal(
-                                   'success',
+                                   'Success',
                                    'Uploaded Successfully!',
                                    'success'
                               )

@@ -759,8 +759,8 @@
                                     <b>To use RTF more efficiently, make sure you write your content in word document first
                                         and then copy paste here</b>
                                 </small>
-                                <ng-ckeditor name="ckEditor3" maxlength="700" ng-change="readCharacter(objContact.Non_Technical_Abstract_Of_Proposed_Work__c,1)
-                                    " ng-model="objContact.Non_Technical_Abstract_Of_Proposed_Work__c" ng-config="config "></ng-ckeditor>
+                                <ng-ckeditor name="ckEditor3" maxlength="700" ng-change="readCharacter(objContact.Innovative_Aspects__c,1)
+                                    " ng-model="objContact.Innovative_Aspects__c" ng-config="config "></ng-ckeditor>
                                 <span>Total characters : {{objRtf[1].charCount}}</span>
                                 <span class="text-danger " ng-if="objRtf[1].errorStatus">maximum character limit is 700
                                 </span>

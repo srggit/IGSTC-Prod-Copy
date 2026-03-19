@@ -313,14 +313,14 @@
                     </div>
                 </div> -->
 
-                Test
+                <!--
                 <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-3 bg-color-list">
                     <div class="col-md-12"><b>Document Required at stage 1 and 2</b></div>
                     <div class="col-md-6">
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <label class="font-if mb-3">
-                                    <!-- <b>Stage 1:</b> -->
+                                    <!-- <b>Stage 1:</b>
                                     <ol>
                                         <li>DSIR Certificate</li>
                                         <li>Project Proposal - Stage 1</li>
@@ -338,23 +338,23 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <label class="font-if mb-3">
-                                    <!-- <b>Stage 2:</b> -->
+                                    <!-- <b>Stage 2:</b>
                                     <ol>
                                         <li>Project Proposal - Stage 2</li>
                                         <li>Letter of Consent</li>
                                         <li>Budget Report</li>
                                         <li>Quotation for Equipment / Accessories</li>
-                                        <li><b>(For Industry)</b>
+                                        <li> <b>(For Industry)</b> </li>
                                         <li>Annual Financial Report - Year 1</li>
                                         <li>Annual Financial Report - Year 2</li>
                                         <li>Annual Financial Report - Year 3</li>
-                                        </li>
                                     </ol>
                                 </label>
                             </div>
                         </div>
                     </div>
                 </div>
+                -->
 
                 <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-3 bg-color-list">
                     <div class="col-md-12"><b>Document Required at stage 1 and 2</b></div>
@@ -391,17 +391,13 @@
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Budget Report</li>
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Quotation for Equipment /
                                             Accessories</li>
-                                        <li>
-                                            <b>(For Industry)</b>
-                                            <ul class="bullet-list nested">
-                                                <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
-                                                    Financial Report - Year 1</li>
-                                                <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
-                                                    Financial Report - Year 2</li>
-                                                <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
-                                                    Financial Report - Year 3</li>
-                                            </ul>
-                                        </li>
+                                        <li> <b>(For Industry)</b> </li>
+                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
+                                            Financial Report - Year 1</li>
+                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
+                                            Financial Report - Year 2</li>
+                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
+                                            Financial Report - Year 3</li>
                                     </ul>
                                 </label>
                             </div>

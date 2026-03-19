@@ -4,6 +4,15 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     // Page spinner control
     $scope.showPageSpinner = true;
 
+    // Fallback timeout to hide spinner after 10 seconds (as a safety measure)
+    setTimeout(function () {
+        if ($scope.showPageSpinner) {
+            console.log('Fallback timeout reached, hiding spinner');
+            $scope.showPageSpinner = false;
+            $scope.$applyAsync();
+        }
+    }, 10000);
+
     // Track loading completion
     $scope.loadingOperations = {
         proposalStage: false,
@@ -2971,10 +2980,10 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 showInfo('Please fill Current state of the art in the field (max. chars 6000).');
                 return;
             }
-            if ($scope.proposalFieldsDetails.Project_Description_Stage_2__c == undefined || $scope.proposalFieldsDetails.Project_Description_Stage_2__c == "") {
-                showInfo('Please fill Detailed project description (max. chars 20000).');
-                return;
-            }
+            // if ($scope.proposalFieldsDetails.Project_Description_Stage_2__c == undefined || $scope.proposalFieldsDetails.Project_Description_Stage_2__c == "") {
+            //     showInfo('Please fill Detailed project description (max. chars 20000).');
+            //     return;
+            // }
             if ($scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == undefined || $scope.proposalFieldsDetails.Risk_Assessment_And_Migration_Strategy__c == "") {
                 showInfo('Please fill Risk assessment & mitigation strategy and Criteria for abandoning the project (max. chars 3000).');
                 return;
@@ -2987,14 +2996,14 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 showInfo('Please fill Innovative aspects / IP and future potential utilization plan (max. chars 10000).');
                 return;
             }
-            if ($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == undefined || $scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == "") {
-                showInfo('Please fill Market assessment of proposed technology/product (max. chars 12000).');
-                return;
-            }
-            if ($scope.proposalFieldsDetails.Future_Commercialization_Plan__c == undefined || $scope.proposalFieldsDetails.Future_Commercialization_Plan__c == "") {
-                showInfo('Please fill Future commercialization plan and expected timeline (max. chars 12000).');
-                return;
-            }
+            // if ($scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == undefined || $scope.proposalFieldsDetails.Market_Assessment_Of_Proposed_Tech__c == "") {
+            //     showInfo('Please fill Market assessment of proposed technology/product (max. chars 12000).');
+            //     return;
+            // }
+            // if ($scope.proposalFieldsDetails.Future_Commercialization_Plan__c == undefined || $scope.proposalFieldsDetails.Future_Commercialization_Plan__c == "") {
+            //     showInfo('Please fill Future commercialization plan and expected timeline (max. chars 12000).');
+            //     return;
+            // }
             if ($scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == undefined || $scope.proposalFieldsDetails.Data_Management_And_Sharing_Protocols__c == "") {
                 showInfo('Please fill Data Management and Sharing Protocols (max. chars 5000).');
                 return;
@@ -3164,15 +3173,27 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     let messageText;
 
                     messageText = $rootScope.secondStage
-                        ? `Project Details have been saved successfully.\n\nNext Step:\nPlease fill in the Expense Table Info.`
-                        : `Project Details have been saved successfully.\n\nNext Step:\nPlease upload signature in Declaration Page.`;
+                        ? `<div style="text-align: center;">
+            <div style="margin-bottom: 15px;">Project Details have been saved successfully.</div>
+            <div style="font-weight: bold; margin: 10px 0;">Next Step:</div>
+            <div>Please fill in the Expense Table Info.</div>
+        </div>`
+                        : `<div style="text-align: center;">
+            <div style="margin-bottom: 15px;">Project Details have been saved successfully.</div>
+            <div style="font-weight: bold; margin: 10px 0;">Next Step:</div>
+            <div>Please upload signature in Declaration Page.</div>
+        </div>`;
 
                     swal({
                         title: "Success",
-                        text: messageText,
+                        content: {
+                            element: "div",
+                            attributes: {
+                                innerHTML: messageText
+                            }
+                        },
                         icon: "success",
-                        button: "OK",
-                        dangerMode: false,
+                        button: "OK"
                     }).then((willDelete) => {
                         if (willDelete) {
                             if ($rootScope.secondStage) {
@@ -4702,7 +4723,15 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 if ($scope.wpDeliverablesTableList.length === 0) {
                     $scope.addNewWP();
                 }
+
+                // Mark WP Deliverables loading as complete
+                $scope.markLoadingComplete('wpDeliverables');
+
                 $scope.$applyAsync();
+            } else {
+                console.error('Error fetching WP Deliverables data:', event.message);
+                // Still mark as complete even on error to avoid spinner hanging
+                $scope.markLoadingComplete('wpDeliverables');
             }
         }, { escape: true });
     };

@@ -392,7 +392,7 @@
                             <br/>
                             <br/> I confirm that all partners agree that the proposal and all personal data included in it will
                             be made available to IGSTC, the members of the Scientific Committee which is still to be set
-                            up, BMBF and DST. All individuals belonging to these groups who will receive information included
+                            up, BMBFTR and DST. All individuals belonging to these groups who will receive information included
                             in the proposal will have to confirm that they do not share the personal information with other
                             individuals outside these groups and that the information is stored safely.
                         </p>
@@ -402,8 +402,7 @@
                 <div class="row mx-5 mt-5">
                     <div class="col-md-5">
                         <Label class="font-if">Date:</Label>
-                        <input type="date" disabled="disabled" ng-model="SignDate" class="form-control w-50"
-                        />
+                        <input type="date" disabled="disabled" ng-model="SignDate" class="form-control w-50" />
                     </div>
                     <div class="col-md-7">
                         <div class="row">
