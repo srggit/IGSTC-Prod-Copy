@@ -739,7 +739,8 @@
                                                         class="ms-2 text-danger">*</span></label>
                                                 <select class="form-control" id="ddTitle"
                                                     ng-focus="removeClass('txtFirstName')"
-                                                    ng-model='account.Contacts[0].Title' ng-disabled="proposalStage">
+                                                    ng-model='account.Contacts[0].Title' 
+                                                    ng-disabled="proposalStage || (account.Contacts[0].Title && account.Contacts[0].Title.trim() !== '')">
                                                     <option value="Prof." ng-selected="Mr">Prof.</option>
                                                     <option value="Dr.">Dr.</option>
                                                     <option value="Mr.">Mr.</option>
@@ -763,8 +764,9 @@
 
                                                 <input type="text" id="head{{$index}}"
                                                     ng-model="account.Contacts[0].FirstName" class="form-control"
-                                                    ng-disabled="proposalStage" ng-focus="removeClass('head',$index)"
-                                                    ng-change="checkCharLimit(account, 'FirstName', 40)" />
+                                                    ng-focus="removeClass('head',$index)"
+                                                    ng-change="checkCharLimit(account, 'FirstName', 40)" 
+                                                    ng-disabled="proposalStage || (account.Contacts[0].FirstName && account.Contacts[0].FirstName.trim() !== '')"/>
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap && account.Contacts[0]._charLimitMap.FirstName">
@@ -792,9 +794,10 @@
                                                     class="form-control" ng-disabled="proposalStage" /> -->
 
                                                 <input type="text" ng-model="account.Contacts[0].LastName"
-                                                    class="form-control" ng-disabled="proposalStage"
+                                                    class="form-control"
                                                     ng-change="checkCharLimit(account, 'LastName', 80)"
-                                                    ng-focus="removeClass('head',$index)" />
+                                                    ng-focus="removeClass('head',$index)" 
+                                                    .ng-disabled="proposalStage || (account.Contacts[0].LastName && account.Contacts[0].LastName.trim() !== '')"/>
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap.LastName">
@@ -820,9 +823,10 @@
                                                     class="form-control" ng-disabled="proposalStage" /> -->
 
                                                 <input type="text" ng-model="account.Contacts[0].Designation__c"
-                                                    class="form-control" ng-disabled="proposalStage"
+                                                    class="form-control"
                                                     ng-change="checkCharLimit(account, 'Designation__c', 80)"
-                                                    ng-focus="removeClass('dept',$index)" />
+                                                    ng-focus="removeClass('dept',$index)" 
+                                                    ng-disabled="proposalStage || (account.Contacts[0].Designation__c && account.Contacts[0].Designation__c.trim() !== '')"/>
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap.Designation__c">
@@ -870,7 +874,7 @@
                                                         class="ms-2 text-danger">*</span></label>
                                                 <input type="text" ng-focus="removeClass('inst',$index)"
                                                     id="inst{{$index}}" ng-model="account.Name" class="form-control"
-                                                    ng-disabled="proposalStage" />
+                                                    ng-disabled="proposalStage || (account.Name && account.Name.trim() !== '')"/>
                                             </div>
                                             <!--
                                             <div class="col-md-4">
@@ -889,8 +893,9 @@
 
                                                 <input type="text" ng-focus="removeClass('dept',$index)"
                                                     id="dept{{$index}}" ng-model="account.Contacts[0].Department"
-                                                    class="form-control" ng-disabled="proposalStage"
-                                                    ng-change="checkCharLimit(account, 'Department', 80)" />
+                                                    class="form-control" 
+                                                    ng-change="checkCharLimit(account, 'Department', 80)" 
+                                                    ng-disabled="proposalStage || (account.Contacts[0].Department && account.Contacts[0].Department.trim() !== '')"/>
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap && account.Contacts[0]._charLimitMap.Department">
@@ -942,9 +947,9 @@
 
                                                 <input type="text" id="home{{$index}}" ng-model="account.Website"
                                                     class="form-control" ng-focus="removeClass('home',$index)"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage"
-                                                    ng-change="checkCharLimit(account, 'Website', 255)" />
-
+                                                    ng-change="checkCharLimit(account, 'Website', 255)" 
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || (account.Website && account.Website.trim() !== '')"/>
+                                                <!-- ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage" -->
                                                 <small class="text-danger"
                                                     ng-if="account._charLimitMap && account._charLimitMap.Website">
                                                     Maximum 255 characters allowed
@@ -957,7 +962,8 @@
                                                         class="ms-2 text-danger">*</span></label>
                                                 <input type="email" ng-focus="removeClass('email',$index)"
                                                     id="email{{$index}}" ng-model="account.Contacts[0].Email"
-                                                    class="form-control" ng-disabled="proposalStage" />
+                                                    class="form-control"
+                                                    ng-disabled="proposalStage || (account.Contacts[0].Email && account.Contacts[0].Email.trim() !== '')"/>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="font-if">Phone (with Country Code)<span
@@ -965,7 +971,7 @@
                                                 <input type="tel" pattern="[0-9\+\-\*\#\(\)\/\.\,\s]+"
                                                     ng-focus="removeClass('phone',$index)" id="phone{{$index}}"
                                                     ng-model="account.Contacts[0].Phone" class="form-control"
-                                                    ng-disabled="proposalStage" />
+                                                    ng-disabled="proposalStage || (account.Contacts[0].Phone && account.Contacts[0].Phone.trim() !== '')" />
                                             </div>
 
                                             <!--
@@ -1002,7 +1008,7 @@
                                                         ng-change="setSaveStatus(account)"
                                                         ng-focus="removeClass('country',$index)" id="country{{$index}}"
                                                         ng-model="account.BillingCountry" required="true"
-                                                        ng-disabled="proposalStage">
+                                                        ng-disabled="proposalStage || (account.BillingCountry && account.BillingCountry.trim() !== '')">
                                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                                     </select>
                                                 </div>
@@ -1012,7 +1018,8 @@
                                                     <select class="form-control" aria-label="Default select example"
                                                         ng-change="setSaveStatus(account)"
                                                         ng-focus="removeClass('country',$index)" id="country{{$index}}"
-                                                        ng-model="account.BillingCountry" required="true">
+                                                        ng-model="account.BillingCountry" required="true"
+                                                        ng-disabled="proposalStage || (account.BillingCountry && account.BillingCountry.trim() !== '')">
                                                         <!-- ng-disabled="true" -->
                                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                                     </select>
@@ -1025,7 +1032,7 @@
                                                         class="ms-2 text-danger">*</span></label>
                                                 <input ng-focus="removeClass2('IStreet')" id="IStreet" type="text"
                                                     ng-model="account.BillingStreet" class="form-control"
-                                                    ng-disabled="proposalStage" />
+                                                    ng-disabled="proposalStage || (account.BillingStreet && account.BillingStreet.trim() !== '')" />
                                             </div>
 
                                             <div class="col-md-6">
@@ -1033,7 +1040,7 @@
                                                         class="ms-2 text-danger">*</span></label>
                                                 <input ng-focus="removeClass2('ICity')" id="ICity" type="text"
                                                     ng-model="account.BillingCity" class="form-control"
-                                                    ng-disabled="proposalStage" />
+                                                    ng-disabled="proposalStage || (account.BillingCity && account.BillingCity.trim() !== '')" />
                                             </div>
                                         </div>
                                         <div class="row ms-3 mt-5 mb-5">
@@ -1043,7 +1050,7 @@
                                                 <select aria-label="Default select example"
                                                     ng-focus="removeClass2('IState')" id="IState" type="text"
                                                     ng-model="account.BillingState" class="form-control"
-                                                    ng-disabled="proposalStage">
+                                                    ng-disabled="proposalStage || (account.BillingState && account.BillingState.trim() !== '')" >
                                                     <option ng-repeat="staff in stateList">{{staff}}</option>
                                                 </select>
                                             </div>
@@ -1052,7 +1059,7 @@
                                                         class="ms-2 text-danger">*</span></label>
                                                 <input ng-focus="removeClass2('IPcode')" id="IPcode" type="text"
                                                     ng-model="account.BillingPostalCode" class="form-control"
-                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage"
+                                                    ng-disabled="proposalStage || disableProjectPartnerDetailsOnConsortiaPage || (account.BillingPostalCode && account.BillingPostalCode.trim() !== '')"
                                                     ng-change="checkCharLimit(account, 'BillingPostalCode', 6)"
                                                     maxlength="6" />
                                                 <!-- ng-change="checkPostalCodeValidation(account)" -->

@@ -39,6 +39,8 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
     $scope.isPartner = false;
     CKEDITOR.config.readOnly = $scope.proposalStage;
 
+    $scope.proposalStageCheck = '';
+
 
     // ----------- Apply Button Popup Code - Start ------------ //
     $scope.showDocumentPopup = false;
@@ -89,12 +91,16 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                     let proposal = result.proposal;
 
                     console.log('proposal -----> ', proposal);
+                    $scope.proposalStageCheck = proposal.Stage__c;
+                    console.log('proposalStageCheck -----> ', $scope.proposalStageCheck);
 
                     $rootScope.apaId = result.apa?.Id;
                     // Get coordinator status from APA
                     // $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c == true ? 'true' : 'false';
                     $rootScope.isCoordinator = result.apa != null && result.apa.Is_Coordinator__c === true;
                     console.log('$rootScope.isCoordinator ===> ', $rootScope.isCoordinator);
+
+
 
                     if ($rootScope.isCoordinator) {
                         console.log('----------Coordinator----------', $rootScope.isCoordinator);

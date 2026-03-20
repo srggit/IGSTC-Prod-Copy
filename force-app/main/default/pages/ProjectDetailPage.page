@@ -358,6 +358,7 @@
 
                 <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-3 bg-color-list">
                     <div class="col-md-12"><b>Document Required at stage 1 and 2</b></div>
+
                     <div class="col-md-6">
                         <div class="row mt-3">
                             <div class="col-md-12">
@@ -372,14 +373,15 @@
                                             Sensitivity-Security Regulations</li>
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Undertaking format towards
                                             acceptance of Grant conditions and signing of Agreement</li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Signature</li>
+                                        <!-- <li><i class="fa-solid fa-circle bullet-icon"></i> Signature</li> -->
                                     </ul>
                                 </label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+
+                    <div class="col-md-6" ng-show="proposalStageCheck = '2nd Stage'">
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <label class="font-if mb-3">
@@ -391,13 +393,13 @@
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Budget Report</li>
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Quotation for Equipment /
                                             Accessories</li>
-                                        <li> <b>(For Industry)</b> </li>
+                                        <!-- <li> <b>(For Industry)</b> </li>
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
                                             Financial Report - Year 1</li>
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
                                             Financial Report - Year 2</li>
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
-                                            Financial Report - Year 3</li>
+                                            Financial Report - Year 3</li> -->
                                     </ul>
                                 </label>
                             </div>
