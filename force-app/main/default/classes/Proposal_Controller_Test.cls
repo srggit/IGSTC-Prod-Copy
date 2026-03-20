@@ -15,5 +15,6 @@ public class Proposal_Controller_Test {
 	    Proposal_Controller.firstTestMethod9();
         Proposal_Controller.firstTestMethod10();
 	    Proposal_Controller.firstTestMethod11();
+        Proposal_Controller.firstTestMethod22();
     }
 }

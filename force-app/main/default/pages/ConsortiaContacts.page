@@ -287,7 +287,7 @@
                                     <label class="font-if">First Name (Max. char 40)
                                         <span class="text-danger ms-2">*</span>
                                     </label>
-                                    <input ng-focus="removeClass2('FName')" id="FName" class="form-control" ng-model="allDetailList.FirstName" type="text" ng-disabled="proposalStage"
+                                    <input ng-focus="removeClass2('FName')" id="FName" class="form-control" ng-model="allDetailList.FirstName" type="text" ng-disabled="proposalStage || (allDetailList.FirstName && allDetailList.FirstName.trim() !== '')"
                                     />
                                 </div>
                                 <!-- <div class="col-md-4">
@@ -304,8 +304,9 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
 
-                                    <input type="text" id="LName" class="form-control" ng-model="allDetailList.LastName" ng-disabled="proposalStage" ng-focus="removeClass2('LName')"
-                                        ng-change="checkCharLimit(allDetailList, 'LastName', 80)" />
+                                    <input type="text" id="LName" class="form-control" ng-model="allDetailList.LastName" ng-disabled="proposalStage || (allDetailList.LastName && allDetailList.LastName.trim() !== '')"
+                                        ng-focus="removeClass2('LName')" ng-change="checkCharLimit(allDetailList, 'LastName', 80)"
+                                    />
 
                                     <small class="text-danger" ng-if="allDetailList._charLimitMap && allDetailList._charLimitMap.LastName">
                                         Maximum 80 characters allowed
@@ -316,7 +317,7 @@
                                     <label class="font-if">Email
                                         <span class="text-danger ms-2">*</span>
                                     </label>
-                                    <input ng-focus="removeClass2('email')" id="email" class="form-control" ng-model="allDetailList.Email" type="text" ng-disabled="true"
+                                    <input ng-focus="removeClass2('email')" id="email" class="form-control" ng-model="allDetailList.Email" type="text" ng-disabled="proposalStage || (allDetailList.Email && allDetailList.Email.trim() !== '')"
                                     />
                                 </div>
                             </div>
@@ -336,7 +337,7 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
 
-                                    <input type="text" id="position" class="form-control" ng-model="allDetailList.Actual_Position__c" ng-disabled="proposalStage"
+                                    <input type="text" id="position" class="form-control" ng-model="allDetailList.Actual_Position__c" ng-disabled="proposalStage || (allDetailList.Actual_Position__c && allDetailList.Actual_Position__c.trim() !== '')"
                                         ng-focus="removeClass2('position')" ng-change="checkCharLimit(allDetailList, 'Actual_Position__c', 80)"
                                     />
 
@@ -352,14 +353,15 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
                                     <input ng-focus="removeClass2('street')" id="street" class="form-control" ng-model="allDetailList.MailingStreet" type="text"
-                                        ng-disabled="proposalStage" />
+                                        ng-disabled="proposalStage || (allDetailList.MailingStreet && allDetailList.MailingStreet.trim() !== '')"
+                                    />
                                 </div>
 
                                 <div class="col-md-4">
                                     <label class="font-if">City
                                         <span class="text-danger ms-2">*</span>
                                     </label>
-                                    <input ng-focus="removeClass2('city')" id="city" class="form-control" ng-model="allDetailList.MailingCity" type="text" ng-disabled="proposalStage"
+                                    <input ng-focus="removeClass2('city')" id="city" class="form-control" ng-model="allDetailList.MailingCity" type="text" ng-disabled="proposalStage || (allDetailList.MailingCity && allDetailList.MailingCity.trim() !== '')"
                                     />
                                 </div>
                             </div>
@@ -370,7 +372,8 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
                                     <select class="form-control" aria-label="Default select example" ng-focus="removeClass2('country')" id="country" ng-model="allDetailList.MailingCountry"
-                                        required="true" ng-disabled="proposalStage" ng-change="onCountryChange()">
+                                        required="true" ng-disabled="proposalStage || (allDetailList.MailingCountry && allDetailList.MailingCountry.trim() !== '')"
+                                        ng-change="onCountryChange()">
                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                     </select>
                                     <!-- <input class="form-control" ng-model="allDetailList.MailingCountry" type="text" ng-disabled="proposalStage" ng-change="onCountryChange()"/> -->
@@ -381,7 +384,7 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
                                     <select class="form-control" aria-label="Default select example" ng-focus="removeClass2('state')" id="state" ng-model="allDetailList.MailingState"
-                                        required="true" ng-disabled="proposalStage">
+                                        required="true" ng-disabled="proposalStage || (allDetailList.MailingState && allDetailList.MailingState.trim() !== '')">
                                         <option ng-repeat="staff in allDetailList.stateList">{{staff}}</option>
                                     </select>
                                     <!-- <input class="form-control" ng-model="allDetailList.MailingState" type="text" ng-disabled="proposalStage"/> -->
@@ -392,7 +395,8 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
                                     <input class="form-control" ng-focus="removeClass2('pCode')" id="pCode" ng-model="allDetailList.MailingPostalCode" type="text"
-                                        ng-disabled="proposalStage" />
+                                        ng-disabled="proposalStage || (allDetailList.MailingPostalCode && allDetailList.MailingPostalCode.trim() !== '')"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -416,27 +420,27 @@
                                                 <th class="pb-3 color-theme">Degree
                                                     <span class="required-asterisk" style="color:red;">*</span>
                                                     <br/>
-                                                    <span style="font-size: 11px; font-weight: normal; color: #666; margin-left: 4px;"></span>
+                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;"></span>
                                                 </th>
                                                 <th class="pb-3 color-theme">Institution
                                                     <span class="required-asterisk" style="color:red;">*</span>
                                                     <br/>
-                                                    <span style="font-size: 11px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 255)</span>
+                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 255)</span>
                                                 </th>
                                                 <th class="pb-3 color-theme">Specialization
                                                     <span class="required-asterisk" style="color:red;">*</span>
                                                     <br/>
-                                                    <span style="font-size: 11px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 255)</span>
+                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 255)</span>
                                                 </th>
                                                 <th class="pb-3 color-theme">Start Year
                                                     <span class="required-asterisk" style="color:red;">*</span>
                                                     <br/>
-                                                    <span style="font-size: 11px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 4)</span>
+                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 4)</span>
                                                 </th>
                                                 <th class="pb-3 color-theme">End Year
                                                     <span class="required-asterisk" style="color:red;">*</span>
                                                     <br/>
-                                                    <span style="font-size: 11px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 4)</span>
+                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 4)</span>
                                                 </th>
                                                 <th ng-hide="proposalStage" class="text-center">
                                                     <i class="fas fa-plus-circle icon" ng-click="addEducationRow()"></i>

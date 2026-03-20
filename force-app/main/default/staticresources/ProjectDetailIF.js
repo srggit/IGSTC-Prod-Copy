@@ -313,7 +313,7 @@ angular.module('cp_app').controller('ProjectDetailIF_Ctrl', function ($scope, $s
   // $scope.getProjectdetils();
   $scope.getContactDet = function () {
 
-    IndustrialFellowshipController.getContactDetailsFellowDet($rootScope.candidateId, function (result, event) {
+    IndustrialFellowshipController.getContactDetailsFellowDet($rootScope.candidateId,$rootScope.proposalId, function (result, event) {
       console.log(result);
       console.log(event);
       $scope.objContact = result;

@@ -1601,7 +1601,30 @@
                                 <div class="program-title">{{p.name}}</div>
                             </div>
 
-                            <div class="program-deadline">Application Deadline: {{p.deadline}}</div>
+                            <!-- <div class="program-deadline">Application Deadline: {{p.deadline}}</div> -->
+                             <div class="program-deadline">
+                                <!-- For 2+2 Call -->
+                                <div ng-if="p.isTwoPlusTwo">
+                                    <!-- 1st Stage -->
+                                    <div ng-if="p.firstStageDeadline"
+                                        ng-style="{'color': p.stage === '1st Stage' ? '#d32f2f' : '#9e9e9e',
+                                            'font-weight': p.stage === '1st Stage' ? '400' : '400'}">
+                                        1st Stage Deadline: {{p.firstStageDeadline}}
+                                    </div>
+                                    <!-- 2nd Stage -->
+                                    <div ng-if="p.secondStageDeadline"
+                                        ng-style="{'color': p.stage === '2nd Stage' ? '#d32f2f' : '#9e9e9e',
+                                            'font-weight': p.stage === '2nd Stage' ? '400' : '400'}">
+                                        2nd Stage Deadline: {{p.secondStageDeadline}}
+                                    </div>
+                                </div>
+                                <!-- For ALL other programs -->
+                                <div ng-if="!p.isTwoPlusTwo">
+                                    Application Deadline: {{p.deadline}}
+                                </div>
+
+                            </div>
+                             
                             <div class="program-proposal"><i class="fa fa-id-card" aria-hidden="true"></i><span
                                     class="program-proposal-text">Proposal No: </span>{{p.PropName}}</div>
                             <!--<div class="program-desc"><i class="fa fa-file-text" aria-hidden="true"></i><span class="program-desc-text"> Title: </span>{{p.desc}}</div>-->
@@ -1678,10 +1701,26 @@
                             <div class="program-icon">
                                 <i class="{{p.icon}}"></i>
                             </div>
-                            <div class="program-title program-title2">{{p.name}}</div>
-                            <!-- <div class="program-title">{{p.yearlyCallId}}</div> -->
-                            <!-- <div class="program-title">{{p.yearlyCall}}</div> -->
-                            <div class="program-deadline program-deadline2">Application Deadline: <br /> {{p.deadline}}
+                            <div class="program-title program-title2">{{p.name}}</div>                           
+                            <!-- <div class="program-deadline program-deadline2">Application Deadline: <br /> {{p.deadline}}
+                            </div> -->
+                            <div class="program-deadline program-deadline2">
+                                <!-- For 2+2 Call -->
+                                <div ng-if="p.isTwoPlusTwo">    
+                                    <div>
+                                        Application Deadline:
+                                    </div>
+                                    <div ng-if="p.firstStageDeadline">
+                                        1st Stage: {{p.firstStageDeadline}}
+                                    </div>
+                                    <div ng-if="p.secondStageDeadline">
+                                        2nd Stage: {{p.secondStageDeadline}}
+                                    </div>
+                                </div>
+                                <!-- For other programs -->
+                                <div ng-if="!p.isTwoPlusTwo">
+                                    Application Deadline: <br/> {{p.deadline}}
+                                </div>
                             </div>
                             <!-- <div class="program-desc">{{p.desc}}</div> -->
                             <!-- <div class="btn-container">
@@ -1741,7 +1780,7 @@
                                     <i class="fa-solid fa-download"></i>
                                 </a>
                             </li>
-                            <li>5. Signature</li>
+                            <!-- <li>5. Signature</li> -->
                         </ul>
 
                         <ul>
@@ -1752,12 +1791,12 @@
                             <li>4. Quotation for Equipment / Accessories</li>
                         </ul>
 
-                        <ul>
+                        <!-- <ul>
                             <li> <b>(For Industry)</b></li>
                             <li>1. Annual Financial Report - Year 1</li>
                             <li>2. Annual Financial Report - Year 2</li>
                             <li>3. Annual Financial Report - Year 3</li>
-                        </ul>
+                        </ul> -->
 
                         <div class="popup-buttons">
                             <button class="btn btn-primary" ng-click="remindMeLater()">

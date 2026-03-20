@@ -874,7 +874,7 @@
                         <div class="col-md-6">
                             <div class="input-group ms-4">
 
-                                <label class="font-if">Upload Project Proposal
+                                <label class="font-if">Upload Project Proposal (Max. size 3.5 Mb)
                                     <span class="ms-2 text-danger">*</span>
                                 </label>
 
@@ -908,11 +908,11 @@
                                     </button>
                                 </span>
                             </div>
-                            <div class="progress ms-4 mt-2" ng-show="showProgressBar" style="height: 20px;">
+                            <div class="progress ms-4 mt-2" ng-show="showProjectProposalProgressBar" style="height: 20px;">
                                 <div class="progress-bar progress-bar-striped active" role="progressbar"
-                                    aria-valuenow="{{uploadProgress}}" aria-valuemin="0" aria-valuemax="100"
-                                    ng-style="{ 'width': uploadProgress + '%' }">
-                                    <span style="font-size:14px; font-weight:bold;">{{uploadProgress}}%</span>
+                                    aria-valuenow="{{projectProposalUploadProgress}}" aria-valuemin="0" aria-valuemax="100"
+                                    ng-style="{ 'width': projectProposalUploadProgress + '%' }">
+                                    <span style="font-size:14px; font-weight:bold;">{{projectProposalUploadProgress}}%</span>
                                 </div>
                             </div>
                             <div ng-if="doc.userDocument.Status__c=='Uploaded' && !isUploading"
@@ -926,6 +926,46 @@
                         <div class="col-md-2" ng-show="doc.userDocument.Status__c=='Uploaded'">
                             <a class="blue-btn float-end mt-5 py-3" ng-class="{'disabled': isUploading}"
                                 href="{{previewFileLink}}" target="_blank">View</a>
+                        </div>
+                    </div>
+
+                    <div class="row mt-5" ng-show="stage === '2nd Stage'">
+                        <div class="col-md-6">
+                            <div class="input-group ms-4">
+                                <label class="font-if">Upload Project Description
+                                </label>
+
+                                <input type="file" accept=".pdf" class="form-control"
+                                    ng-disabled="uploadDisable || isUploading || (projectDescriptionDoc.userDocument.Status__c=='Uploaded' && currentProposalStage == 'Submitted')"
+                                    id="projectDescriptionFile" />
+
+                                <span class="input-group-btn pt-3" ng-hide="uploadDisable">
+                                    <button class="btn btn-success mt-4 py-3"
+                                        ng-click="uploadFile(projectDescriptionDoc.userDocument.Name, projectDescriptionDoc.userDocument.Id, '', 'projectDescriptionFile')"
+                                        type="button"
+                                        ng-disabled="isUploading || (projectDescriptionDoc.userDocument.Status__c=='Uploaded' && currentProposalStage == 'Submitted')">
+                                        <span ng-if="!isUploading">Upload</span>
+                                        <span ng-if="isUploading">
+                                            <i class="fa fa-spinner fa-spin"></i> Uploading...
+                                        </span>
+                                    </button>
+                                </span>
+                            </div>
+                            <div class="progress ms-4 mt-2" ng-show="showProjectDescriptionProgressBar" style="height: 20px;">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                    aria-valuenow="{{projectDescriptionUploadProgress}}" aria-valuemin="0" aria-valuemax="100"
+                                    ng-style="{ 'width': projectDescriptionUploadProgress + '%' }">
+                                    <span style="font-size:14px; font-weight:bold;">{{projectDescriptionUploadProgress}}%</span>
+                                </div>
+                            </div>
+                            <div ng-if="projectDescriptionDoc.userDocument.Status__c=='Uploaded' && !isUploading"
+                                class="alert alert-success ms-4 mt-2 py-2">
+                                <i class="fa fa-check-circle"></i> Project description uploaded successfully.
+                            </div>
+                        </div>
+                        <div class="col-md-2" ng-show="projectDescriptionDoc.userDocument.Status__c=='Uploaded'">
+                            <a class="blue-btn float-end mt-5 py-3" ng-class="{'disabled': isUploading}"
+                                href="{{projectDescriptionPreviewLink}}" target="_blank">View</a>
                         </div>
                     </div>
 

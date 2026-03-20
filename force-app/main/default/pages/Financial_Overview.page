@@ -248,7 +248,7 @@
                         <li class="ps-4">
                             <i class="fa-solid fa-circle text-success me-3"></i>Indian Partner(s) should enter amount in INR</li>
                         <li class="ps-4">
-                            <i class="fa-solid fa-circle text-success me-3"></i>German Partner(s) should enter amount in euro</li>
+                            <i class="fa-solid fa-circle text-success me-3"></i>German Partner(s) should enter amount in Euro</li>
                         <li class="ps-4">
                             <i class="fa-solid fa-circle text-success me-3"></i>For German Industry and Academia, IGSTC Contribution can not be greater than
                             <i class="fa-solid fa-euro-sign"></i> 5,00,000</li>
@@ -309,18 +309,20 @@
                 </div>
 
                 <div class="row mx-4 mt-5">
-                    <div class="col-md-12">
-                        <table class="tablefinance" cellpadding="4">
+                    <div class="col-md-12" style="overflow-x: auto;">
+                        <table class="tablefinance" style="width: 100%;">
                             <thead>
-                                <tr>
-                                    <th style="width:20%;">Organization Name</th>
-                                    <th style="width:0%;">Country</th>
-                                    <th style="width:0%;">Type</th>
-                                    <th style="width:0%;">Currency</th>
-                                    <th style="width:11%;">IGSTC Funding</th>
-                                    <th style="width:0%;">Own Contribution</th>
-                                    <th style="width:11%;">Total</th>
-                                    <th style="width:12%;">% Funding Requested from IGSTC</th>
+                                <tr class="w-auto p-3">
+                                    <th>Organization Name</th>
+                                    <th>Country</th>
+                                    <th>Type</th>
+                                    <th>Currency</th>
+                                    <th>IGSTC Funding</th>
+                                    <th>Own Contribution</th>
+                                    <th>Budget for Capital Expenditure</th>
+                                    <th>Budget for Recurring Expenditure</th>
+                                    <th>Total</th>
+                                    <th>% Funding Requested from IGSTC</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -333,25 +335,42 @@
                                         <span ng-show="x.Contact__r.Account.BillingCountry=='Germany'">EURO</span>
                                     </td>
                                     <td>
-                                        <input ng-focus="removeClass('igstc',$index)" id="igstc{{$index}}" type="text" class="form-control" ng-keyup="calculateOtherField($index)"
+                                        <input ng-focus="removeClass('igstc',$index)" id="igstc{{$index}}" type="text" class="form-control total-column" ng-keyup="calculateOtherField($index)"
                                             ng-change="calculateOtherField($index)" ng-keypress="calculateOtherField($index)"
                                             number="x.Financial_Contribution__r[0].IGSTC_Contribution__c" ng-model="x.Financial_Contribution__r[0].IGSTC_Contribution__c"
                                             ng-disabled="proposalStage" />
                                     </td>
                                     <td>
-                                        <input ng-focus="removeClass('own',$index)" id="own{{$index}}" type="text" class="form-control" ng-keyup="calculateOtherField($index)"
+                                        <input ng-focus="removeClass('own',$index)" id="own{{$index}}" type="text" class="form-control total-column" ng-keyup="calculateOtherField($index)"
                                             ng-change="calculateOtherField($index)" ng-keypress="calculateOtherField($index)"
                                             number="x.Financial_Contribution__r[0].Own_Contribution__c" ng-model="x.Financial_Contribution__r[0].Own_Contribution__c"
                                             ng-disabled="proposalStage" />
                                     </td>
-
                                     <td>
-                                        <input ng-focus="removeClass('total',$index)" id="total{{$index}}" type="text" class="form-control" ng-disabled="disabled"
-                                            ng-model="x.Financial_Contribution__r[0].Total__c" size="5" />
+                                        <input ng-focus="removeClass('capital',$index)" id="capital{{$index}}" type="text" class="form-control total-column" ng-keyup="calculateOtherField($index)"
+                                            ng-change="calculateOtherField($index)" ng-keypress="calculateOtherField($index)"
+                                            number="x.Financial_Contribution__r[0].Budget_for_Capital_Expenditure__c" ng-model="x.Financial_Contribution__r[0].Budget_for_Capital_Expenditure__c"
+                                            ng-disabled="proposalStage" />
                                     </td>
                                     <td>
-                                        <input ng-focus="removeClass('percentage',$index)" id="percentage{{$index}}" type="text" class="form-control" ng-disabled="disabled"
-                                            ng-model="x.Financial_Contribution__r[0].Asked_From_IGSTC__c | number : 2" />
+                                        <input ng-focus="removeClass('recurring',$index)" id="recurring{{$index}}" type="text" class="form-control total-column"
+                                            ng-keyup="calculateOtherField($index)" ng-change="calculateOtherField($index)" ng-keypress="calculateOtherField($index)"
+                                            number="x.Financial_Contribution__r[0].Budget_for_Recurring_Expenditure__c" ng-model="x.Financial_Contribution__r[0].Budget_for_Recurring_Expenditure__c"
+                                            ng-disabled="proposalStage" />
+                                    </td>
+                                    <td>
+                                        <input ng-focus="removeClass('total',$index)" id="total{{$index}}" type="text" class="form-control total-column" ng-disabled="disabled"
+                                            ng-model="x.Financial_Contribution__r[0].Total__c" />
+                                    </td>
+                                    <td>
+                                        <!-- <input ng-focus="removeClass('percentage',$index)" id="percentage{{$index}}" type="text" class="form-control" ng-disabled="disabled"
+                                            ng-model="x.Financial_Contribution__r[0].Asked_From_IGSTC__c | number : 2" /> -->
+                                        <input ng-focus="removeClass('percentage',$index)" id="percentage{{$index}}" type="text" class="form-control total-column"
+                                            ng-disabled="disabled" ng-value="x.Financial_Contribution__r[0].Asked_From_IGSTC__c | number : 2"
+                                        />
+                                        <!-- <input ng-focus="removeClass('percentage',$index)" id="percentage{{$index}}" type="text" class="form-control" ng-disabled="disabled"
+                                            ng-model="x.Financial_Contribution__r[0].Asked_From_IGSTC__c" /> -->
+                                        <!-- ng-model="x.Financial_Contribution__r[0].Asked_From_IGSTC__c | number : 2 -->
                                     </td>
                                 </tr>
                             </tbody>

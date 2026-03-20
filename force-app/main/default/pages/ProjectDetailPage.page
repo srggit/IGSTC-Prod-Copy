@@ -365,8 +365,7 @@
                                 <label class="font-if mb-3">
                                     <!-- <b>Stage 1:</b> -->
                                     <ul class="bullet-list">
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> DSIR Certificate (For
-                                            Industry)</li>
+                                        <li><i class="fa-solid fa-circle bullet-icon"></i> DSIR Certificate</li>
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Project Proposal - Stage 1
                                         </li>
                                         <li><i class="fa-solid fa-circle bullet-icon"></i> Undertaking for
@@ -381,7 +380,7 @@
                     </div>
 
 
-                    <div class="col-md-6" ng-show="proposalStageCheck = '2nd Stage'">
+                    <div class="col-md-6" ng-show="proposalStageCheck === '2nd Stage'">
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <label class="font-if mb-3">

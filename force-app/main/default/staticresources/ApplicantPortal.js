@@ -810,18 +810,8 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                     else {
                         disableEdit = new Date() > new Date(firstStageEnd);
                     }
-
-                    // Format deadline
-                    // const formattedDeadline = selectedDeadline ? new Date(selectedDeadline).toLocaleString('en-GB', {
-                    //         day: '2-digit',
-                    //         month: 'short',
-                    //         year: 'numeric',
-                    //         hour: stage === '2nd Stage' ? '2-digit' : undefined,
-                    //         minute: stage === '2nd Stage' ? '2-digit' : undefined
-                    //     })
-                    //     : 'Not mentioned';
-
-                    const formattedDeadline = selectedDeadline ? new Date(selectedDeadline).toLocaleDateString('en-GB', {
+                   
+                    /*const formattedDeadline = selectedDeadline ? new Date(selectedDeadline).toLocaleDateString('en-GB', {
                         timeZone: 'Asia/Kolkata',
                         day: '2-digit',
                         month: 'short',
@@ -832,6 +822,9 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                     }).replace('am', 'AM').replace('pm', 'PM') + ' IST'
                         : 'Not mentioned';
 
+                        const formattedFirstStageDeadline = formattedDeadline(firstStageEnd);
+                        const formattedSecondStageDeadline = formattedDeadline(secondStageEnd);
+
                     return {
                         name: campaignName,
                         PropName: item?.Proposals__r?.Name ?? "",
@@ -839,8 +832,8 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                         desc: item?.Proposals__r?.Campaign__r?.Description ?? "",
                         stage: stage,
                         proposalStage: proposalStage,
-                        //Dynamic deadline
-                        deadline: formattedDeadline,
+                        //*******Dynamic deadline based on stage
+                        deadline: formattedDeadline,                    
                         icon: item?.Proposals__r?.Campaign__r?.Icon__c ?? "",
                         redirectUrl: item?.Proposals__r?.Campaign__r?.RedirectPage__c ?? "",
                         campaignId: item?.Proposals__r?.Campaign__r?.Id ?? "",
@@ -852,6 +845,49 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
                         // Final control flag
                         disableEdit: disableEdit
+                    };*/
+
+                    // Format function
+                    const formatDateTime = (dateVal) => {
+                        return dateVal
+                            ? new Date(dateVal).toLocaleString('en-GB', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            }).replace('am', 'AM').replace('pm', 'PM') + ' IST'
+                            : 'Not mentioned';
+                    };
+
+                    const formattedFirstStageDeadline = formatDateTime(firstStageEnd);
+                    const formattedSecondStageDeadline = formatDateTime(secondStageEnd);
+
+                    return {
+                        name: campaignName,
+                        PropName: item?.Proposals__r?.Name ?? "",
+                        titleOfProject: item?.Proposals__r?.Title_Of__c ?? item?.Contact__r?.Title_Of_Project__c ?? "",
+                        desc: item?.Proposals__r?.Campaign__r?.Description ?? "",
+                        stage: stage,
+                        proposalStage: proposalStage,
+                        //NEW FIELDS
+                        firstStageDeadline: formattedFirstStageDeadline,
+                        secondStageDeadline: formattedSecondStageDeadline,
+                        // Keep existing (for other programs)
+                        deadline: stage === '2nd Stage' ? formattedSecondStageDeadline: formattedFirstStageDeadline,
+                        // FLAG (BEST PRACTICE)
+                        isTwoPlusTwo: campaignName === '2+2 Call',
+                        icon: item?.Proposals__r?.Campaign__r?.Icon__c ?? "",
+                        redirectUrl: item?.Proposals__r?.Campaign__r?.RedirectPage__c ?? "",
+                        campaignId: item?.Proposals__r?.Campaign__r?.Id ?? "",
+                        proposalId: item?.Proposals__c ?? "",
+                        apaId: item?.Id ?? "",
+                        yearlyCallId: item?.Proposals__r?.yearly_Call__c ?? "",
+                        category: 'applied',
+                        id: item?.Proposals__r?.Id ?? "",
+                        disableEdit: disableEdit
                     };
                 })
                     : [];
@@ -859,17 +895,11 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                 //********* Applied programs with dynamic deadline and 2+2 specific disable logic *************// 
 
                 // Simple helper for YearlyCall__c → Campaign data              
-                function getCampaignData(item) {
+                /*function getCampaignData(item) {
                     var rawDeadline = item.Campaign_End_Date__c || null;
                     return {
                         name: item.Campaign__r?.Name ?? "",
-                        desc: item.Campaign__r?.Description ?? "",
-                        // deadline: rawDeadline ?
-                        //     new Date(rawDeadline).toLocaleDateString('en-GB', {
-                        //         day: '2-digit',
-                        //         month: 'short',
-                        //         year: 'numeric'
-                        //     }) : 'Not mentioned',
+                        desc: item.Campaign__r?.Description ?? "",                        
                         deadline: rawDeadline ?
                             new Date(rawDeadline).toLocaleString('en-GB', {
                                 timeZone: 'Asia/Kolkata',
@@ -886,12 +916,45 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                         campaignId: item.Campaign__r?.Id ?? "",
                         yearlyCallId: item.Id,
                         yearlyCall: item.Name,
-                        isExpired: isPastDate(rawDeadline)
-                        // debugger;
-                        // isExpired: (
-                        //     item.Campaign__r?.Name === '2+2 Call' &&
-                        //     isPastDate(rawDeadline)
-                        // )
+                        isExpired: isPastDate(rawDeadline)                     
+                   };
+                 }*/
+                function getCampaignData(item) {
+                    const campaignName = item.Campaign__r?.Name ?? "";
+                    const firstStageEnd = item.Campaign_End_Date__c ?? null;
+                    const secondStageEnd = item.Second_Stage_End_Date_Time__c ?? null;
+                    const formatDateTime = (dateVal) => {
+                        return dateVal
+                            ? new Date(dateVal).toLocaleString('en-GB', {
+                                timeZone: 'Asia/Kolkata',
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            }).replace('am', 'AM').replace('pm', 'PM') + ' IST'
+                            : 'Not mentioned';
+                    };
+
+                    const formattedFirstStageDeadline = formatDateTime(firstStageEnd);
+                    const formattedSecondStageDeadline = formatDateTime(secondStageEnd);
+
+                    return {
+                        name: campaignName,
+                        desc: item.Campaign__r?.Description ?? "",
+                        // NEW FIELDS
+                        firstStageDeadline: formattedFirstStageDeadline,
+                        secondStageDeadline: formattedSecondStageDeadline,
+                        // Existing fallback
+                        deadline: formattedFirstStageDeadline || 'Not mentioned',
+                        isTwoPlusTwo: campaignName === '2+2 Call',
+                        icon: item.Campaign__r?.Icon__c ?? "",
+                        redirectUrl: item.Campaign__r?.RedirectPage__c ?? "",
+                        campaignId: item.Campaign__r?.Id ?? "",
+                        yearlyCallId: item.Id,
+                        yearlyCall: item.Name,
+                        isExpired: isPastDate(firstStageEnd)
                     };
                 }
 

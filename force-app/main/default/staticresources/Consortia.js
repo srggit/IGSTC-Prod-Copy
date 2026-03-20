@@ -1344,7 +1344,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
             }
 
             if ($scope.allPartners[i].Name == undefined || $scope.allPartners[i].Name == "") {
-                swal("Info", "Please Enter Institution/Industry Name.");
+                swal("Info", "Please enter Institution/Industry Name.");
                 // $("#inst"+i+"").addClass('border-theme');
                 return;
             }
@@ -1494,7 +1494,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
         }
         if ($scope.allPartners.length < 4 && isCoordinator == 'true') {
             // swal("Info", "Minimum four partners & Maximum six Partners can be added.", "info");
-            showInfo('Minimum four partners & Maximum six Partners can be added.')
+            showInfo('Minimum four partners & Maximum six partners can be added.')
             return;
         }
         if ($scope.allPartners.length > 6) {

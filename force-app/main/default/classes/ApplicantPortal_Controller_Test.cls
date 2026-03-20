@@ -11,5 +11,6 @@ public class ApplicantPortal_Controller_Test {
         ApplicantPortal_Contoller.firstTestMethod6();
 	    ApplicantPortal_Contoller.firstTestMethod7();
         ApplicantPortal_Contoller.firstTestMethod33();
+        ApplicantPortal_Contoller.firstTestMethod44();
     }
 }

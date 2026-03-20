@@ -1197,9 +1197,10 @@ return 'SUCCESS';
                 //     }
                 // }
                 Applicant_Proposal_Association__c apa = [
-                    SELECT Id, Contact__c, Contact__r.Name, Contact__r.Login_Hash_Code__c, Proposals__c, Proposals__r.Name 
+                    SELECT Id, Contact__c, Contact__r.Name, Contact__r.Login_Hash_Code__c, Proposals__c, Proposals__r.Name, Is_Signatory__c
                     FROM Applicant_Proposal_Association__c 
                     WHERE Proposals__c =: proposalId 
+                    AND Is_Signatory__c = false
                     AND Contact__r.Login_Hash_Code__c =: candidateId
                 ];
 

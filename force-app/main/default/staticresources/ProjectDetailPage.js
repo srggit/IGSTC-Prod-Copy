@@ -315,7 +315,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
 
         if ($scope.applicantDetails.Acronym__c == undefined || $scope.applicantDetails.Acronym__c == "") {
-            swal("Info", "Please Enter Project Acronym.", "info");
+            swal("Info", "Please enter Project Acronym.", "info");
             $("#Acronym").addClass('border-theme');
             return;
         }
@@ -331,7 +331,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
 
         if ($scope.applicantDetails.Title_Of__c == undefined || $scope.applicantDetails.Title_Of__c == "") {
-            swal("Info", "Please Enter Title of Proposal.", "info");
+            swal("Info", "Please enter Title of Proposal.", "info");
             $("#title").addClass('border-theme');
             return;
         }
@@ -347,7 +347,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
 
         if ($scope.applicantDetails.Title_In_German__c == undefined || $scope.applicantDetails.Title_In_German__c == "") {
-            swal("Info", "Please Enter Title des Antrages(In German).", "info");
+            swal("Info", "Please enter Title des Antrages(In German).", "info");
             $("#titleG").addClass('border-theme');
             return;
         }
@@ -363,7 +363,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         }
 
         if ($scope.applicantDetails.Duration_In_Months_Max_36__c == undefined || $scope.applicantDetails.Duration_In_Months_Max_36__c == "") {
-            swal("Info", "Please Enter Project Duration.", "info");
+            swal("Info", "Please enter Project Duration.", "info");
             $("#txtDuration").addClass('border-theme');
             return;
         }

@@ -277,7 +277,9 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     }
                 }
                 // Load work package details after accounts are loaded
-                $scope.getWPDetails();
+                // OLD SYSTEM: Commented out as we're using the new WP+Deliverables system
+                // $scope.getWPDetails();
+
                 // Load new WP+Deliverables combined table data
                 $scope.loadWPDeliverablesData();
 
@@ -603,6 +605,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     // =====================================================================================
 
     /* -------------------------------------------------------------------------------- */
+    // OLD WORK PACKAGE SYSTEM - DEPRECATED (Using new WP+Deliverables system)
     // Gets work package details
     /* -------------------------------------------------------------------------------- */
     $scope.getWPDetails = function () {
@@ -965,6 +968,12 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         $scope.sampleDoc = null;
         $scope.previewFileLink = '';
 
+        $scope.projectDescriptionDoc = null;
+        $scope.projectDescriptionPreviewLink = '';
+
+        $scope.projectDescriptionUploadProgress = 0;
+        $scope.showProjectDescriptionProgressBar = false;
+
         // Reset additional document variables
         $scope.auditedFinancialDoc = null;
         $scope.auditedFinancialPreviewLink = '';
@@ -1007,6 +1016,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         ? 'Project Details - Stage 2'
                         : 'Project Details - Stage 1';
 
+                    var expectedProjectDescriptionDocName = 'Project Description';
+
+
+                    var expectedProjectDescriptionDocNameFallback = 'Project Description';
+
                     console.log('expectedDocName : ', expectedDocName);
 
                     for (var i = 0; i < $scope.allDocs.length; i++) {
@@ -1025,6 +1039,19 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                             ) {
                                 let fileId = currentDoc.Attachments[0].Id;
                                 $scope.previewFileLink =
+                                    `/ApplicantDashboard/servlet/servlet.FileDownload?file=${fileId}`;
+                            }
+                        }
+
+                        // Pick stage-specific Project Description document
+                        if (currentDoc.Name === expectedProjectDescriptionDocName || currentDoc.Name === expectedProjectDescriptionDocNameFallback) {
+                            $scope.projectDescriptionDoc = $scope.allDocs[i];
+                            if (
+                                currentDoc.Attachments &&
+                                currentDoc.Attachments.length > 0
+                            ) {
+                                let fileId = currentDoc.Attachments[0].Id;
+                                $scope.projectDescriptionPreviewLink =
                                     `/ApplicantDashboard/servlet/servlet.FileDownload?file=${fileId}`;
                             }
                         }
@@ -1068,6 +1095,10 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                             'No Project Details document found for stage:',
                             $rootScope.secondStage ? 'Stage 2' : 'Stage 1'
                         );
+                    }
+
+                    if ($rootScope.secondStage && !$scope.projectDescriptionDoc) {
+                        console.warn('No Project Description document found for stage: Stage 2');
                     }
 
                     $scope.$applyAsync();
@@ -1281,18 +1312,21 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         //.ContentDistribution.DistributionPublicUrl
     }
-    $scope.uploadFile = function (type, userDocId, fileId) {
+    $scope.uploadFile = function (type, userDocId, fileId, inputElementId) {
         debugger;
 
-        // Guard: ensure doc.userDocument with Name and Id exist (prevents errors when doc is null/undefined)
-        if (!$scope.doc || !$scope.doc.userDocument || !$scope.doc.userDocument.Name || !$scope.doc.userDocument.Id) {
-            swal("Info", "Document information is not available. Please refresh the page and try again.", "info");
-            $scope.isUploading = false;
-            $scope.showProjectProposalProgressBar = false;
-            $scope.showSpinnereditProf = false;
-            return;
-        }
+        var inputId = inputElementId || 'fileSignature';
+        var isProjectDescriptionUpload = inputId === 'projectDescriptionFile';
+
         if (!type || !userDocId) {
+            // Guard: ensure doc.userDocument with Name and Id exist (prevents errors when doc is null/undefined)
+            if (!$scope.doc || !$scope.doc.userDocument || !$scope.doc.userDocument.Name || !$scope.doc.userDocument.Id) {
+                swal("Info", "Document information is not available. Please refresh the page and try again.", "info");
+                $scope.isUploading = false;
+                $scope.showProjectProposalProgressBar = false;
+                $scope.showSpinnereditProf = false;
+                return;
+            }
             type = $scope.doc.userDocument.Name;
             userDocId = $scope.doc.userDocument.Id;
         }
@@ -1314,13 +1348,19 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         $scope.uploadProgress = 0;
         $scope.showProgressBar = true;
         $scope.isUploadingProjectProposal = true;
-        $scope.projectProposalUploadProgress = 0;
-        $scope.showProjectProposalProgressBar = true;
+        if (isProjectDescriptionUpload) {
+            $scope.projectDescriptionUploadProgress = 0;
+            $scope.showProjectDescriptionProgressBar = true;
+        } else {
+            $scope.projectProposalUploadProgress = 0;
+            $scope.showProjectProposalProgressBar = true;
+        }
 
         $scope.showSpinnereditProf = true;
         var file;
         maxFileSize = 5191680;
-        file = document.getElementById('fileSignature').files[0];
+        var inputEl = document.getElementById(inputId);
+        file = inputEl ? inputEl.files[0] : null;
         if (!file) {
             swal("Info", "You must choose a file before trying to upload it", "info");
             $scope.isUploadingProjectProposal = false;
@@ -1433,7 +1473,12 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 $scope.uploadProgress = 0;
                 $scope.showProjectProposalProgressBar = false;
                 $scope.projectProposalUploadProgress = 0;
-                document.getElementById('fileSignature').value = "";
+                $scope.showProjectDescriptionProgressBar = false;
+                $scope.projectDescriptionUploadProgress = 0;
+                var sig = document.getElementById('fileSignature');
+                if (sig) sig.value = "";
+                var projDesc = document.getElementById('projectDescriptionFile');
+                if (projDesc) projDesc.value = "";
             });
         } else {
             $scope.isUploadingProjectProposal = false;
@@ -1450,8 +1495,13 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         // }
 
         $scope.$applyAsync(function () {
-            $scope.uploadProgress = Math.round((positionIndex / fileSize) * 100);
-            $scope.projectProposalUploadProgress = Math.round((positionIndex / fileSize) * 100);
+            var pct = Math.round((positionIndex / fileSize) * 100);
+            $scope.uploadProgress = pct;
+            if ($scope.showProjectDescriptionProgressBar) {
+                $scope.projectDescriptionUploadProgress = pct;
+            } else {
+                $scope.projectProposalUploadProgress = pct;
+            }
         });
 
         //if (fileSize <= positionIndex + chunkSize) {
@@ -1487,7 +1537,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         $scope.showSpinnereditProf = false;
                         $scope.$applyAsync(function () {
                             $scope.uploadProgress = 100;
-                            $scope.projectProposalUploadProgress = 100;
+                            if ($scope.showProjectDescriptionProgressBar) {
+                                $scope.projectDescriptionUploadProgress = 100;
+                            } else {
+                                $scope.projectProposalUploadProgress = 100;
+                            }
                         });
                         swal(
                             'Success',
@@ -1686,7 +1740,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     attributes: {
                         innerHTML: `
                             <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
-                                Are you sure you want to upload the Undertaking Format of Grant Acceptance & Signing of Agreement?
+                                Are you sure you want to upload the Undertaking of Grant Acceptance & Signing of Agreement?
                             </p>
                         `
                     }
@@ -3168,21 +3222,28 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             if (event.status) {
                 debugger;
 
-                // Save Work Package Details
-                $scope.saveWorkPackageDetailsInternal(function (wpSuccess) {
+                // OLD SYSTEM: Commented out - using new WP+Deliverables system directly
+                // $scope.saveWorkPackageDetailsInternal(function (wpSuccess) {
+
+                // Save WP and Deliverables using the new combined method
+                $scope.saveWPDeliverablesData();
+                console.log('WP and Deliverables saved successfully');
+
+                // Save existing grants independently
+                $scope.saveExistingGrantsInternal(function (grantsSuccess) {
                     let messageText;
 
                     messageText = $rootScope.secondStage
                         ? `<div style="text-align: center;">
-            <div style="margin-bottom: 15px;">Project Details have been saved successfully.</div>
-            <div style="font-weight: bold; margin: 10px 0;">Next Step:</div>
-            <div>Please fill in the Expense Table Info.</div>
-        </div>`
+                <div style="margin-bottom: 15px;">Project Details have been saved successfully.</div>
+                <div style="font-weight: bold; margin: 10px 0;">Next Step:</div>
+                <div>Please fill in the Expense Table Info.</div>
+            </div>`
                         : `<div style="text-align: center;">
-            <div style="margin-bottom: 15px;">Project Details have been saved successfully.</div>
-            <div style="font-weight: bold; margin: 10px 0;">Next Step:</div>
-            <div>Please upload signature in Declaration Page.</div>
-        </div>`;
+                <div style="margin-bottom: 15px;">Project Details have been saved successfully.</div>
+                <div style="font-weight: bold; margin: 10px 0;">Next Step:</div>
+                <div>Please upload signature in Declaration Page.</div>
+            </div>`;
 
                     swal({
                         title: "Success",
@@ -3204,6 +3265,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         }
                     });
                 });
+                // }); // OLD SYSTEM callback closing - commented out
             }
         },
             { escape: true });
@@ -3333,11 +3395,10 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     }
 
     /**
+     * OLD WORK PACKAGE SYSTEM - DEPRECATED
      * Internal function to save work package details (called from saveDetails)
-     * Note: Grants saving is now independent and called directly from this function
-     * to ensure grants are saved even when old deliverables code is commented out
+     * Note: This function is no longer used - replaced by saveWPDeliverablesData()
      */
-
     $scope.saveWorkPackageDetailsInternal = function (callback) {
         debugger;
 
@@ -3362,18 +3423,56 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         var objData = JSON.parse(JSON.stringify($scope.workPackList));
 
+        // Filter out empty work packages to prevent creating extra empty records
+        var filteredData = objData.filter(function (wp) {
+            // Consider a work package valid if it has any of the following:
+            // - An ID (already saved)
+            // - A title
+            // - TRL levels
+            // - Duration
+            // - Work package details
+            return (wp.Id && wp.Id !== '') ||
+                (wp.title && wp.title.trim() !== '') ||
+                (wp.trl_level && wp.trl_level !== '') ||
+                (wp.end_trl_level && wp.end_trl_level !== '') ||
+                (wp.duration && wp.duration !== '') ||
+                (wp.Workpackage_detail && wp.Workpackage_detail.trim() !== '');
+        });
+
+        console.log('OLD SYSTEM - Filtered work packages for saving:', filteredData);
+        console.log('OLD SYSTEM - Original work packages count:', objData.length, 'Filtered count:', filteredData.length);
+
+        // If no valid work packages exist, proceed directly to deliverables and grants
+        if (filteredData.length === 0) {
+            console.log('OLD SYSTEM - No valid work packages to save, proceeding to deliverables and grants');
+            // Still need to save deliverables and grants even if no work packages
+            $scope.saveWPDeliverablesData();
+            console.log('WP and Deliverables saved successfully (no valid work packages)');
+
+            // Save existing grants independently
+            $scope.saveExistingGrantsInternal(function (grantsSuccess) {
+                if (grantsSuccess) {
+                    console.log('Existing grants saved successfully (no valid work packages)');
+                } else {
+                    console.error('Error saving existing grants');
+                }
+                if (callback) callback(true);
+            });
+            return;
+        }
+
         // === ADD VALIDATIONS HERE (BEFORE preparing data) ===
-        for (var i = 0; i < objData.length; i++) {
+        for (var i = 0; i < filteredData.length; i++) {
             var count = 0;
-            if (objData[i].AccountList) {
-                for (var k = 0; k < objData[i].AccountList.length; k++) {
-                    if (objData[i].AccountList[k].selected == true) {
+            if (filteredData[i].AccountList) {
+                for (var k = 0; k < filteredData[i].AccountList.length; k++) {
+                    if (filteredData[i].AccountList[k].selected == true) {
                         count = count + 1;
                     }
                 }
             }
             /*
-            if (objData[i].title == undefined || objData[i].title == "") {
+            if (filteredData[i].title == undefined || filteredData[i].title == "") {
                 swal("Work Package Details", "Please Enter Title.", "info");
                 $("#title" + i + "").addClass('border-theme');
                 return;
@@ -3383,38 +3482,38 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                 $("#account" + i + "").addClass('border-theme');
                 return;
             }
-            if (objData[i].trl_level == undefined || objData[i].trl_level == "") {
+            if (filteredData[i].trl_level == undefined || filteredData[i].trl_level == "") {
                 swal("Work Package Details", "Please Enter Start TRL Level.", "info");
                 $("#STL" + i + "").addClass('border-theme');
                 return;
             }
-            if (objData[i].end_trl_level == undefined || objData[i].end_trl_level == "") {
+            if (filteredData[i].end_trl_level == undefined || filteredData[i].end_trl_level == "") {
                 swal("Work Package Details", "Please Enter End TRL Level.", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
-            if (objData[i].trl_level < 3 || objData[i].trl_level > 9) {
+            if (filteredData[i].trl_level < 3 || filteredData[i].trl_level > 9) {
                 swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9", "info");
                 $("#STL" + i + "").addClass('border-theme');
                 return;
             }
-            if (objData[i].end_trl_level < 3 || objData[i].end_trl_level > 9) {
+            if (filteredData[i].end_trl_level < 3 || filteredData[i].end_trl_level > 9) {
                 swal("Work Package Details", "Minimum TRL Level should be 3 and Maximum TRL Level should be 9", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
-            if (objData[i].end_trl_level < objData[i].trl_level) {
+            if (filteredData[i].end_trl_level < filteredData[i].trl_level) {
                 swal("Work Package Details", "End TRL Level should be greater than Start TRL Level.", "info");
                 $("#ETL" + i + "").addClass('border-theme');
                 return;
             }
-            if (objData[i].duration == undefined || objData[i].duration == "") {
+            if (filteredData[i].duration == undefined || filteredData[i].duration == "") {
                 swal("Work Package Details", "Please Enter Duration.", "info");
                 $("#duration" + i + "").addClass('border-theme');
                 return;
             }
-            if (objData[i].duration != undefined && objData[i].duration != "") {
-                if (Number(objData[i].duration) > Number($rootScope.maxDurationInMonths)) {
+            if (filteredData[i].duration != undefined && filteredData[i].duration != "") {
+                if (Number(filteredData[i].duration) > Number($rootScope.maxDurationInMonths)) {
                     swal("Work Package Details", "Max. Duration can be " + $rootScope.maxDurationInMonths + " months.", "info");
                     $("#duration" + i + "").addClass('border-theme');
                     return;
@@ -3426,42 +3525,42 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         // === END VALIDATIONS ===
 
         // Prepare data for saving - map field names to match Apex wrapper
-        for (var i = 0; i < objData.length; i++) {
-            delete objData[i]['$$hashKey'];
-            delete objData[i]['durationError'];
-            delete objData[i]['durationErrorMsg'];
-            delete objData[i]['minDurationError'];
-            delete objData[i]['maxDurationError'];
+        for (var i = 0; i < filteredData.length; i++) {
+            delete filteredData[i]['$$hashKey'];
+            delete filteredData[i]['durationError'];
+            delete filteredData[i]['durationErrorMsg'];
+            delete filteredData[i]['minDurationError'];
+            delete filteredData[i]['maxDurationError'];
 
             // Map externalId to ExternalId (Apex expects capital E)
-            if (objData[i].externalId !== undefined) {
-                objData[i].ExternalId = String(objData[i].externalId);
-                delete objData[i]['externalId'];
+            if (filteredData[i].externalId !== undefined) {
+                filteredData[i].ExternalId = String(filteredData[i].externalId);
+                delete filteredData[i]['externalId'];
             }
 
             // Ensure Id is a string (empty string if undefined)
-            if (objData[i].Id === undefined || objData[i].Id === null) {
-                objData[i].Id = '';
+            if (filteredData[i].Id === undefined || filteredData[i].Id === null) {
+                filteredData[i].Id = '';
             }
 
             // Convert numeric values to strings for Apex
-            if (objData[i].trl_level !== undefined) {
-                objData[i].trl_level = String(objData[i].trl_level);
+            if (filteredData[i].trl_level !== undefined) {
+                filteredData[i].trl_level = String(filteredData[i].trl_level);
             }
-            if (objData[i].end_trl_level !== undefined) {
-                objData[i].end_trl_level = String(objData[i].end_trl_level);
+            if (filteredData[i].end_trl_level !== undefined) {
+                filteredData[i].end_trl_level = String(filteredData[i].end_trl_level);
             }
-            if (objData[i].duration !== undefined) {
-                objData[i].duration = String(objData[i].duration);
+            if (filteredData[i].duration !== undefined) {
+                filteredData[i].duration = String(filteredData[i].duration);
             }
-            if (objData[i].WPSequence !== undefined) {
-                objData[i].WPSequence = String(objData[i].WPSequence);
+            if (filteredData[i].WPSequence !== undefined) {
+                filteredData[i].WPSequence = String(filteredData[i].WPSequence);
             }
 
             var accountWrapperList = [];
-            if (objData[i].AccountList) {
-                for (var k = 0; k < objData[i].AccountList.length; k++) {
-                    var acc = objData[i].AccountList[k];
+            if (filteredData[i].AccountList) {
+                for (var k = 0; k < filteredData[i].AccountList.length; k++) {
+                    var acc = filteredData[i].AccountList[k];
                     var wrapper = {
                         accnt: { Id: acc.Id, Name: acc.Name },
                         isSelected: acc.selected === true
@@ -3472,13 +3571,13 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     accountWrapperList.push(wrapper);
                 }
             }
-            objData[i].AccountListWrapper = accountWrapperList;
-            delete objData[i]['AccountList'];
+            filteredData[i].AccountListWrapper = accountWrapperList;
+            delete filteredData[i]['AccountList'];
         }
 
-        console.log('Saving work package data from saveDetails:', objData);
+        console.log('Saving work package data from saveDetails:', filteredData);
 
-        ApplicantPortal_Contoller.saveWorkPackageDet(objData, $rootScope.proposalId, $rootScope.stage, function (result, event) {
+        ApplicantPortal_Contoller.saveWorkPackageDet(filteredData, $rootScope.proposalId, $rootScope.stage, function (result, event) {
             debugger;
             console.log('Save work package result:', result);
             if (event.status && result === 'success') {
@@ -4738,8 +4837,35 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
     $scope.saveWPDeliverablesData = function () {
         var objData = JSON.parse(JSON.stringify($scope.wpDeliverablesTableList));
-        for (var i = 0; i < objData.length; i++) {
-            var wp = objData[i];
+
+        // Filter out empty work packages to prevent creating extra empty records
+        var filteredData = objData.filter(function (wp) {
+            // Consider a work package valid if it has any of the following:
+            // - An ID (already saved)
+            // - A title
+            // - TRL levels
+            // - Start/End months
+            // - Deliverables
+            return (wp.Id && wp.Id !== '') ||
+                (wp.title && wp.title.trim() !== '') ||
+                (wp.trlFrom && wp.trlFrom !== '') ||
+                (wp.trlTo && wp.trlTo !== '') ||
+                (wp.wpStartMonth && wp.wpStartMonth !== '') ||
+                (wp.wpEndMonth && wp.wpEndMonth !== '') ||
+                (wp.deliverables && wp.deliverables.length > 0);
+        });
+
+        console.log('Filtered work packages for saving:', filteredData);
+        console.log('Original work packages count:', objData.length, 'Filtered count:', filteredData.length);
+
+        // If no valid work packages exist, don't proceed with saving
+        if (filteredData.length === 0) {
+            console.log('No valid work packages to save');
+            return;
+        }
+
+        for (var i = 0; i < filteredData.length; i++) {
+            var wp = filteredData[i];
             var count = 0;
             if (wp.AccountList) {
                 for (var k = 0; k < wp.AccountList.length; k++) {
@@ -4813,8 +4939,8 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             }
         }
         var dataToSend = [];
-        for (var i = 0; i < objData.length; i++) {
-            var wp = objData[i];
+        for (var i = 0; i < filteredData.length; i++) {
+            var wp = filteredData[i];
             var accountWrapperList = [];
             if (wp.AccountList) {
                 for (var k = 0; k < wp.AccountList.length; k++) {
