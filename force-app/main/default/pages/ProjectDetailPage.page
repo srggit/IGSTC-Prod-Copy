@@ -443,7 +443,7 @@
 
                         <div class="col-md-6 mt-5">
                             <label class="pb-3 color-theme">
-                                Title des Antrages(In German) (Max. characters 600)
+                                Title des Antrages (In German) (Max. characters 600)
                             </label>
                             <span class="required-asterisk" style="color:red;">*</span>
                             <input ng-focus="removeClass2('titleG')" id="titleG" name="Title In German"

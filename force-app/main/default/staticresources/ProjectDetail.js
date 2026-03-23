@@ -2945,7 +2945,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     attributes: {
                         innerHTML: `
                             <p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">
-                                Please upload Undertaking Format of Grant Acceptance before saving.
+                                Please upload Undertaking format of Grant Acceptance before saving.
                             </p>
                         `
                     }

@@ -337,7 +337,7 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
 
-                                    <input type="text" id="position" class="form-control" ng-model="allDetailList.Actual_Position__c" ng-disabled="proposalStage || (allDetailList.Actual_Position__c && allDetailList.Actual_Position__c.trim() !== '')"
+                                    <input type="text" id="position" class="form-control" ng-model="allDetailList.Actual_Position__c" ng-disabled="proposalStage"
                                         ng-focus="removeClass2('position')" ng-change="checkCharLimit(allDetailList, 'Actual_Position__c', 80)"
                                     />
 
@@ -361,7 +361,7 @@
                                     <label class="font-if">City
                                         <span class="text-danger ms-2">*</span>
                                     </label>
-                                    <input ng-focus="removeClass2('city')" id="city" class="form-control" ng-model="allDetailList.MailingCity" type="text" ng-disabled="proposalStage || (allDetailList.MailingCity && allDetailList.MailingCity.trim() !== '')"
+                                    <input ng-focus="removeClass2('city')" id="city" class="form-control" ng-model="allDetailList.MailingCity" type="text" ng-disabled="proposalStage"
                                     />
                                 </div>
                             </div>
@@ -372,8 +372,7 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
                                     <select class="form-control" aria-label="Default select example" ng-focus="removeClass2('country')" id="country" ng-model="allDetailList.MailingCountry"
-                                        required="true" ng-disabled="proposalStage || (allDetailList.MailingCountry && allDetailList.MailingCountry.trim() !== '')"
-                                        ng-change="onCountryChange()">
+                                        required="true" ng-disabled="proposalStage" ng-change="onCountryChange()">
                                         <option ng-repeat="staff in countrytype">{{staff}}</option>
                                     </select>
                                     <!-- <input class="form-control" ng-model="allDetailList.MailingCountry" type="text" ng-disabled="proposalStage" ng-change="onCountryChange()"/> -->
@@ -384,7 +383,7 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
                                     <select class="form-control" aria-label="Default select example" ng-focus="removeClass2('state')" id="state" ng-model="allDetailList.MailingState"
-                                        required="true" ng-disabled="proposalStage || (allDetailList.MailingState && allDetailList.MailingState.trim() !== '')">
+                                        required="true" ng-disabled="proposalStage">
                                         <option ng-repeat="staff in allDetailList.stateList">{{staff}}</option>
                                     </select>
                                     <!-- <input class="form-control" ng-model="allDetailList.MailingState" type="text" ng-disabled="proposalStage"/> -->
@@ -395,8 +394,7 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
                                     <input class="form-control" ng-focus="removeClass2('pCode')" id="pCode" ng-model="allDetailList.MailingPostalCode" type="text"
-                                        ng-disabled="proposalStage || (allDetailList.MailingPostalCode && allDetailList.MailingPostalCode.trim() !== '')"
-                                    />
+                                        ng-disabled="proposalStage" />
                                 </div>
                             </div>
                         </div>
@@ -424,23 +422,19 @@
                                                 </th>
                                                 <th class="pb-3 color-theme">Institution
                                                     <span class="required-asterisk" style="color:red;">*</span>
-                                                    <br/>
-                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 255)</span>
+                                                    <br/> (Max. char 255)
                                                 </th>
                                                 <th class="pb-3 color-theme">Specialization
                                                     <span class="required-asterisk" style="color:red;">*</span>
-                                                    <br/>
-                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 255)</span>
+                                                    <br/> (Max. char 255)
                                                 </th>
                                                 <th class="pb-3 color-theme">Start Year
                                                     <span class="required-asterisk" style="color:red;">*</span>
-                                                    <br/>
-                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 4)</span>
+                                                    <br/> (Max. char 4)
                                                 </th>
                                                 <th class="pb-3 color-theme">End Year
                                                     <span class="required-asterisk" style="color:red;">*</span>
-                                                    <br/>
-                                                    <span style="font-size: 13px; font-weight: normal; color: #666; margin-left: 4px;">(Max. char 4)</span>
+                                                    <br/> (Max. char 4)
                                                 </th>
                                                 <th ng-hide="proposalStage" class="text-center">
                                                     <i class="fas fa-plus-circle icon" ng-click="addEducationRow()"></i>

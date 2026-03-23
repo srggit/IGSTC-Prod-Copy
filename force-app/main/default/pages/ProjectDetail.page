@@ -597,7 +597,7 @@
                             <li class="ps-4"><i class="fa-solid fa-circle text-success me-3"></i>Download the Sample Document <a href="{{sampleDoc.Category_Template__r.Document_Public_Link__c}}" target="_blank">here.</a></li>
                         </div>-->
                         <li class="ps-4">
-                            <i class="fa-solid fa-circle text-success me-3"></i>Only PDF files allowed. (Max. size 4 MB)
+                            <i class="fa-solid fa-circle text-success me-3"></i>Only PDF files allowed. (Max. size 3.5 MB)
                         </li>
                     </div>
                 </div>
