@@ -400,13 +400,13 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         delete $scope.applicantDetails._charLimitMap;
 
         if ($scope.applicantDetails.KeyWords__c == undefined || $scope.applicantDetails.KeyWords__c == "") {
-            swal("Info", "Please Enter Keyword.", "info");
+            swal("Info", "Please enter Keyword.", "info");
             $("#key").addClass('border-theme');
             return;
         }
 
         if ($scope.applicantDetails.Summary__c == undefined || $scope.applicantDetails.Summary__c == "") {
-            swal("Info", "Please Enter Proposal Summary.", "info");
+            swal("Info", "Please enter Proposal Summary.", "info");
             return;
         }
         if ($scope.applicantDetails.Summary__c != undefined || $scope.applicantDetails.Summary__c != "") {
@@ -425,7 +425,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
         var yyyy = today.getFullYear();
 
         if (($scope.tentitiveStartDate == undefined || $scope.tentitiveStartDate == '') && $rootScope.secondstage == true) {
-            swal("Info", "Please Enter Tentative Date.", "info");
+            swal("Info", "Please enter Tentative Date.", "info");
             $("#TSD").addClass('border-theme');
             return;
         } else if (($scope.tentitiveStartDate != undefined || $scope.tentitiveStartDate != "") && $rootScope.secondstage == true) {
@@ -441,7 +441,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                 return;
             }
         }
-        $("#btnPreview").html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...');
+        $("#btnPreview").html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...').prop("disabled", true);
         debugger;
         ApplicantPortal_Contoller.insertApplication($scope.applicantDetails, $scope.selectedTheme, day, month, year, $rootScope.contactId, 'Two Plus Two', $rootScope.yearlyCallId, function (result, event) {
             debugger;
@@ -449,7 +449,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
             localStorage.setItem('proposalId', result.proposalId);
             localStorage.setItem('apaId', result.apa?.Id);
 
-            $("#btnPreview").html('<i class="fa-solid fa-check me-2"></i>Save and Next');
+            $("#btnPreview").html('<i class="fa-solid fa-check me-2"></i>Save and Next').prop("disabled", false);
             /*
             if (event.status && result != null) {
                 debugger;

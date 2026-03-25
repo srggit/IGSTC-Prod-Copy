@@ -357,52 +357,43 @@
                 -->
 
                 <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-3 bg-color-list">
-                    <div class="col-md-12"><b>Document Required at stage 1 and 2</b></div>
-
-                    <div class="col-md-6">
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="font-if mb-3">
-                                    <!-- <b>Stage 1:</b> -->
-                                    <ul class="bullet-list">
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> DSIR Certificate</li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Project Proposal - Stage 1
-                                        </li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Undertaking for
-                                            Sensitivity-Security Regulations</li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Undertaking format towards
-                                            acceptance of Grant conditions and signing of Agreement</li>
-                                        <!-- <li><i class="fa-solid fa-circle bullet-icon"></i> Signature</li> -->
-                                    </ul>
-                                </label>
-                            </div>
-                        </div>
+                    <!-- Stage 1 - Single Column -->
+                    <div class="col-12" ng-show="proposalStageCheck === '1st Stage'">
+                        <div><b>Document Required at stage 1</b></div>
+                        <label class="font-if mb-3 mt-2">
+                            <ul class="bullet-list">
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> DSIR Certificate</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Project Proposal</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Undertaking for Sensitivity-Security Regulations</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Undertaking format towards acceptance of Grant conditions and signing of Agreement</li>
+                            </ul>
+                        </label>
                     </div>
 
+                    <!-- Stage 2 - Two Columns Side by Side -->
+                    <div class="col-md-6" ng-show="proposalStageCheck === '2nd Stage'">
+                        <div><b>Document Required at stage 1</b></div>
+                        <label class="font-if mb-3 mt-2">
+                            <ul class="bullet-list">
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> DSIR Certificate</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Project Proposal</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Undertaking for Sensitivity-Security Regulations</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Undertaking format towards acceptance of Grant conditions and signing of Agreement</li>
+                            </ul>
+                        </label>
+                    </div>
 
                     <div class="col-md-6" ng-show="proposalStageCheck === '2nd Stage'">
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <label class="font-if mb-3">
-                                    <!-- <b>Stage 2:</b> -->
-                                    <ul class="bullet-list">
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Project Proposal - Stage 2
-                                        </li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Letter of Consent</li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Budget Report</li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Quotation for Equipment /
-                                            Accessories</li>
-                                        <!-- <li> <b>(For Industry)</b> </li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
-                                            Financial Report - Year 1</li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
-                                            Financial Report - Year 2</li>
-                                        <li><i class="fa-solid fa-circle bullet-icon"></i> Annual
-                                            Financial Report - Year 3</li> -->
-                                    </ul>
-                                </label>
-                            </div>
-                        </div>
+                        <div><b>Document Required at stage 2</b></div>
+                        <label class="font-if mb-3 mt-2">
+                            <ul class="bullet-list">
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Project Proposal</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Project Description</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Letter of Consent</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Financial Report</li>
+                                <li><i class="fa-solid fa-circle bullet-icon"></i> Quotation for Equipment / Accessories</li>
+                            </ul>
+                        </label>
                     </div>
                 </div>
 
@@ -411,7 +402,7 @@
                     <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-5">
                         <div class="col-md-6 mt-5">
                             <label class="pb-3 color-theme">
-                                Project Acronym (Max. characters 300)
+                                Project Acronym (Max. chars 300)
                             </label>
                             <span class="required-asterisk" style="color:red;">*</span>
                             <input ng-focus="removeClass2('Acronym')" id="Acronym" name="Acronym" placeholder="Acronym"
@@ -421,13 +412,13 @@
 
                             <small class="text-danger" ng-if="applicantDetails._charLimitMap &&
                                         applicantDetails._charLimitMap.Acronym__c">
-                                Maximum 300 characters allowed
+                                Maximum 300 chars allowed
                             </small>
                         </div>
 
                         <div class="col-md-6 mt-5">
                             <label class="pb-3 color-theme">
-                                Title Of Proposal (Max. characters 600)
+                                Title Of Proposal (Max. chars 600)
                             </label>
                             <span class="required-asterisk" style="color:red;">*</span>
                             <input ng-focus="removeClass2('title')" id="title" name="Title Of Proposal"
@@ -437,13 +428,13 @@
 
                             <small class="text-danger" ng-if="applicantDetails._charLimitMap &&
                                         applicantDetails._charLimitMap.Title_Of__c">
-                                Maximum 600 characters allowed
+                                Maximum 600 chars allowed
                             </small>
                         </div>
 
                         <div class="col-md-6 mt-5">
                             <label class="pb-3 color-theme">
-                                Title des Antrages (In German) (Max. characters 600)
+                                Title des Antrages (In German) (Max. chars 600)
                             </label>
                             <span class="required-asterisk" style="color:red;">*</span>
                             <input ng-focus="removeClass2('titleG')" id="titleG" name="Title In German"
@@ -454,7 +445,7 @@
 
                             <small class="text-danger" ng-if="applicantDetails._charLimitMap &&
                                         applicantDetails._charLimitMap.Title_In_German__c">
-                                Maximum 600 characters allowed
+                                Maximum 600 chars allowed
                             </small>
                         </div>
 
@@ -560,7 +551,7 @@
 
                         <div class="col-md-12 mt-5">
                             <label class="pb-3 color-theme">
-                                <b>Summary (Max. characters Limit Without Space 1000)<span
+                                <b>Summary (Max. chars Limit Without Space 1000)<span
                                         class="required-asterisk text-danger">*</span></b>
                             </label>
                             <div>
@@ -576,7 +567,7 @@
                                     ng-disabled="!isCoordinator || isPartner"
                                     ng-change="readCharacter(applicantDetails.Summary__c,0)" name="ckSummary2"
                                     id="ckSummary" maxlength="1006"></ng-ckeditor>
-                                <span>Total characters : {{objRtf[0].charCount}}</span>
+                                <span>Total chars : {{objRtf[0].charCount}}</span>
                                 <span class="text-danger" ng-if="objRtf[0].errorStatus">maximum character limit is
                                     1000</span>
                             </div>
@@ -687,11 +678,11 @@
                             </div>
                             <div class="col-md-12 mt-4">
                                 <label class="control-label">
-                                    <b><span class="required-asterisk text-danger">*</span> Summary (Max. characters Limit 1000)</b>
+                                    <b><span class="required-asterisk text-danger">*</span> Summary (Max. chars Limit 1000)</b>
                                 </label>                                
                                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                                         <ng-ckeditor ng-model="applicantDetails.Summary__c" name="ckSummary2" id="ckSummary" ng-config="config" required="true" ng-required="applicantDetails.Summary__c" maxlength="1006"></ng-ckeditor>
-                                        <span ng-if="!formPrjDet.ckEditor.$valid" class="text-danger">maximum characters limit is 1000</span>
+                                        <span ng-if="!formPrjDet.ckEditor.$valid" class="text-danger">maximum chars limit is 1000</span>
                                 </div>
                             </div>
                         </div>

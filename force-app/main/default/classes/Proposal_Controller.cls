@@ -7909,7 +7909,7 @@ return null;
             
             if(parentId.getSObjectType().getDescribe().getName() == 'Contact' && proposalId != null){
                 getUserDoc = [SELECT name,id,Status__c,Attachment_Name__c,(select id from attachments order by createdDate DESC) from User_Document__c
-                              WHERE Applicant_Proposal_Association__c IN (SELECT Id from Applicant_Proposal_Association__c WHERE Proposals__c =:proposalId AND Contact__c =:parentId)];
+                              WHERE Applicant_Proposal_Association__c IN (SELECT Id from Applicant_Proposal_Association__c WHERE Proposals__c =:proposalId AND Contact__c =:parentId AND Is_Signatory__c=false)];
             }
             
             system.debug('getUserDoc----'+getUserDoc);

@@ -309,7 +309,7 @@
                                     />
 
                                     <small class="text-danger" ng-if="allDetailList._charLimitMap && allDetailList._charLimitMap.LastName">
-                                        Maximum 80 characters allowed
+                                        Maximum 80 chars allowed
                                     </small>
                                 </div>
 
@@ -343,7 +343,7 @@
 
                                     <small class="text-danger" ng-if="allDetailList._charLimitMap &&
                                             allDetailList._charLimitMap.Actual_Position__c">
-                                        Maximum 80 characters allowed
+                                        Maximum 80 chars allowed
                                     </small>
                                 </div>
 
@@ -353,8 +353,7 @@
                                         <span class="text-danger ms-2">*</span>
                                     </label>
                                     <input ng-focus="removeClass2('street')" id="street" class="form-control" ng-model="allDetailList.MailingStreet" type="text"
-                                        ng-disabled="proposalStage || (allDetailList.MailingStreet && allDetailList.MailingStreet.trim() !== '')"
-                                    />
+                                        ng-disabled="proposalStage" />
                                 </div>
 
                                 <div class="col-md-4">
@@ -458,7 +457,7 @@
 
                                                     <small class="text-danger" ng-if="row._charLimitMap &&
                                                             row._charLimitMap.Institution_Name__c">
-                                                        Maximum 255 characters allowed
+                                                        Maximum 255 chars allowed
                                                     </small>
                                                 </td>
 
@@ -474,7 +473,7 @@
 
                                                     <small class="text-danger" ng-if="row._charLimitMap &&
                                                             row._charLimitMap.Area_of_specialization__c">
-                                                        Maximum 255 characters allowed
+                                                        Maximum 255 chars allowed
                                                     </small>
                                                 </td>
 
@@ -489,7 +488,7 @@
                                                     />
 
                                                     <small class="text-danger" ng-if="row._charLimitMap && row._charLimitMap.Start_Year__c">
-                                                        Maximum 4 characters allowed
+                                                        Maximum 4 chars allowed
                                                     </small>
                                                 </td>
 
@@ -505,7 +504,7 @@
 
                                                     <small class="text-danger" ng-if="row._charLimitMap &&
                                                                 row._charLimitMap.End_Year__c">
-                                                        Maximum 4 characters allowed
+                                                        Maximum 4 chars allowed
                                                     </small>
                                                 </td>
 
@@ -564,7 +563,7 @@
                                                     />
 
                                                     <small class="text-danger" ng-if="row._charLimitMap && row._charLimitMap.Organization_Name__c">
-                                                        Maximum 255 characters allowed
+                                                        Maximum 255 chars allowed
                                                     </small>
                                                 </td>
 
@@ -578,7 +577,7 @@
                                                         ng-change="checkCharLimit(row, 'Position__c', 255)" />
 
                                                     <small class="text-danger" ng-if="row._charLimitMap && row._charLimitMap.Position__c">
-                                                        Maximum 255 characters allowed
+                                                        Maximum 255 chars allowed
                                                     </small>
                                                 </td>
 
@@ -594,7 +593,7 @@
                                                     />
 
                                                     <small class="text-danger" ng-if="row._charLimitMap && row._charLimitMap.Start_Year__c">
-                                                        Maximum 4 characters allowed
+                                                        Maximum 4 chars allowed
                                                     </small>
                                                 </td>
 
@@ -608,7 +607,7 @@
                                                         ng-change="checkCharLimit(row, 'End_Year__c', 4)" />
 
                                                     <small class="text-danger" ng-if="row._charLimitMap && row._charLimitMap.End_Year__c">
-                                                        Maximum 4 characters allowed
+                                                        Maximum 4 chars allowed
                                                     </small>
                                                 </td>
 
@@ -763,7 +762,7 @@
                                                 <input class="form-control" ng-model="contact.Actual_Position__c" type="text" maxlength="80" ng-disabled="proposalStage"
                                                     ng-change="checkCharLimit(contact, 'Actual_Position__c', 80)"/>
                                                 <small class="text-danger" ng-if="contact._charLimitMap && contact._charLimitMap.Actual_Position__c">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
                                             </div>
                                             <div class="col-md-4">

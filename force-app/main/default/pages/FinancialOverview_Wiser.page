@@ -623,7 +623,7 @@
                                         Max limit: 250 characters (Current: {{budgetTravel.description.length}})
                                     </small>
                                 </td>
-                                <td class="orange-text">Travel cost per visit</td>
+                                <td class="orange-text">Travel Cost per visit</td>
                                 <td class="orange-text" style="text-align: right;">{{(mailingCountry === 'India' ? formatIndianNumber(budgetTravel.costYear1, 2) : (mailingCountry
                                     === 'Germany' ? formatGermanNumber(budgetTravel.costYear1, 2) : (budgetTravel.costYear1
                                     | number:2)))}}

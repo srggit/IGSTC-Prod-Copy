@@ -386,7 +386,7 @@ return 'exception: ' + e.getMessage() + ' line no. ' + e.getLineNumber();
     
     //changed by Karthik KE
     // Upsert Method for WiserApplicationPage
-    public String insertApplicantDetails(contact conRec, Account accDet, integer birthYear, integer birthMonth, integer birthDay, String campaignId) {
+    public String insertApplicantDetailsold(contact conRec, Account accDet, integer birthYear, integer birthMonth, integer birthDay, String campaignId) {
         try {
             upsert accDet;
             
@@ -483,6 +483,22 @@ return 'exception: ' + e.getMessage() + ' line no. ' + e.getLineNumber();
             
         } catch (Exception e) {
             return e.getMessage() + ' Line: ' + e.getLineNumber();
+        }
+    }
+    
+    public string insertApplicantDetails(contact conRec, Account accDet, integer birthYear, integer birthMonth, integer birthDay, String campaignId){
+        Try{
+            upsert accDet;
+            if (birthYear != 0) {
+                conRec.Birthdate = Date.newInstance(birthYear, birthMonth, birthDay);
+            }
+            
+            upsert conRec;
+            
+            return campaignId;
+        }
+        catch(Exception e){
+            return campaignId;
         }
     }
     

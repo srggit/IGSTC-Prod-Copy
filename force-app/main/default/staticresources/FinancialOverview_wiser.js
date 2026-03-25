@@ -3115,8 +3115,8 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
         // Year 1
         let researchStayCostYear1Item = {
             Index__c: 2,
-            Description__c: 'Research Stay Per diem cost',
-            Expense_Description_2__c: $scope.budgetResearchStay.description || '', // Store description in Expense_Description_2__c
+            Description__c: 'Research Stay Cost',
+            //Expense_Description_2__c: $scope.budgetResearchStay.description || '', // Store description in Expense_Description_2__c
             Year1_Expense__c: $scope.budgetResearchStay.costYear1 || 0,
             Year2_Expense__c: 0,
             Year3_Expense__c: 0,
@@ -3132,8 +3132,8 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
         if ($rootScope.proposalDurationMonths >= 24) {
             let researchStayCostYear2Item = {
                 Index__c: 2,
-                Description__c: 'Research Stay Per diem cost',
-                Expense_Description_2__c: $scope.budgetResearchStay.description || '', // Store description in Expense_Description_2__c
+                Description__c: 'Research Stay Cost',
+                //Expense_Description_2__c: $scope.budgetResearchStay.description || '', // Store description in Expense_Description_2__c
                 Year1_Expense__c: 0,
                 Year2_Expense__c: $scope.budgetResearchStay.costYear2 || 0,
                 Year3_Expense__c: 0,
@@ -3150,8 +3150,8 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
         if ($rootScope.proposalDurationMonths === 36) {
             let researchStayCostYear3Item = {
                 Index__c: 2,
-                Description__c: 'Research Stay Per diem cost',
-                Expense_Description_2__c: $scope.budgetResearchStay.description || '', // Store description in Expense_Description_2__c
+                Description__c: 'Research Stay Cost',
+                //Expense_Description_2__c: $scope.budgetResearchStay.description || '', // Store description in Expense_Description_2__c
                 Year1_Expense__c: 0,
                 Year2_Expense__c: 0,
                 Year3_Expense__c: $scope.budgetResearchStay.costYear3 || 0,
@@ -3167,7 +3167,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
         // Travel - Create separate line items for each year
         // Year 1
         let travelYear1Item = {
-            Description__c: 'Travel cost per visit',
+            Description__c: 'Travel Cost per visit',
             Expense_Description_2__c: $scope.budgetTravel.description || '', // Store description in Expense_Description_2__c
             Year1_Expense__c: $scope.budgetTravel.costYear1 || 0,
             Year2_Expense__c: 0,
@@ -3183,7 +3183,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
         // Year 2 - only if duration is 24 or 36 months
         if ($rootScope.proposalDurationMonths >= 24) {
             let travelYear2Item = {
-                Description__c: 'Travel cost per visit',
+                Description__c: 'Travel Cost per visit',
                 Expense_Description_2__c: $scope.budgetTravel.description || '', // Store description in Expense_Description_2__c
                 Year1_Expense__c: 0,
                 Year2_Expense__c: $scope.budgetTravel.costYear2 || 0,
@@ -3200,7 +3200,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
         // Year 3 - only if duration is 36 months
         if ($rootScope.proposalDurationMonths === 36) {
             let travelYear3Item = {
-                Description__c: 'Travel cost per visit',
+                Description__c: 'Travel Cost per visit',
                 Expense_Description_2__c: $scope.budgetTravel.description || '', // Store description in Expense_Description_2__c
                 Year1_Expense__c: 0,
                 Year2_Expense__c: 0,
@@ -3301,7 +3301,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                 let costYear1Item = {
                     Index__c: 2,
                     Description__c: 'Renumeration/Fellowship',
-                    Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c
+                    // Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c - COMMENTED: Only store on No. of Positions
                     Salary_Month__c: staff.costYear1 || 0,
                     Year1_Expense__c: staff.costYear1 || 0,
                     Year2_Expense__c: 0,
@@ -3319,7 +3319,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                     let costYear2Item = {
                         Index__c: 2,
                         Description__c: 'Renumeration/Fellowship',
-                        Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c
+                        // Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c - COMMENTED: Only store on No. of Positions
                         Salary_Month__c: staff.costYear2 || 0,
                         Year1_Expense__c: 0,
                         Year2_Expense__c: staff.costYear2 || 0,
@@ -3338,7 +3338,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                     let costYear3Item = {
                         Index__c: 2,
                         Description__c: 'Renumeration/Fellowship',
-                        Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c
+                        // Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c - COMMENTED: Only store on No. of Positions
                         Salary_Month__c: staff.costYear3 || 0,
                         Year1_Expense__c: 0,
                         Year2_Expense__c: 0,
@@ -3357,7 +3357,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                 let hoursYear1Item = {
                     Index__c: 3,
                     Description__c: 'Number of hour/week/days/month',
-                    Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c
+                    // Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c - COMMENTED: Only store on No. of Positions
                     Person_Month__c: staff.hoursYear1 || 0,
                     Year1_Expense__c: staff.hoursYear1 || 0,
                     Year2_Expense__c: 0,
@@ -3376,7 +3376,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                     let hoursYear2Item = {
                         Index__c: 3,
                         Description__c: 'Number of hour/week/days/month',
-                        Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c
+                        // Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c - COMMENTED: Only store on No. of Positions
                         Person_Month__c: staff.hoursYear2 || 0,
                         Year1_Expense__c: 0,
                         Year2_Expense__c: staff.hoursYear2 || 0,
@@ -3396,7 +3396,7 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
                     let hoursYear3Item = {
                         Index__c: 3,
                         Description__c: 'Number of hour/week/days/month',
-                        Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c
+                        // Expense_Description_2__c: staff.description || '', // Store description in Expense_Description_2__c - COMMENTED: Only store on No. of Positions
                         Person_Month__c: staff.hoursYear3 || 0,
                         Year1_Expense__c: 0,
                         Year2_Expense__c: 0,

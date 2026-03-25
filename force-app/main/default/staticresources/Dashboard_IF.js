@@ -539,6 +539,10 @@ $scope.getActiveCampaignData();
         
     $scope.objProposal.Campaign__c = $rootScope.campaignId;
     $scope.objProposal.yearly_Call__c = $rootScope.yearlyCallId;
+
+     $("#btnIFSave")
+    .html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...')
+    .prop("disabled", true);
     ApplicantPortal_Contoller.updateIndusrianFellowshipBasicDet($rootScope.campaignId,$rootScope.candidateId,$scope.objContact, 
           birthDay,birthMonth,birthYear,
           phdEnrollYear,phdEnrollMonth,phdEnrollDay,
@@ -557,6 +561,9 @@ $scope.getActiveCampaignData();
                    
                    
              }
+             $("#btnIFSave")    
+            .html('<i class="fa-solid fa-check me-2"></i>Save and Next')
+            .prop("disabled", false);
               swal({
                 title: "Basic Details",
                 text: "Basic details saved successfully.",
@@ -568,6 +575,9 @@ $scope.getActiveCampaignData();
             }
             else
             {
+            $("#btnIFSave")    
+            .html('<i class="fa-solid fa-check me-2"></i>Save and Next')
+            .prop("disabled", false);
               swal({
                 title: "Basic Details",
                 text: "Exception!",

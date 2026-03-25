@@ -58,7 +58,7 @@ public class KeywordFormatter {
         // Query APA records with their related Proposal data
         List<Applicant_Proposal_Association__c> relatedAPAs = [
             SELECT Id, 
-                   Expected_Deliverables_Points__c,
+                   Expected_Deliverables_Points__c,Proposals__r.Research_Approach_Objectives__c,
                    Proposals__c,
                    Proposals__r.Expected_Deliverables__c
             FROM Applicant_Proposal_Association__c 
@@ -84,14 +84,11 @@ public class KeywordFormatter {
                 
                 if (!proposalAPAs.isEmpty()) {
                     String deliverablesValue = proposalAPAs[0].Proposals__r.Expected_Deliverables__c;
+                    String deliverablesValue2 = proposalAPAs[0].Proposals__r.Research_Approach_Objectives__c;
                     
                     // Use the utility method to update all APAs for this proposal
-                    KeywordFormatter.updateFormattedFieldOnRecords(
-                        deliverablesValue,
-                        proposalAPAs,
-                        'Expected_Deliverables_Points__c'
-                    );
-                    
+                    KeywordFormatter.updateFormattedFieldOnRecords(deliverablesValue,proposalAPAs,'Expected_Deliverables_Points__c');
+                    KeywordFormatter.updateFormattedFieldOnRecords(deliverablesValue2,proposalAPAs,'Research_Approach_Objectives_Points__c');
                     apasToUpdate.addAll(proposalAPAs);
                 }
             }

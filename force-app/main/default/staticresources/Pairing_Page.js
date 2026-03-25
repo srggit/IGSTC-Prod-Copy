@@ -713,7 +713,10 @@ angular.module('cp_app').controller('pairing_ctrl', function($scope,$rootScope){
  
         //     delete ($scope.pairingDetails[i].Birthdate);
         // }
- 
+
+         $("#btnPairSave")
+        .html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...')
+        .prop("disabled", true);
         ApplicantPortal_Contoller.insertPairingDetails
         ($scope.conList,$rootScope.campaignId,$rootScope.yearlyCallId,$rootScope.contactId,$rootScope.proposalId, function(result, event){
             if(event.status){
@@ -724,6 +727,9 @@ angular.module('cp_app').controller('pairing_ctrl', function($scope,$rootScope){
                 if(result.apa && result.apa.Id) {
                     localStorage.setItem('apaId', result.apa.Id);
                 }
+                $("#btnPairSave")
+                .html('<i class="fa-solid fa-check me-2"></i>Save and Next')
+                .prop("disabled", false);
              swal({
                 title: "Pairing Details",
                 text: 'Pairing details have been successfully saved.',
@@ -743,6 +749,9 @@ angular.module('cp_app').controller('pairing_ctrl', function($scope,$rootScope){
          }
          else
               {
+                $("#btnPairSave")
+                .html('<i class="fa-solid fa-check me-2"></i>Save and Next')
+                .prop("disabled", false);
                 swal({
                   title: "Pairing Details",
                   text: "Exception!",

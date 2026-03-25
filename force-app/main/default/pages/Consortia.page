@@ -412,17 +412,17 @@
 
                                                 <!-- <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap &&
                                                         account.Contacts[0]._charLimitMap.FirstName">
-                                                    Maximum 40 characters allowed
+                                                    Maximum 40 chars allowed
                                                 </small> -->
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
                                                             && account.Contacts[0]._charLimitMap.FirstName">
-                                                    Maximum 40 characters allowed
+                                                    Maximum 40 chars allowed
                                                 </small>
 
                                                 <small class="text-danger" ng-if="account._charLimitMap 
                                                             && account._charLimitMap.Name">
-                                                    Maximum 40 characters allowed
+                                                    Maximum 40 chars allowed
                                                 </small>
 
                                             </div>
@@ -443,17 +443,17 @@
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap.LastName">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small> -->
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
                                                             && account.Contacts[0]._charLimitMap.LastName">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
 
                                                 <small class="text-danger" ng-if="account._charLimitMap 
                                                             && account._charLimitMap.Name">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
 
 
@@ -475,17 +475,17 @@
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap.Designation__c">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small> -->
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
                                                             && account.Contacts[0]._charLimitMap.Designation__c">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
 
                                                 <small class="text-danger" ng-if="account._charLimitMap 
                                                             && account._charLimitMap.Name">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
                                             </div>
 
@@ -546,12 +546,12 @@
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
                                                             && account.Contacts[0]._charLimitMap.Department">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
 
                                                 <small class="text-danger" ng-if="account._charLimitMap 
                                                             && account._charLimitMap.Name">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
                                             </div>
 
@@ -582,7 +582,7 @@
 
                                                 <small class="text-danger"
                                                     ng-if="account._charLimitMap && account._charLimitMap.Website">
-                                                    Maximum 255 characters allowed
+                                                    Maximum 255 chars allowed
                                                 </small>
                                             </div>
 
@@ -768,17 +768,17 @@
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap && account.Contacts[0]._charLimitMap.FirstName">
-                                                    Maximum 40 characters allowed
+                                                    Maximum 40 chars allowed
                                                 </small> -->
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
                                                             && account.Contacts[0]._charLimitMap.FirstName">
-                                                    Maximum 40 characters allowed
+                                                    Maximum 40 chars allowed
                                                 </small>
 
                                                 <!-- <small class="text-danger" ng-if="account._charLimitMap 
                                                             && account._charLimitMap.Name">
-                                                    Maximum 40 characters allowed
+                                                    Maximum 40 chars allowed
                                                 </small> -->
 
 
@@ -798,17 +798,17 @@
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap.LastName">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small> -->
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
                                                             && account.Contacts[0]._charLimitMap.LastName">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
 
                                                 <!-- <small class="text-danger" ng-if="account._charLimitMap 
                                                             && account._charLimitMap.Name">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small> -->
 
                                             </div>
@@ -826,17 +826,17 @@
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap.Designation__c">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small> -->
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
                                                             && account.Contacts[0]._charLimitMap.Designation__c">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
 
                                                 <!-- <small class="text-danger" ng-if="account._charLimitMap 
                                                             && account._charLimitMap.Name">
-                                                    Maximum 40 characters allowed
+                                                    Maximum 40 chars allowed
                                                 </small> -->
 
                                             </div>
@@ -894,17 +894,17 @@
 
                                                 <!-- <small class="text-danger"
                                                     ng-if="account.Contacts[0]._charLimitMap && account.Contacts[0]._charLimitMap.Department">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small> -->
 
                                                 <small class="text-danger" ng-if="account.Contacts[0]._charLimitMap 
                                                             && account.Contacts[0]._charLimitMap.Department">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
 
                                                 <small class="text-danger" ng-if="account._charLimitMap 
                                                             && account._charLimitMap.Name">
-                                                    Maximum 80 characters allowed
+                                                    Maximum 80 chars allowed
                                                 </small>
                                             </div>
 
@@ -931,7 +931,7 @@
                                                     ng-change="checkCharLimit(account, 'Website', 12)" />
 
                                                 <small class="text-danger" ng-if="account._charLimitExceeded">
-                                                    Maximum 12 characters allowed
+                                                    Maximum 12 chars allowed
                                                 </small>
                                             </div> -->
 
@@ -947,7 +947,7 @@
 
                                                 <small class="text-danger"
                                                     ng-if="account._charLimitMap && account._charLimitMap.Website">
-                                                    Maximum 255 characters allowed
+                                                    Maximum 255 chars allowed
                                                 </small>
                                             </div>
 

@@ -544,7 +544,7 @@
                                     </div> -->
                                     <div class="col-md-12 mb-4" ng-if="!proposalStage">
                                        
-                                        <button class="blue-btn mt-4 float-end" type="button" ng-click="clickBasicDetails()">
+                                        <button id="btnIFSave" class="blue-btn mt-4 float-end" type="button" ng-click="clickBasicDetails()">
                                             <i class="fa-solid fa-check me-2"></i>Save and Next</button>
                                          <button class="blue-btn mt-4 float-end me-2" type="button" ng-click="redirectToApplicantPortal()">
                                             <i class="fa-solid fa-check me-2"></i>Back</button>

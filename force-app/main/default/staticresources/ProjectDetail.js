@@ -312,7 +312,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             console.log('Rendering Gantt Chart with wpDeliverablesTableList:', $scope.wpDeliverablesTableList);
 
             if (!$scope.wpDeliverablesTableList || $scope.wpDeliverablesTableList.length === 0) {
-                document.getElementById('ganttChart').innerHTML =
+                document.getElementById($scope.getGanttChartId()).innerHTML =
                     '<div style="text-align: center; padding: 40px; color: #666;">No work packages found</div>';
                 return;
             }
@@ -411,7 +411,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             html += '</div>'; // End content-area
             html += '</div>'; // End gantt-container
 
-            document.getElementById('ganttChart').innerHTML = html;
+            document.getElementById($scope.getGanttChartId()).innerHTML = html;
 
         } catch (error) {
             console.error('Error rendering Gantt Chart:', error);
@@ -436,6 +436,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     */
 
 
+    // Function to get the correct Gantt chart ID based on current stage
+    $scope.getGanttChartId = function () {
+        return $rootScope.stage === '2nd Stage' ? 'ganttChartStage2' : 'ganttChartStage1';
+    };
+
     // Function to update Gantt chart with current data (even unsaved)
     $scope.updateGanttChart = function () {
         // Get current work package data from the scope (including unsaved changes)
@@ -443,13 +448,13 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
         if (!currentWPData || currentWPData.length === 0) {
             // If no data, show empty state
-            document.getElementById('ganttChart').innerHTML =
+            document.getElementById($scope.getGanttChartId()).innerHTML =
                 '<div style="text-align: center; padding: 40px; color: #666;">Add work packages to see Gantt chart</div>';
             return;
         }
 
         // Show loading indicator
-        document.getElementById('ganttChart').innerHTML =
+        document.getElementById($scope.getGanttChartId()).innerHTML =
             '<div style="text-align: center; padding: 40px; color: #666;">Loading Gantt chart...</div>';
 
         // Convert current data to JSON string to send to Apex
@@ -487,7 +492,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.renderGanttChartWithData = function (ganttData) {
         try {
             if (!ganttData || ganttData.length === 0) {
-                document.getElementById('ganttChart').innerHTML =
+                document.getElementById($scope.getGanttChartId()).innerHTML =
                     '<div style="text-align: center; padding: 40px; color: #666;">No work packages to display</div>';
                 return;
             }
@@ -571,11 +576,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             html += '</div>'; // End content-area
             html += '</div>'; // End gantt-container
 
-            document.getElementById('ganttChart').innerHTML = html;
+            document.getElementById($scope.getGanttChartId()).innerHTML = html;
 
         } catch (error) {
             console.error('Error rendering Gantt Chart:', error);
-            document.getElementById('ganttChart').innerHTML =
+            document.getElementById($scope.getGanttChartId()).innerHTML =
                 '<div style="text-align: center; padding: 40px; color: red;">Error rendering chart</div>';
         }
     };

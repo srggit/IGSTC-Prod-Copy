@@ -328,15 +328,23 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
                                     CKEDITOR.config.readOnly = true;
                                 }
 
-                                swal(
-                                    'Success',
-                                    result.message,
-                                    'success'
-                                );
+                                console.log('result.message ====>', result.message);
+                                showSuccess(result.message)
+                                    .then(() => {
+                                        if (result.isProposalCompleted) {
+                                            $scope.redirectPageURL('Home');
+                                        }
+                                    });
 
-                                if (result.isProposalCompleted) {
-                                    $scope.redirectPageURL('Home');
-                                }
+                                // swal(
+                                //     'Success',
+                                //     result.message,
+                                //     'success'
+                                // );
+
+                                // if (result.isProposalCompleted) {
+                                //     $scope.redirectPageURL('Home');
+                                // }
 
                                 $scope.$apply();
                             }
@@ -374,6 +382,20 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
     //                                               {escape: true}
     //                                              )
     // }
+
+    function showSuccess(message) {
+        return swal({
+            title: "Success",
+            content: {
+                element: "div",
+                attributes: {
+                    innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                }
+            },
+            icon: "success",
+            button: "OK"
+        });
+    }
 
     $scope.uploadFile = function (type, userDocId, fileId, maxSize, minFileSize) {
         debugger;
