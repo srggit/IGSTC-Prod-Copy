@@ -170,6 +170,14 @@ angular.module('cp_app').controller('ReviewAndSubmitIF_Ctrl', function ($scope, 
     // $scope.getProjectdetils();
     $scope.submitProposalIF = function (saveType) {
         // $scope.redirectPageURL('Home');
+        
+        if (saveType === 's') {
+            // Signature check
+            if (!$scope.doc || !$scope.doc.userDocument || $scope.doc.userDocument.Status__c !== 'Uploaded') {
+                swal('Info', 'Please upload your Signature before submitting.', 'info');
+                return;
+            }            
+        }
         debugger
         if ($rootScope.proposalStage) {
             // $scope.redirectPageURL('Home');
@@ -458,7 +466,8 @@ angular.module('cp_app').controller('ReviewAndSubmitIF_Ctrl', function ($scope, 
             return;
         } */
         var fileReader = new FileReader();
-        var maxStringSize = 1048576;
+        //var maxStringSize = 1048576;
+        var maxStringSize = 1500000;
         fileReader.onloadend = function (e) {
           attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
           positionIndex = 0;

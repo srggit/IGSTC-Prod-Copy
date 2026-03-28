@@ -158,9 +158,44 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
     // ----------- Apply Button Popup Code - Start ------------ //
     $scope.showDocumentPopup = false;
+    $scope.showWhatToExpectPopup_2Plus2 = false;
+    $scope.showWhatToExpectPopup_WISER = false;
+    $scope.showWhatToExpectPopup_PECFAR = false;
+    $scope.showWhatToExpectPopup_IF = false;
     $scope.selectedProgram = null;
     $rootScope.userSelectedRML = false;
     $rootScope.userSelectedDSA = false;
+
+    $scope.openWhatToExpectPopup = function (p) {
+        debugger;
+        console.log('-------------- openWhatToExpectPopup --------------');
+        $scope.selectedProgram = p;
+        console.log('selectedProgram ===> ', $scope.selectedProgram);
+
+        if (p.name === '2+2 Call') {
+            $scope.showWhatToExpectPopup_2Plus2 = true;
+        }
+        else if (p.name === 'WISER') {
+            $scope.showWhatToExpectPopup_WISER = true;
+        }
+        else if (p.name === 'PECFAR') {
+            $scope.showWhatToExpectPopup_PECFAR = true
+        }
+        else if (p.name === 'Industrial Fellowships') {
+            $scope.showWhatToExpectPopup_IF = true;
+        }
+        else {
+            $scope.redirectToForm(p);
+        }
+
+    }
+
+    $scope.closeWhatToExpectPopup = function () {
+        $scope.showWhatToExpectPopup_2Plus2 = false;
+        $scope.showWhatToExpectPopup_WISER = false;
+        $scope.showWhatToExpectPopup_PECFAR = false;
+        $scope.showWhatToExpectPopup_IF = false
+    };
 
     $scope.openDocumentPopup = function (p) {
         debugger;
@@ -181,7 +216,12 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     //     $scope.showDocumentPopup = true;
     // };
 
-    $scope.dontShowAgain = function (p) {
+    $scope.cancelPopup = function () {
+        debugger;
+        $scope.showDocumentPopup = false;
+    }
+
+    $scope.dontShowAgain = function () {
         debugger;
 
         $rootScope.userSelectedDSA = true;
@@ -810,7 +850,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                     else {
                         disableEdit = new Date() > new Date(firstStageEnd);
                     }
-                   
+
                     /*const formattedDeadline = selectedDeadline ? new Date(selectedDeadline).toLocaleDateString('en-GB', {
                         timeZone: 'Asia/Kolkata',
                         day: '2-digit',
@@ -876,7 +916,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                         firstStageDeadline: formattedFirstStageDeadline,
                         secondStageDeadline: formattedSecondStageDeadline,
                         // Keep existing (for other programs)
-                        deadline: stage === '2nd Stage' ? formattedSecondStageDeadline: formattedFirstStageDeadline,
+                        deadline: stage === '2nd Stage' ? formattedSecondStageDeadline : formattedFirstStageDeadline,
                         // FLAG (BEST PRACTICE)
                         isTwoPlusTwo: campaignName === '2+2 Call',
                         icon: item?.Proposals__r?.Campaign__r?.Icon__c ?? "",

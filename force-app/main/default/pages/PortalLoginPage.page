@@ -736,7 +736,7 @@
                 <div class="form-row" style="display:flex; gap:15px;">
                     <div class="form-group" style="flex:1;">
                         <label class="form-label">
-                            <i class="fa-solid fa-flag"></i> Type of Applicant <span class="required">*</span>
+                            <i class="fa-solid fa-flag"></i> Country of applicant <span class="required">*</span>
                         </label>
                         <select class="form-input" ng-class="{'ng-invalid': errors.country}" ng-model="newUser.country">
                             <option value="India">India</option>

@@ -813,11 +813,11 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
                     return res;
                 }
 
-                if (String.isBlank(program)) {
+                /*if (String.isBlank(program)) {
                     res.put('success', false);
                     res.put('message', 'Program is required.');
                     return res;
-                }
+                }*/
                 // Find Contact by Email
                 Contact matchedContact;
                 List<Contact> contacts = [SELECT Id FROM Contact WHERE Email = :email LIMIT 1];
@@ -847,9 +847,13 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
                     Status = 'Pending',
                     Subject       = 'Support Ticket from Applicant Portal',
                     Origin        = 'Portal',
-                    Comments__c   = comment,
-                    Program__c    = program
+                    Comments__c   = comment
+                   // Program__c    = program
                 );
+                // Only set Program if provided
+                if (!String.isBlank(program)) {
+                    c.Program__c = program;
+                }
                 //  Tag Contact if found
                 if (matchedContact != null) {
                     c.ContactId = matchedContact.Id;

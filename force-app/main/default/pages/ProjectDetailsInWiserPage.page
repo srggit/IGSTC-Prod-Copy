@@ -533,7 +533,7 @@
                     <br></br>
                     <div class="row mx-5">
 
-                        <div class="col-md-12 alert bg-color-list" role="alert">
+                        <!-- <div class="col-md-12 alert bg-color-list" role="alert">
                             <div ng-show="!showFullInfoBox">
                                 <ul class="font-if">
                                     <li>
@@ -669,8 +669,81 @@
                             <a href="javascript:void(0);" ng-click="showFullInfoBox = false" class="text-primary mt-2" style="text-decoration: underline; cursor: pointer; display: inline-block;">
                                 <i class="fa-solid fa-chevron-up me-1"></i>Show less
                             </a>
+                            </div>
+                        </div> -->
+
+                        <div class="col-md-12 alert bg-color-list" role="alert">
+                            <h5 class="color-theme pb-4"><b>Instructions for submission of the application</b></h5>
+                            
+                            <ul class="font-if" style="list-style: none; padding-left: 0; margin-bottom: 0;">
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">Applicants must check their eligibility before applying for the grant.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">Applicants are advised to initiate their applications at least five days in advance to avoid any last-minute rush.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">The application must be submitted online via the "Application Portal" only.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">Both applicants (India and Germany) must register individually on the portal using their email addresses.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">Ensure that correct and active email addresses are used, as a verification link will be sent to complete registration.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">After successful registration, either applicant may log in and initiate the WISER application.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">The applicant who starts the application will be designated as the Primary Applicant.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">The Primary Applicant must add the Paired Applicant (India/Germany) within the application portal.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">The Paired Applicant will then receive a link via email to log in and complete their respective part of the application.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">Both applicants shall jointly access and complete the 'Paired Project Details' section. This is the only common section of the application shared by both applicants and must be completed collaboratively.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">Both applicants must, individually complete their respective parts, save the entries as a draft version.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">Only the Primary Applicant can upload the Project Proposal PDF in the Attachments section.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">The final submission can be done only by the Primary Applicant, and only after all sections have been duly completed by both paired applicants.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">It is the responsibility of the Primary Applicant to ensure that the Paired Applicant has fully completed their section before submission.</span>
+                                </li>
+                                <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">In case emails are not received or any technical issues are encountered, applicants should raise a ticket via 'Get Help' or 'Contact Us' in the IGSTC Application Portal. The IGSTC Support Team will respond within 48 hours.</span>
+                                </li>
+                                <li style="margin-bottom: 0; display: flex; align-items: flex-start;">
+                                    <i class="fa-solid fa-circle text-success" style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    <span style="flex: 1;">Applicants must strictly follow all instructions provided. Failure to comply may result in rejection of the application.</span>
+                                </li>
+                            </ul>
                         </div>
-                        </div>
+
+
 
 
                         <div class="col-md-6">

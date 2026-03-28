@@ -1602,18 +1602,16 @@
                             </div>
 
                             <!-- <div class="program-deadline">Application Deadline: {{p.deadline}}</div> -->
-                             <div class="program-deadline">
+                            <div class="program-deadline">
                                 <!-- For 2+2 Call -->
                                 <div ng-if="p.isTwoPlusTwo">
                                     <!-- 1st Stage -->
-                                    <div ng-if="p.firstStageDeadline"
-                                        ng-style="{'color': p.stage === '1st Stage' ? '#d32f2f' : '#9e9e9e',
+                                    <div ng-if="p.firstStageDeadline" ng-style="{'color': p.stage === '1st Stage' ? '#d32f2f' : '#9e9e9e',
                                             'font-weight': p.stage === '1st Stage' ? '400' : '400'}">
                                         1st Stage Deadline: {{p.firstStageDeadline}}
                                     </div>
                                     <!-- 2nd Stage -->
-                                    <div ng-if="p.secondStageDeadline"
-                                        ng-style="{'color': p.stage === '2nd Stage' ? '#d32f2f' : '#9e9e9e',
+                                    <div ng-if="p.secondStageDeadline" ng-style="{'color': p.stage === '2nd Stage' ? '#d32f2f' : '#9e9e9e',
                                             'font-weight': p.stage === '2nd Stage' ? '400' : '400'}">
                                         2nd Stage Deadline: {{p.secondStageDeadline}}
                                     </div>
@@ -1624,7 +1622,7 @@
                                 </div>
 
                             </div>
-                             
+
                             <div class="program-proposal"><i class="fa fa-id-card" aria-hidden="true"></i><span
                                     class="program-proposal-text">Proposal No: </span>{{p.PropName}}</div>
                             <!--<div class="program-desc"><i class="fa fa-file-text" aria-hidden="true"></i><span class="program-desc-text"> Title: </span>{{p.desc}}</div>-->
@@ -1701,12 +1699,12 @@
                             <div class="program-icon">
                                 <i class="{{p.icon}}"></i>
                             </div>
-                            <div class="program-title program-title2">{{p.name}}</div>                           
+                            <div class="program-title program-title2">{{p.name}}</div>
                             <!-- <div class="program-deadline program-deadline2">Application Deadline: <br /> {{p.deadline}}
                             </div> -->
                             <div class="program-deadline program-deadline2">
                                 <!-- For 2+2 Call -->
-                                <div ng-if="p.isTwoPlusTwo">    
+                                <div ng-if="p.isTwoPlusTwo">
                                     <div>
                                         Application Deadline:
                                     </div>
@@ -1719,7 +1717,7 @@
                                 </div>
                                 <!-- For other programs -->
                                 <div ng-if="!p.isTwoPlusTwo">
-                                    Application Deadline: <br/> {{p.deadline}}
+                                    Application Deadline: <br /> {{p.deadline}}
                                 </div>
                             </div>
                             <!-- <div class="program-desc">{{p.desc}}</div> -->
@@ -1733,6 +1731,13 @@
                                     ng-disabled="p.isExpired || (appliedPrograms && appliedPrograms.length > 0)">
                                     Apply
                                 </div> -->
+
+                                <!-- New Requirement - To Open Popup on 'What To Expect' Button Click -->
+                                <div class="btn apply-btn"
+                                    style="display: inline-flex; white-space: nowrap; min-width: 130px; justify-content: center;"
+                                    ng-click="openWhatToExpectPopup(p)">
+                                    What To Expect
+                                </div>
 
                                 <!-- New Requirement - To Open Popup on Apply Button Click -->
                                 <div class="btn apply-btn" ng-click="openDocumentPopup(p)"
@@ -1780,31 +1785,634 @@
                                     <i class="fa-solid fa-download"></i>
                                 </a>
                             </li>
-                            <!-- <li>5. Signature</li> -->
+                            <li>5. Signature</li>
                         </ul>
 
                         <ul>
                             <li> <b>Stage-2 Documents</b> </li>
                             <li>1. Project Proposal - Stage 2</li>
-                            <li>2. Project Description</li>
-                            <li>3. Letter of Consent</li>
-                            <li>4. Financial Report</li>
-                            <li>5. Quotation for Equipment / Accessories</li>
+                            <li>2. Letter of Consent</li>
+                            <li>3. Budget Report</li>
+                            <li>4. Quotation for Equipment / Accessories</li>
                         </ul>
 
-                        <!-- <ul>
+                        <ul>
                             <li> <b>(For Industry)</b></li>
                             <li>1. Annual Financial Report - Year 1</li>
                             <li>2. Annual Financial Report - Year 2</li>
                             <li>3. Annual Financial Report - Year 3</li>
-                        </ul> -->
+                        </ul>
 
                         <div class="popup-buttons">
                             <button class="btn btn-primary" ng-click="remindMeLater()">
                                 Remind me later
                             </button>
-                            <button class="btn btn-secondary" ng-click="dontShowAgain()">
+                            <button class="btn btn-primary" ng-click="dontShowAgain()">
                                 Don't show again
+                            </button>
+                            <button class="btn btn-secondary" ng-click="cancelPopup()">
+                                Cancel
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- What To Expect Popup Display for 2+2-->
+                <div class="what-to-expect-popup-overlay" ng-show="showWhatToExpectPopup_2Plus2">
+                    <div class="what-to-expect-popup-box">
+
+                        <!-- <h3>2+2 Call - What To Expect</h3> -->
+
+                        <div class="what-to-expect-content">
+                            <!-- New appended content starts here -->
+                            <h4>2+2 - What to Expect</h4>
+                            <ul>
+                                <li>1. Applicants are advised to initiate the proposal submission process at least five
+                                    days prior to the deadline to avoid last-minute complications.</li>
+                                <li>2. In case of any technical difficulties, please raise a ticket through the “Contact
+                                    Support” option. You may note that resolution of tickets may take up to 48 hours
+                                    during official working hours.</li>
+                                <li>3. Applicants are requested to ensure that the following documents are prepared and
+                                    readily available before initiating the proposal submission process:</li>
+                            </ul>
+
+                            <h5>1st Stage Proposal Submission</h5>
+                            <ul>
+                                <li> I. 1st Stage Project Proposal template
+                                    <a href="{!$Resource.Undertaking_for_Sensitivity_Security_Regulations}"
+                                        download="Undertaking_for_Sensitivity_Security_Regulations.docx"
+                                        style="margin-left:10px;"
+                                        onclick="this.setAttribute('download','Undertaking_for_Sensitivity_Security_Regulations.docx'); return true;">
+                                        [Download]
+                                    </a>
+                                </li>
+                                <li> II. DSIR Certificate</li>
+                                <li>III. Undertaking for Sensitivity-Security Regulations [Download]</li>
+                                <li> IV. Undertaking format towards acceptance of Grant conditions and signing of
+                                    Agreement.
+                                    <a href="{!$Resource.Undertaking_Format_of_Grant_Acceptance}"
+                                        download="Undertaking_Format_of_Grant_Acceptance.docx" style="margin-left:10px;"
+                                        onclick="this.setAttribute('download','Undertaking_Format_of_Grant_Acceptance.docx'); return true;">
+                                        [Download]
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <h5>2nd Stage Proposal Submission</h5>
+                            <ul>
+                                <li> I. 2nd Stage Project Proposal [Download]</li>
+                                <li> II. Letter of Consent</li>
+                                <li>III. Financial Statement</li>
+                                <li> IV. Quotation for Equipment/Accessories</li>
+                            </ul>
+
+                            <ul>
+                                <li>4. All applicants must complete their registration on the portal at the beginning.
+                                </li>
+                                <li>5. Only one project partner, designated as the Coordinator, shall initiate the
+                                    proposal
+                                    and add other project partners from registered applicants using drop-down option.
+                                    Once added, the respective partners will be able to access the proposal on their
+                                    individual dashboards and complete their respective sections.</li>
+                                <li>6. The Coordinator shall be solely responsible for the final submission of the
+                                    proposal, after all project partners have duly completed and submitted their
+                                    respective inputs.</li>
+                                <li>7. Please note that no modifications will be permitted once the proposal has been
+                                    submitted in the portal.</li>
+                                <li>8. The maximum permissible file size for each PDF upload is 4 MB.</li>
+                                <li>9. Signature files must be uploaded in JPG/JPEG format, with a maximum file size of
+                                    1 MB.</li>
+                            </ul>
+                            <!-- New appended content ends here -->
+                        </div>
+
+                        <div class="what-to-expect-popup-buttons">
+                            <button class="btn btn-primary" ng-click="closeWhatToExpectPopup()">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- What To Expect Popup Display for WISER-->
+                <div class="what-to-expect-popup-overlay" ng-show="showWhatToExpectPopup_WISER">
+                    <div class="what-to-expect-popup-box">
+
+                        <!-- <h3>WISER - What To Expect</h3> -->
+
+                        <div class="what-to-expect-content">
+
+                            <!-- WISER Section -->
+                            <h4>WISER - What to Expect</h4>
+                            <ul>
+                                <li>1. Applicants are advised to initiate their applications at least five days in
+                                    advance
+                                    to avoid last-minute rush.</li>
+                                <li>2. In case emails are not received or any technical issues are encountered,
+                                    applicants
+                                    should raise a ticket via ‘Get Help’ or ‘Contact Us’ in the IGSTC Application
+                                    Portal. The IGSTC Support Team will respond within 48 hours.</li>
+                                <li>3. The application must be submitted online via the “IGSTC Application Portal” only.
+                                </li>
+                                <li>4. Both applicants (India and Germany) must register individually on the portal
+                                    using
+                                    their email addresses and other details.</li>
+                                <li>5. Ensure that correct and active email addresses are used, as a verification link
+                                    will
+                                    be sent to complete registration.</li>
+                                <li>6. Applicants are requested to ensure that the following documents are prepared and
+                                    readily available prior to initiating the proposal submission process:</li>
+                            </ul>
+
+                            <h5>Required Documents</h5>
+                            <ul style="margin-left: 30px;">
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Passport Size Photo (JPG/JPEG, Min 30 KB &amp; Max 500 KB)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    No Objection Certificate (PDF, Max size 1 MB)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Signature (JPG/JPEG, Max 500 KB)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    2 Project Relevant Images (JPG/JPEG/PNG, Max size 1 MB, 1200x800 pixels)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Project Proposal PDF (PDF, Max size 4.5 MB &amp; 8 pages including references and
+                                    images)
+                                </li>
+                            </ul>
+
+                            <ul>
+                                <li>7. The Project Proposal PDF and No Objection Certificate (NOC) must be uploaded in
+                                    the
+                                    prescribed formats available on the WISER Forms page of the IGSTC website.</li>
+                                <li>8. After successful registration, either applicant may log in and initiate the WISER
+                                    application.</li>
+                                <li>9. The applicant who starts the application will be designated as the Primary
+                                    Applicant.</li>
+                                <li>10. The Primary Applicant must add the Paired Applicant (India/Germany) within the
+                                    application portal.</li>
+                                <li>11. The Paired Applicant will then receive a link via email to log in and complete
+                                    their
+                                    respective part of the application.</li>
+                                <li>12. Both applicants shall jointly access and complete the ‘Paired Project Details’
+                                    section. This is the only common section of the application shared by both
+                                    applicants and must be completed collaboratively.</li>
+                                <li>13. The project details must be duly filled in the relevant active fields in the
+                                    ‘Paired
+                                    Project Details’ section of the application and upload two Project Relevant Images
+                                    (e.g., Gantt chart, graphical abstract, conceptual diagram, or workflow). The same
+                                    proposal must also be uploaded as a Project Proposal PDF in the prescribed format
+                                    (PDF, maximum size 4.5 MB, up to 8 pages including references and images) in the
+                                    Attachments section by the Primary Applicant.</li>
+                                <li>14. In the Financial Overview section of the application, the budget table
+                                    (including
+                                    travel and research stay costs) must be completed in accordance with the budget
+                                    guidelines available on the WISER Forms page of the IGSTC website.</li>
+                                <li>15. Both applicants must, individually complete their respective parts, save the
+                                    entries
+                                    as a draft version.</li>
+                                <li>16. Only the Primary Applicant can upload the Project Proposal PDF in the
+                                    Attachments
+                                    section.</li>
+                                <li>17. The final submission can be done only by the Primary Applicant, and only after
+                                    all
+                                    sections have been duly completed by both paired applicants.</li>
+                                <li>18. Please note that no modifications will be permitted once the application has
+                                    been
+                                    submitted in the portal.</li>
+                                <li>19. It is the responsibility of the Primary Applicant to ensure that the Paired
+                                    Applicant has fully completed their section before submission.</li>
+                                <li>20. Applicants must strictly follow all instructions provided. Failure to comply may
+                                    result in rejection of the application.</li>
+                            </ul>
+                        </div>
+
+                        <div class="what-to-expect-popup-buttons">
+                            <button class="btn btn-primary" ng-click="closeWhatToExpectPopup()">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- What To Expect Popup Display for PECFAR-->
+                <div class="what-to-expect-popup-overlay" ng-show="showWhatToExpectPopup_PECFAR">
+                    <div class="what-to-expect-popup-box">
+
+                        <!-- <h3>PECFAR - What To Expect</h3> -->
+
+                        <div class="what-to-expect-content">
+
+                            <!-- PECFAR Section -->
+                            <h4>PECFAR - What to Expect</h4>
+                            <ul>
+                                <li>1. Applicants are advised to initiate their applications at least five days in
+                                    advance
+                                    to avoid last-minute rush.</li>
+                                <li>2. In case emails are not received or any technical issues are encountered,
+                                    applicants
+                                    should raise a ticket via ‘Get Help’ or ‘Contact Us’ in the IGSTC Application
+                                    Portal. The IGSTC Support Team will respond within 48 hours.</li>
+                                <li>3. The application must be submitted online via the “IGSTC Application Portal” only.
+                                </li>
+                                <li>4. Both applicants (India and Germany) must register individually on the portal
+                                    using
+                                    their email addresses and other details.</li>
+                                <li>5. Ensure that correct and active email addresses are used, as a verification link
+                                    will
+                                    be sent to complete registration.</li>
+                                <li>6. Applicants are requested to ensure that the following documents are prepared and
+                                    readily available prior to initiating the proposal submission process:</li>
+                            </ul>
+
+                            <ul style="margin-left: 30px;">
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Proof of Date of Birth (PDF, Max size 1 MB)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Educational Qualification certificates (PDF, Max size 1 MB)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Proof of Employment/Experience certificate (PDF, Max size 1 MB)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    No Objection Certificate (PDF, Max size 1 MB)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Passport Size Photo (JPG/JPEG, Min 30 KB &amp; Max 500 KB)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Signature (JPG/JPEG, Max 500 KB)
+                                </li>
+                            </ul>
+
+                            <ul>
+                                <li>7. No Objection Certificate (NOC) must be uploaded in the prescribed format
+                                    available
+                                    on the PECFAR Forms page of the IGSTC website.</li>
+                                <li>8. After successful registration, either applicant may log in and initiate the
+                                    PECFAR
+                                    application.</li>
+                                <li>9. The applicant who starts the application will be designated as the Primary
+                                    Applicant.</li>
+                                <li>10. The Primary Applicant must add the Paired Applicant (India/Germany) within the
+                                    application portal.</li>
+                                <li>11. The Paired Applicant will then receive a link via email to log in and complete
+                                    their
+                                    respective part of the application.</li>
+                                <li>12. Both applicants must, individually complete their respective parts, save the
+                                    entries
+                                    as a draft version.</li>
+                                <li>13. The final submission can be done only by the Primary Applicant.</li>
+                                <li>14. It is the responsibility of the Primary Applicant to ensure that the Paired
+                                    Applicant has fully completed their section before submission.</li>
+                                <li>15. Please note that no modifications will be permitted once the application has
+                                    been
+                                    submitted in the portal.</li>
+                                <li>16. Applicants must strictly follow all instructions provided. Failure to comply may
+                                    result in rejection of the application.</li>
+                            </ul>
+                        </div>
+
+                        <div class="what-to-expect-popup-buttons">
+                            <button class="btn btn-primary" ng-click="closeWhatToExpectPopup()">
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- What To Expect Popup Display for IF -->
+                <div class="what-to-expect-popup-overlay" ng-show="showWhatToExpectPopup_IF">
+                    <div class="what-to-expect-popup-box">
+
+                        <!-- <h3>Industrial Fellowship - What To Expect</h3> -->
+
+                        <div class="what-to-expect-content">
+
+                            <!-- IGSTC Industrial Fellowship Section -->
+                            <div class="igstc-logo" style="text-align: center; margin-bottom: 15px;">
+                                <img src="{!URLFOR($Resource.Logo)}" alt="IGSTC Logo"
+                                    style="height: 60px; width: auto; display: inline-block;" />
+                            </div>
+                            <h4 style="text-align: center; margin-top: 0; margin-bottom: 10px;">
+                                IGSTC Industrial Fellowship
+                            </h4>
+
+                            <h5 style="text-align: center;">What to Expect Before You Start Your Application</h5>
+                            <p style="color: red;"><em><b>*Kindly note below is a guideline for you to be prepared
+                                        before starting the
+                                        application. It gives a symbolic representation of different sections of the
+                                        application. But the most up-to-date information will be available inside
+                                        the
+                                        various sections of the application portal.</b></em></p>
+
+                            <p>Applying for the IGSTC fellowship is a structured, multi-step process. To ensure a
+                                smooth
+                                experience, please familiarise yourself following before you begin:</p>
+
+                            <h5>1. Registration (First Step)</h5>
+                            <p>Before starting the application, you must register/login via the IGSTC portal:</p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Click on “Sign Up” if you are a new user
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Provide your email ID and create a password
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Verify using captcha and complete registration
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Existing users can directly “Sign In”
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    In case of issues, use “Forgot Password” or “Contact Support”
+                                </li>
+                            </ul>
+
+                            <h5>2. Application Structure</h5>
+                            <p>The application is divided into multiple sections that must be completed
+                                sequentially:
+                            </p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Basic Details
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Personal Information
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Parent Organisation Details
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Education Details
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Employment Details
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Achievements
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Host Organisation Details
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Project Details
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Attachments
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Final Review &amp; Submission
+                                </li>
+                            </ul>
+
+                            <h5>3. Documents You Should Keep Ready</h5>
+                            <p>Prepare the following documents in advance (PDF format, <b>max size: 1 MB each</b>):
+                            </p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Consent Letter from the Host Organization
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    NOC from the Head of the institution: NOC Format
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Recommendation letter from the mentor at parent organisation
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Two reference letters from established researchers in the field for PDIF
+                                    applicants
+                                    not having affiliation with an institution
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Proof of Date of Birth (Scan copy of Passport/ Aadhar Card)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Proof of Education Qualifications arranged in reverse chronological order
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Proof of Employment
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Passport size photo in jpg/jpeg with the following size limits (30 Kb - max 500
+                                    Kb)
+                                </li>
+                            </ul>
+
+                            <h5>4. Content Preparation (Important)</h5>
+                            <p>Several sections require detailed write-ups. It is strongly recommended to:</p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Avoid formatting issues in the online editor
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Stay within character limits:
+                                    <ul>
+                                        <li> <i class="fa-regular fa-circle text-success"
+                                                style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                            Abstract (Max ~500 characters without space)
+                                        </li>
+                                        <li> <i class="fa-regular fa-circle text-success"
+                                                style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                            Statement of Purpose (Max ~1200 characters without space)
+                                        </li>
+                                        <li> <i class="fa-regular fa-circle text-success"
+                                                style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                            Work Plan (Max ~2000 characters without space)
+                                        </li>
+                                        <li> <i class="fa-regular fa-circle text-success"
+                                                style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                            Organisation Portfolio (Max ~250 characters without space)
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <h5>5. Academic &amp; Professional Details</h5>
+                            <p>Be ready with:</p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Degrees in reverse chronological order (PhD first)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    CGPA/Percentage (with scale clearly mentioned)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Thesis details (title, supervisor, duration)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Employment history (latest first)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Details of ongoing research/project
+                                </li>
+                            </ul>
+
+                            <h5>6. Project Information Requirements</h5>
+                            <p>You will need to clearly define:</p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Problem statement and motivation
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Objectives (max 4)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Detailed work plan (with timelines)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Expected outcomes (max 6)
+                                </li>
+                            </ul>
+                            <p>Ensure clarity, feasibility, and alignment with the fellowship goals.</p>
+
+                            <h5>7. Host &amp; Parent Organisation Details</h5>
+                            <p>Keep the following handy:</p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Organisation name, address, and country
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Mentor details (Name, designation, contact info)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Brief portfolio of both organisations
+                                </li>
+                            </ul>
+
+                            <h5>8. Eligibility &amp; Key Checks</h5>
+                            <p>Before starting:</p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Ensure you meet age and eligibility criteria
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Confirm PhD status (awarded/submitted)
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Verify institutional affiliation requirements
+                                </li>
+                            </ul>
+
+                            <h5>9. Technical Tips</h5>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Use a <b>stable internet connection</b>
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Preferred browsers: Chrome / Firefox
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    If the portal hangs, try: <b>Ctrl + Shift + R (Hard Refresh)</b>
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Save progress frequently
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Contact Support or Raise a Ticket in case of any issues, which would be
+                                    responded/resolved in 48 hrs.
+                                </li>
+                            </ul>
+
+                            <h5>10. Final Submission</h5>
+                            <p>Before submitting:</p>
+                            <ul>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Review all sections carefully
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Ensure all documents are uploaded
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Confirm declaration and signature
+                                </li>
+                                <li> <i class="fa-solid fa-circle text-success"
+                                        style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
+                                    Once submitted, changes may not be allowed
+                                </li>
+                            </ul>
+
+                            <h5>11. Time Commitment</h5>
+                            <p>Completing the application may take 2–4 hours, depending on preparedness.</p>
+
+                            <h5>Pro Tip</h5>
+                            <p>Applicants who prepare all documents and content in advance complete the application
+                                <b>3x faster and with fewer errors</b>.
+                            </p>
+
+                        </div>
+
+                        <div class="what-to-expect-popup-buttons">
+                            <button class="btn btn-primary" ng-click="closeWhatToExpectPopup()">
+                                Close
                             </button>
                         </div>
 
@@ -2197,7 +2805,7 @@
                                         </div>
 
                                         <!-- ===== Signature ===== -->
-                                        <div class="signature">
+                                        <!-- <div class="signature">
                                             <label>Signature</label><br />
                                             <input type="file" id="signatureFile" />
                                             <button type="button" class="upload-btn"
@@ -2207,7 +2815,7 @@
                                                 • Dimension: 200 × 230 pixels<br />
                                                 • Size: 20 KB – 50 KB
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
