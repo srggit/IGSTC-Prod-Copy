@@ -72,12 +72,12 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
 
     $scope.getDeclarationfields = function () {
         debugger;
-        ApplicantPortal_Contoller.getDeclarationfields($rootScope.contactId, function (result, event) {
+        ApplicantPortal_Contoller.getDeclarationfieldsinWiser($rootScope.contactId, $rootScope.apaId, function (result, event) {
             debugger;
             if (event.status && result) {
                 if (result != null) {
-                    if (result.Declaration_Sign_Date__c != undefined) {
-                        $scope.SignDate = new Date(result.Declaration_Sign_Date__c);
+                    if (result.Proposed_Date__c != undefined) {
+                        $scope.SignDate = new Date(result.Proposed_Date__c);
                     }
                     $scope.decDetails = result;
                 }
@@ -254,6 +254,7 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
             $scope.$apply();
         });
     }
+
     $scope.finalSubmitWiser = function () {
         debugger;
 
@@ -289,25 +290,7 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    // ApplicantPortal_Contoller.finalSubmitWiser($rootScope.projectId, $rootScope.contactId, day, month, year, function (result, event) {
-                    // ApplicantPortal_Contoller.finalSubmitWiser($rootScope.proposalId, $rootScope.contactId, $rootScope.apaId, day, month, year, function (result, event) {
-                    //     if (event.status) {
-                    //         debugger;
-                    //         $rootScope.proposalStage = true;
-                    //         CKEDITOR.config.readOnly = true;
-                    //         swal(
-                    //             'Success',
-                    //             'Your proposal has been submitted successfully.',
-                    //             'success'
-                    //         );
-                    //         $scope.redirectPageURL('Home');
-                    //         $scope.proposalDetails = result;
-                    //         $scope.$apply();
-                    //     }
-                    // },
-                    //     { escape: true }
-                    // );
-
+                    /*
                     ApplicantPortal_Contoller.finalSubmitWiser(
                         $rootScope.proposalId, $rootScope.contactId, $rootScope.apaId, day, month, year, function (result, event) {
                             if (event.status) {
@@ -329,59 +312,84 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
                                 }
 
                                 console.log('result.message ====>', result.message);
+                                
                                 showSuccess(result.message)
                                     .then(() => {
                                         if (result.isProposalCompleted) {
                                             $scope.redirectPageURL('Home');
                                         }
                                     });
-
-                                // swal(
-                                //     'Success',
-                                //     result.message,
-                                //     'success'
-                                // );
-
-                                // if (result.isProposalCompleted) {
-                                //     $scope.redirectPageURL('Home');
-                                // }
-
                                 $scope.$apply();
                             }
                         },
                         { escape: true }
                     );
+                    */
+                    ApplicantPortal_Contoller.finalSubmitWiser(
+                        $rootScope.proposalId,
+                        $rootScope.contactId,
+                        $rootScope.apaId,
+                        day, month, year,
+                        function (result, event) {
+                            if (event.status) {
+                                debugger;
 
+                                // Restore button
+                                $("#btnPreview").html('<i class="fa-solid fa-check me-2"></i>Submit');
+                                $("#btnPreview").prop('disabled', false);
+
+                                // Lock current user if submitted
+                                $rootScope.isCurrentUserSubmitted = result.isCurrentUserSubmitted;
+
+                                // Lock entire proposal if completed
+                                $rootScope.proposalStage = result.isProposalCompleted;
+
+                                // Lock editor accordingly
+                                if (result.isCurrentUserSubmitted || result.isProposalCompleted) {
+                                    CKEDITOR.config.readOnly = true;
+                                }
+
+                                console.log('result.message ====>', result.message);
+
+                                // Handle message based on response
+                                if (result.message === 'COMPLETED: Your application has been submitted successfully. All applicants have submitted.') {
+                                    showSuccess(result.message)
+                                        .then(() => {
+                                            $scope.$apply();
+                                            if (result.isProposalCompleted) {
+                                                $scope.redirectPageURL('Home');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error showing success message:', error);
+                                            $scope.$apply();
+                                        });
+                                } else {
+                                    showInfo(result.message)
+                                        .then(() => {
+                                            $scope.$apply();
+                                            if (result.isProposalCompleted) {
+                                                $scope.redirectPageURL('Home');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error showing info message:', error);
+                                            $scope.$apply();
+                                        });
+                                }
+                            } else {
+                                // Handle error case
+                                console.error('Error in finalSubmitWiser:', event);
+                                showError('An error occurred while submitting. Please try again.');
+                                $("#btnPreview").html('<i class="fa-solid fa-check me-2"></i>Submit');
+                                $("#btnPreview").prop('disabled', false);
+                                $scope.$apply();
+                            }
+                        }
+                    );
                 }
             });
-
-        // ApplicantPortal_Contoller.finalSubmitWiser($rootScope.projectId,day,month,year, function(result, event){
-        //     if(event.status){
-        //      debugger;
-        //      $scope.redirectPageURL('Home');
-        //      $scope.grantList = result;
-        //      $scope.$apply();  
-        //  }
-        // },
-        // {escape:true}
-        // )
     }
-
-    // $scope.createUserDocument = function(){
-    //     debugger;
-    //     ApplicantPortal_Contoller.createUserDocument("", $rootScope.contactId, $rootScope.projectId,"", function(result,event){
-    //         debugger;
-    //         if(event.status && result){
-    //             if(result != null){
-    //                 $scope.uploadFile('sign',result,'');
-    //             }
-    //             debugger;
-    //             $scope.$apply();
-    //         }
-    //     },
-    //                                               {escape: true}
-    //                                              )
-    // }
 
     function showSuccess(message) {
         return swal({
@@ -393,6 +401,20 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
                 }
             },
             icon: "success",
+            button: "OK"
+        });
+    }
+
+    function showInfo(message) {
+        return swal({
+            title: "",
+            content: {
+                element: "div",
+                attributes: {
+                    innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                }
+            },
+            icon: "",
             button: "OK"
         });
     }

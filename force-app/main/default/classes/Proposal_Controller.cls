@@ -186,7 +186,7 @@ return proposalRecord;
     
     
     public static List<Thematic_Area__c> fetchAllThematicArea(){
-        List<Thematic_Area__c> thematicAreaList = [SELECT Id,Name FROM Thematic_Area__c];
+        List<Thematic_Area__c> thematicAreaList = [SELECT Id,Name FROM Thematic_Area__c WHERE Is_Active__c = true];
         if(!thematicAreaList.isEmpty()){
             return thematicAreaList;
         }
@@ -1660,10 +1660,10 @@ return appProposal;
             if (day != 0 && month != 0 && year != 0) {
                 proposedDate = Date.newInstance(year, month, day);
                 
-                update new Contact(
+                /* update new Contact(
                     Id = conId,
-                    Declaration_Sign_Date__c = proposedDate
-                );
+                   // Declaration_Sign_Date__c = proposedDate
+                );*/
             }
             
             // Query the current APA to check if Is_Coordinator__c is true
@@ -1723,15 +1723,16 @@ return appProposal;
                     
                 } else {
                     resp.isProposalCompleted = false;
-                    resp.message = 'Your application has been submitted. Please wait for your partner to submit before final submission can be completed.';
+                    //resp.message = 'Your application has been submitted. Please wait for your partner to submit before final submission can be completed.';
+                    resp.message = 'Paired Applicants part of Application is pending Submission.';
                 }
-                
             } else {
                 // Non-coordinator can only submit their part
                 // They cannot do final submission
                 resp.isProposalCompleted = false;
                 // resp.message = 'Your application has been submitted successfully. Coordinator will complete the final submission once both applicants have submitted.';
-                resp.message = 'Your part of the application has been submitted successfully. Primary Applicant will complete the final submission of the application.';
+                //resp.message = 'Your part of the application has been submitted successfully. Primary Applicant will complete the final submission of the application.';
+                resp.message = 'Paired Applicants part of Application is Submitted. Final Submission by Primary Applicant pending.';
             }
             
             return resp;
@@ -7498,6 +7499,14 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
             return null;
         }
     }
+    public static Applicant_Proposal_Association__c getDeclarationfieldsinWiser(string hashcode,String apaId){
+        try{
+            Applicant_Proposal_Association__c apaRec = [SELECT Id,Proposed_Date__c FROM Applicant_Proposal_Association__c WHERE (Contact__r.Login_Hash_Code__c=: hashcode or Contact__c=:hashcode) AND Id=:apaId];
+            return apaRec;
+        }catch(Exception e){
+            return null;
+        }
+    }
     
     public static string upsertSign(Contact conDetails,integer year,integer month,integer day){
         try{
@@ -7505,7 +7514,7 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
                 
             }else{
                 Date newDate=Date.newInstance(year,month,day);
-                conDetails.Declaration_Sign_Date__c=newDate;
+               // conDetails.Declaration_Sign_Date__c=newDate;
             }
             
             // Update APA.Applicant_Status__c instead of Contact.Status__c
@@ -7518,7 +7527,9 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
             ];
             
             if(!apaList.isEmpty()){
+                Date newDate=Date.newInstance(year,month,day);
                 apaList[0].Applicant_Status__c = 'Draft';
+                apaList[0].Proposed_Date__c = newDate; 
                 update apaList[0];
             }
             

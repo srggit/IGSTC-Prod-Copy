@@ -1652,7 +1652,7 @@
                                     Edit
                                 </div> -->
 
-                                <div class="btn" ng-if="p.proposalStage === 'Draft'" ng-click="redirectToForm2(p)"
+                                <div class="btn apply-btn" ng-if="p.proposalStage === 'Draft'" ng-click="redirectToForm2(p)"
                                     ng-disabled="p.disableEdit">
                                     Edit
                                 </div>
@@ -1694,8 +1694,8 @@
                     </select> ->
                 </div> -->
 
-                    <div class="card-grid">
-                        <div class="program-card program-card-center" ng-repeat="p in allPrograms">
+                    <div class="card-grid" >
+                        <div class="program-card program-card-center" ng-repeat="p in allPrograms"  >
                             <div class="program-icon">
                                 <i class="{{p.icon}}"></i>
                             </div>
@@ -1725,7 +1725,9 @@
                             <div class="btn" ng-click="redirectToForm(p)">Apply</div>
                             <div class="btn">Know More</div>
                         </div> -->
-                            <div class="btn-container">
+                            <div class="btn-container"
+                                 
+                                 >
                                 <!-- Old functionality before implementing Apply Pop-up -->
                                 <!-- <div class="btn apply-btn" ng-click="!p.isExpired && redirectToForm(p)"
                                     ng-disabled="p.isExpired || (appliedPrograms && appliedPrograms.length > 0)">
@@ -1734,22 +1736,24 @@
 
                                 <!-- New Requirement - To Open Popup on 'What To Expect' Button Click -->
                                 <div class="btn apply-btn"
-                                    style="display: inline-flex; white-space: nowrap; min-width: 130px; justify-content: center;"
+                                    style="display: inline-flex; white-space: nowrap; min-width: 130px; justify-content: center; margin:auto"
                                     ng-click="openWhatToExpectPopup(p)">
                                     What To Expect
                                 </div>
 
-                                <!-- New Requirement - To Open Popup on Apply Button Click -->
-                                <div class="btn apply-btn" ng-click="openDocumentPopup(p)"
-                                    ng-disabled="p.isExpired || (appliedPrograms && appliedPrograms.length > 0)">
-                                    Apply
-                                </div>
-                                <!-- <div class="btn know-btn"><a href="https://www.igstc.org/home/projects_call_text" target="_blank">Know More</a></div> -->
-                                <div class="btn know-btn">
+                                <div class="btn know-btn" style="margin:auto">
                                     <a ng-href="{{ getKnowMoreLink(p.name) }}" target="_blank">
                                         User Manual
                                     </a>
                                 </div>
+
+                                <!-- New Requirement - To Open Popup on Apply Button Click -->
+                                <div class="btn apply-btn" ng-click="openDocumentPopup(p)" style="margin:auto"
+                                    ng-disabled="p.isExpired || (appliedPrograms && appliedPrograms.length > 0)">
+                                    Apply
+                                </div>
+                                <!-- <div class="btn know-btn"><a href="https://www.igstc.org/home/projects_call_text" target="_blank">Know More</a></div> -->
+                                
                             </div>
 
 
@@ -1766,7 +1770,11 @@
                         <ul>
                             <li> <b>Stage-1 Documents</b> </li>
                             <li>1. DSIR Certificate</li>
-                            <li>2. Project Proposal - Stage 1</li>
+                            <li>2. Project Proposal - Stage 1
+                                <a href="{!$Resource.First_Stage_Project_Proposal_template}" download="First_Stage_Project_Proposal_template.docx">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </li>
                             <li>
                                 3. Undertaking for Sensitivity-Security Regulations
                                 <a href="{!$Resource.Undertaking_for_Sensitivity_Security_Regulations}"
@@ -1780,28 +1788,32 @@
                                 4. Undertaking format towards acceptance of Grant &nbsp;&nbsp; &nbsp; conditions and
                                 signing of Agreement
                                 <a href="{!$Resource.Undertaking_Format_of_Grant_Acceptance}"
-                                    download="Undertaking_Format_of_Grant_Acceptance.docx" style="margin-left:10px;"
+                                    download="Under taking_Format_of_Grant_Acceptance.docx" style="margin-left:10px;"
                                     onclick="this.setAttribute('download','Undertaking_Format_of_Grant_Acceptance.docx'); return true;">
                                     <i class="fa-solid fa-download"></i>
                                 </a>
                             </li>
-                            <li>5. Signature</li>
+                            <!-- <li>5. Signature</li> -->
                         </ul>
 
                         <ul>
                             <li> <b>Stage-2 Documents</b> </li>
-                            <li>1. Project Proposal - Stage 2</li>
+                            <li>1. Project Proposal - Stage 2
+                                <a href="{!$Resource.Second_Stage_Project_Proposal}" download="Second_Stage_Project_Proposal.docx">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </li>
                             <li>2. Letter of Consent</li>
                             <li>3. Budget Report</li>
                             <li>4. Quotation for Equipment / Accessories</li>
                         </ul>
 
-                        <ul>
+                        <!-- <ul>
                             <li> <b>(For Industry)</b></li>
                             <li>1. Annual Financial Report - Year 1</li>
                             <li>2. Annual Financial Report - Year 2</li>
                             <li>3. Annual Financial Report - Year 3</li>
-                        </ul>
+                        </ul> -->
 
                         <div class="popup-buttons">
                             <button class="btn btn-primary" ng-click="remindMeLater()">
@@ -1810,7 +1822,7 @@
                             <button class="btn btn-primary" ng-click="dontShowAgain()">
                                 Don't show again
                             </button>
-                            <button class="btn btn-secondary" ng-click="cancelPopup()">
+                            <button class="btn btn-primary" ng-click="cancelPopup()">
                                 Cancel
                             </button>
                         </div>
@@ -1828,60 +1840,52 @@
                             <!-- New appended content starts here -->
                             <h4>2+2 - What to Expect</h4>
                             <ul>
-                                <li>1. Applicants are advised to initiate the proposal submission process at least five
+                                <li>1.&nbsp;&nbsp;&nbsp;Applicants are advised to initiate the proposal submission process at least five
                                     days prior to the deadline to avoid last-minute complications.</li>
-                                <li>2. In case of any technical difficulties, please raise a ticket through the “Contact
-                                    Support” option. You may note that resolution of tickets may take up to 48 hours
+                                <li>2.&nbsp;&nbsp;&nbsp;In case of any technical difficulties, please raise a ticket through the "Contact
+                                    Support" option. You may note that resolution of tickets may take up to 48 hours
                                     during official working hours.</li>
-                                <li>3. Applicants are requested to ensure that the following documents are prepared and
-                                    readily available before initiating the proposal submission process:</li>
+                                <li>3.&nbsp;&nbsp;&nbsp;Applicants are requested to ensure that the following documents are prepared and
+                                    readily available before initiating the proposal submission process:
+                                    
+                                    <div class="stage-subsection">
+                                        <div class="stage-heading">1st Stage Proposal Submission</div>
+                                        <ul class="aligned-list">
+                                            <li><div class="list-item">I.<span>1st Stage Project Proposal template <a href="{!$Resource.First_Stage_Project_Proposal_template}" download="First_Stage_Project_Proposal_template.docx">[Download]</a></span></div></li>
+                                            <li><div class="list-item">II.<span>DSIR Certificate</span></div></li>
+                                            <li><div class="list-item">III.<span>Undertaking for Sensitivity-Security Regulations. <a href="{!$Resource.Undertaking_for_Sensitivity_Security_Regulations}" download="Undertaking_for_Sensitivity_Security_Regulations.docx">[Download]</a></span></div></li>
+                                            <li><div class="list-item">IV.<span>Undertaking format towards acceptance of Grant conditions and signing of Agreement <a href="{!$Resource.Undertaking_Format_of_Grant_Acceptance}" download="Undertaking_Format_of_Grant_Acceptance.docx">[Download]</a></span></div></li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="stage-subsection">
+                                        <div class="stage-heading">2nd Stage Proposal Submission</div>
+                                        <ul class="aligned-list">
+                                            <li><div class="list-item"><span>I.</span><span>2nd Stage Project Proposal <a href="{!$Resource.Second_Stage_Project_Proposal}" download="Second_Stage_Project_Proposal.docx">[Download]</a></span></div></li>
+                                            <li><div class="list-item"><span>II.</span><span>Letter of Consent</span></div></li>
+                                            <li><div class="list-item"><span>III.</span><span>Financial Statement</span></div></li>
+                                            <li><div class="list-item"><span>IV.</span><span>Quotation for Equipment/Accessories</span></div></li>
+                                        </ul>
+                                    </div>
+                                </li>
                             </ul>
 
-                            <h5>1st Stage Proposal Submission</h5>
-                            <ul>
-                                <li> I. 1st Stage Project Proposal template
-                                    <a href="{!$Resource.Undertaking_for_Sensitivity_Security_Regulations}"
-                                        download="Undertaking_for_Sensitivity_Security_Regulations.docx"
-                                        style="margin-left:10px;"
-                                        onclick="this.setAttribute('download','Undertaking_for_Sensitivity_Security_Regulations.docx'); return true;">
-                                        [Download]
-                                    </a>
-                                </li>
-                                <li> II. DSIR Certificate</li>
-                                <li>III. Undertaking for Sensitivity-Security Regulations [Download]</li>
-                                <li> IV. Undertaking format towards acceptance of Grant conditions and signing of
-                                    Agreement.
-                                    <a href="{!$Resource.Undertaking_Format_of_Grant_Acceptance}"
-                                        download="Undertaking_Format_of_Grant_Acceptance.docx" style="margin-left:10px;"
-                                        onclick="this.setAttribute('download','Undertaking_Format_of_Grant_Acceptance.docx'); return true;">
-                                        [Download]
-                                    </a>
-                                </li>
-                            </ul>
-
-                            <h5>2nd Stage Proposal Submission</h5>
-                            <ul>
-                                <li> I. 2nd Stage Project Proposal [Download]</li>
-                                <li> II. Letter of Consent</li>
-                                <li>III. Financial Statement</li>
-                                <li> IV. Quotation for Equipment/Accessories</li>
-                            </ul>
 
                             <ul>
-                                <li>4. All applicants must complete their registration on the portal at the beginning.
+                                <li>4.&nbsp;&nbsp;&nbsp;All applicants must complete their registration on the portal at the beginning.
                                 </li>
-                                <li>5. Only one project partner, designated as the Coordinator, shall initiate the
+                                <li>5.&nbsp;&nbsp;&nbsp;Only one project partner, designated as the Coordinator, shall initiate the
                                     proposal
                                     and add other project partners from registered applicants using drop-down option.
                                     Once added, the respective partners will be able to access the proposal on their
                                     individual dashboards and complete their respective sections.</li>
-                                <li>6. The Coordinator shall be solely responsible for the final submission of the
+                                <li>6.&nbsp;&nbsp;&nbsp;The Coordinator shall be solely responsible for the final submission of the
                                     proposal, after all project partners have duly completed and submitted their
                                     respective inputs.</li>
-                                <li>7. Please note that no modifications will be permitted once the proposal has been
+                                <li>7.&nbsp;&nbsp;&nbsp;Please note that no modifications will be permitted once the proposal has been
                                     submitted in the portal.</li>
-                                <li>8. The maximum permissible file size for each PDF upload is 4 MB.</li>
-                                <li>9. Signature files must be uploaded in JPG/JPEG format, with a maximum file size of
+                                <li>8.&nbsp;&nbsp;&nbsp;The maximum permissible file size for each PDF upload is 4 MB.</li>
+                                <li>9.&nbsp;&nbsp;&nbsp;Signature files must be uploaded in JPG/JPEG format, with a maximum file size of
                                     1 MB.</li>
                             </ul>
                             <!-- New appended content ends here -->
@@ -1926,8 +1930,7 @@
                                     readily available prior to initiating the proposal submission process:</li>
                             </ul>
 
-                            <h5>Required Documents</h5>
-                            <ul style="margin-left: 30px;">
+                            <ul style="margin-left: 25px;">
                                 <li> <i class="fa-solid fa-circle text-success"
                                         style="font-size: 8px; margin-top: 6px; margin-right: 12px; flex-shrink: 0;"></i>
                                     Passport Size Photo (JPG/JPEG, Min 30 KB &amp; Max 500 KB)

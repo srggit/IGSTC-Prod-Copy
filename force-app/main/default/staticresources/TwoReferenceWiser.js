@@ -41,6 +41,12 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
           console.log('Loaded accountName from localStorage:', $rootScope.accountName);
      }
 
+     // Fetching the hashCode for current user identification
+     if (localStorage.getItem('hashCode')) {
+          $rootScope.hashCode = localStorage.getItem('hashCode');
+          console.log('Loaded hashCode from localStorage:', $rootScope.hashCode);
+     }
+
      function getKeyByValue(object, value) {
           return Object.keys(object).find(key => object[key] === value);
      }
@@ -378,7 +384,70 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
                }
           );
      };
+
+     // Get current logged-in user contact details
+     $scope.getCurrentUserContactDetails = function () {
+          if (!$rootScope.hashCode) {
+               console.log('No hashCode found for current user');
+               return;
+          }
+
+          ApplicantPortal_Contoller.getContactDetailsForWiser($rootScope.hashCode, function (result, event) {
+               if (event.status && result) {
+                    $scope.currentUserContact = result;
+                    console.log('Current user Contact ID:', $scope.currentUserContact.Id);
+                    console.log('Current user Email:', $scope.currentUserContact.Email);
+                    $scope.$applyAsync();
+               } else {
+                    console.log('Error fetching current user contact details');
+               }
+          });
+     };
+
+     // Validate signatory email against current user
+     $scope.validateSignatoryEmail = function (signatoryEmail) {
+          if (!signatoryEmail || !$scope.currentUserContact) {
+               return true; // No validation needed if email is empty or current user not loaded
+          }
+
+          // Check if signatory email matches current user email
+          if (signatoryEmail.toLowerCase() === $scope.currentUserContact.Email.toLowerCase()) {
+               showInfo("You cannot designate yourself as the signatory.");
+               return false;
+          }
+
+          return true;
+     };
+
+     // Enhanced email validation with signatory check
+     /*
+     $scope.validateSignatoryEmailExists = function (signatoryEmail) {
+          if (!signatoryEmail) {
+               return true; // Skip validation if email is empty
+          }
+
+          // First check against current user
+          if (!$scope.validateSignatoryEmail(signatoryEmail)) {
+               return false;
+          }
+
+          // Check if email exists in the system
+          ApplicantPortal_Contoller.checkContactEmailExists(signatoryEmail, function (result, event) {
+               if (event.status && result) {
+                    // Email exists, check if it's the current user
+                    if (result.Id === $scope.currentUserContact.Id) {
+                         swal("Validation Error", "You cannot designate yourself as the signatory. Please enter a different email address.", "error");
+                         // Clear the email field
+                         $scope.objContact.Contact__r.Email = '';
+                         $scope.$applyAsync();
+                    }
+               }
+          });
+     };
+     */
+
      $scope.getContactWiser();
+     $scope.getCurrentUserContactDetails();
 
      function decode(val) {
           if (!val) return val;
@@ -387,6 +456,20 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
                .replace(/&amp;/g, '&')
                .replace(/&lt;/g, '<')
                .replace(/&gt;/g, '>');
+     }
+
+     function showInfo(message) {
+          swal({
+               title: "Info",
+               content: {
+                    element: "div",
+                    attributes: {
+                         innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                    }
+               },
+               icon: "info",
+               button: "OK"
+          });
      }
 
      // METHOD TO SAVE REFERENCES AND SIGNATORY CONTACT
@@ -485,6 +568,12 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
           if (!contact.Email || contact.Email.trim() === '') {
                swal("Info", "Please enter Signatory Email.", "info");
                angular.element('#signatoryEmail').addClass('error-border');
+               return;
+          }
+
+          // Validate that signatory is not the current user
+          if (!$scope.validateSignatoryEmail(contact.Email)) {
+               angular.element('#signEmail').addClass('error-border');
                return;
           }
 
@@ -614,7 +703,7 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
           $("#btnPreview").prop('disabled', true);
 
           ApplicantPortal_Contoller.insertParticipantsReferences($scope.ParticipantList, $rootScope.proposalId, $rootScope.apaId, signatoryContact, apaRecordObj, signatoryAPAId, $rootScope.accountId, function (result, event) {
-
+               debugger;
                // Restore button
                $("#btnPreview").html('<i class="fa-solid fa-check me-2"></i>Save and Next');
                $("#btnPreview").prop('disabled', false);
@@ -639,12 +728,27 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
                     if (result.length == 18 || result.length == 15) {
                          localStorage.setItem("signatoryAPAId", result);
 
-                         swal({
-                              title: "Success",
-                              text: 'References & Signatory details have been saved successfully.',
-                              icon: "success",
-                              button: "ok!",
-                         }).then(function () {
+                         // swal({
+                         //      title: "Success",
+                         //      content: {
+                         //           element: "div",
+                         //           attributes: {
+                         //                innerHTML: `
+                         //                   <div>References & Signatory details have been saved</div>
+                         //                   <div style="text-align:center;">successfully.</div>
+                         //               `
+                         //           }
+                         //      },
+                         //      icon: "success",
+                         //      button: "ok!",
+                         //      // title: "Success",
+                         //      // text: 'References & Signatory details have been saved successfully.',
+                         //      // icon: "success",
+                         //      // button: "ok!",
+                         // }).then(function () {
+                         //      $scope.redirectPageURL('AttachmentsInWiser');
+                         // });
+                         showSuccess('References & Signatory details have been saved successfully.').then(function () {
                               $scope.redirectPageURL('AttachmentsInWiser');
                          });
                     } else {
@@ -664,6 +768,20 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
                          button: "ok!",
                     });
                }
+          });
+     }
+
+     function showSuccess(message) {
+          return swal({
+               title: "Success",
+               content: {
+                    element: "div",
+                    attributes: {
+                         innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+                    }
+               },
+               icon: "success",
+               button: "OK"
           });
      }
 });

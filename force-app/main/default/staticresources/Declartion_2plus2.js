@@ -183,12 +183,13 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
         //if($scope.doc.userDocument.Status__c=='Uploaded'){
         if ($scope.doc && $scope.doc.userDocument && $scope.doc.userDocument.Status__c && $scope.doc.userDocument.Status__c == 'Uploaded') {
             // console.log('File already uploaded !!');
-            swal({
-                title: "Error",
-                text: "A signature has already been uploaded. You cannot upload another signature.",
-                icon: "error",
-                button: "OK",
-            });
+            // swal({
+            //     title: "Error",
+            //     text: "A signature has already been uploaded. You cannot upload another signature.",
+            //     icon: "error",
+            //     button: "OK",
+            // });
+            showInfo('A signature has already been uploaded. You cannot upload another signature.",');
             return;
         }
         $scope.showSpinnereditProf = true;
@@ -748,3 +749,17 @@ angular.module('cp_app').controller('declarationplus2_ctrl', function ($scope, $
 
 
 });
+
+function showInfo(message) {
+    swal({
+        title: "Info",
+        content: {
+            element: "div",
+            attributes: {
+                innerHTML: `<p style="margin-top:10px; margin-bottom:20px; line-height:1.6;">${message}</p>`
+            }
+        },
+        icon: "info",
+        button: "OK"
+    });
+}

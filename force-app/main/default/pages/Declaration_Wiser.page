@@ -355,7 +355,9 @@
                             <br />
                             <li>
                                 <i class="fa-solid fa-circle text-success me-3"></i>
-                                The final submission of the application will be done by the Primary applicant only.
+                                <!-- The final submission of the application will be done by the Primary applicant only. -->
+                                The application is first submitted by the Paired Applicant and then by the Primary Applicant. The final submission of the
+                                application is done by the Primary Applicant.
                             </li>
                             <br />
                             <li>
@@ -403,7 +405,8 @@
 
                             <div class="col-md-7">
                                 <div ng-hide="proposalStage" style="margin-right: -60px;">
-                                    <label class="font-if pt-2">{{doc.userDocument.Name}} (jpg/jpeg, 5 kb-30 kb)</label>
+                                    <label class="font-if pt-2">{{doc.userDocument.Name}}
+                                        <span class="text-danger me-2">*</span> (jpg/jpeg, 5 kb-30 kb)</label>
                                     <div class="input-group input-group-lg float-end">
                                         <!-- ng-disabled="proposalStage || isCurrentUserSubmitted" -->
                                         <input type="file" accept=".jpg,.jpeg" ng-disabled="proposalStage" id="{{doc.userDocument.Name}}" class="form-control float-end"

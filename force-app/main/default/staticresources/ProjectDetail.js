@@ -229,9 +229,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         $rootScope.isCoordinator = result.isCoordinator;
                         $scope.isCoordinator = $rootScope.isCoordinator;
                         $rootScope.stage = result.stage;
+                        $scope.stage = $rootScope.stage;
                         $rootScope.maxDurationInMonths = result.durationInMonths;
                         $scope.maxDurations = result.durationInMonths;
                         $rootScope.mailingCountry = result.mailingCountry;
+                        $scope.mailingCountry = $rootScope.mailingCountry;
                         $rootScope.secondStage = $rootScope.stage == '2nd Stage' ? true : false;
 
                         $scope.uploadDisable =
@@ -4724,42 +4726,86 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
     };
 
+    // $scope.validateDeliverableMonths = function (wp, deliverable) {
+    //     deliverable.startMonthError = false;
+    //     deliverable.endMonthError = false;
+    //     if (wp.wpStartMonth && deliverable.startMonth) {
+    //         if (parseInt(deliverable.startMonth) < parseInt(wp.wpStartMonth)) {
+    //             deliverable.startMonthError = true;
+    //         }
+    //     }
+    //     if (wp.wpEndMonth && deliverable.endMonth) {
+    //         if (parseInt(deliverable.endMonth) > parseInt(wp.wpEndMonth)) {
+    //             deliverable.endMonthError = true;
+    //         }
+    //     }
+    // };
+
     $scope.validateDeliverableMonths = function (wp, deliverable) {
+        debugger;
+        // Reset errors
         deliverable.startMonthError = false;
         deliverable.endMonthError = false;
-        if (wp.wpStartMonth && deliverable.startMonth) {
-            if (parseInt(deliverable.startMonth) < parseInt(wp.wpStartMonth)) {
-                deliverable.startMonthError = true;
+        deliverable.endMonthGreaterThanStartError = false;
+
+        // Convert to numbers
+        var wpStartMonth = wp.wpStartMonth ? parseInt(wp.wpStartMonth) : null;
+        var wpEndMonth = wp.wpEndMonth ? parseInt(wp.wpEndMonth) : null;
+        var delivStartMonth = deliverable.startMonth ? parseInt(deliverable.startMonth) : null;
+        var delivEndMonth = deliverable.endMonth ? parseInt(deliverable.endMonth) : null;
+
+        // Validate deliverable start month (must be >= WP start month)
+        if (wpStartMonth !== null && delivStartMonth !== null && delivStartMonth < wpStartMonth) {
+            deliverable.startMonthError = true;
+            return; // Stop further validation if start month is invalid
+        }
+
+        // Validate deliverable end month vs deliverable start month
+        if (delivStartMonth !== null && delivEndMonth !== null) {
+            if (delivEndMonth < delivStartMonth) {
+                deliverable.endMonthGreaterThanStartError = true;
+                return; // Stop further validation if end month is less than start month
             }
         }
-        if (wp.wpEndMonth && deliverable.endMonth) {
-            if (parseInt(deliverable.endMonth) > parseInt(wp.wpEndMonth)) {
-                deliverable.endMonthError = true;
-            }
+
+        // Validate deliverable end month (must be <= WP end month)
+        if (wpEndMonth !== null && delivEndMonth !== null && delivEndMonth > wpEndMonth) {
+            deliverable.endMonthError = true;
         }
     };
 
     $scope.validateWorkPackageMonths = function (wp) {
-        wp.startMonthError = false;
+        // Reset only end month errors
         wp.endMonthMaxDurationError = false;
         wp.endMonthStartError = false;
-        if (wp.wpStartMonth && wp.wpEndMonth) {
-            if (parseInt(wp.wpStartMonth) < parseInt(wp.wpEndMonth)) {
-                wp.startMonthError = true;
-            }
-        }
 
-        if (wp.wpEndMonth) {
-            if (parseInt(wp.wpEndMonth) < parseInt(wp.wpStartMonth)) {
+        // Convert to numbers, handle empty values
+        var startMonth = wp.wpStartMonth !== undefined && wp.wpStartMonth !== null && wp.wpStartMonth !== ''
+            ? parseInt(wp.wpStartMonth) : null;
+        var endMonth = wp.wpEndMonth !== undefined && wp.wpEndMonth !== null && wp.wpEndMonth !== ''
+            ? parseInt(wp.wpEndMonth) : null;
+
+        // Validate End Month
+        if (endMonth !== null) {
+            // Check if End Month is less than Start Month
+            if (startMonth !== null && endMonth < startMonth) {
                 wp.endMonthStartError = true;
             }
-        }
 
-        if (wp.wpEndMonth) {
-            if (parseInt(wp.wpEndMonth) > parseInt($scope.maxDurations)) {
+            // Check max duration
+            var maxDuration = parseInt($scope.maxDurations);
+            if (endMonth > maxDuration) {
                 wp.endMonthMaxDurationError = true;
             }
         }
+
+        // Debug logging
+        console.log('Validation Result:', {
+            startMonth: startMonth,
+            endMonth: endMonth,
+            endMonthStartError: wp.endMonthStartError,
+            endMonthMaxDurationError: wp.endMonthMaxDurationError
+        });
     };
 
     $scope.loadWPDeliverablesData = function () {

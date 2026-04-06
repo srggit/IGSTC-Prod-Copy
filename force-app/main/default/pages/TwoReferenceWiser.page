@@ -413,7 +413,14 @@
                             </h4>
                             <i>“The Signatory is an authorised representative of the applicant’s parent institution
                                 (e.g., Registrar/Dean/HOD/Research Administration authority) who is empowered to
-                                approve, sign, and oversee administrative matters related to the WISER grant.”</i>
+                                approve, sign, and oversee administrative matters related to the WISER grant.”
+                            </i>
+                            <br/>
+                            <i>
+                                <b>Note:</b> <br/>
+                                1. The Applicants cannot be added as the Signatory on the application. <br/>
+                                2. Once Signatory email has been added, it cannot be changed.
+                            </i>
                         </div>
                     </div>
                     <hr />
@@ -461,7 +468,7 @@
                                     <span class="text-danger me-2">*</span>
                                 </label>
                                 <input type="text" class="form-control"
-                                    ng-disabled="proposalStage"
+                                    ng-disabled="proposalStage || objContact.Contact__r.Id"
                                     ng-model="objContact.Contact__r.Signatory_Institution__c"
                                     ng-focus="removeClass('signInstitution')" id="signInstitution" />
                             </div>
@@ -481,9 +488,11 @@
                                     <span class="text-danger me-2">*</span>
                                 </label>
                                 <input type="text" class="form-control"
-                                    ng-disabled="proposalStage"
-                                    ng-model="objContact.Contact__r.Email" ng-focus="removeClass('signEmail')"
+                                    ng-disabled="proposalStage || objContact.Contact__r.Id"
+                                    ng-model="objContact.Contact__r.Email" 
+                                    ng-focus="removeClass('signEmail')"
                                     id="signEmail" />
+                                    <!-- ng-blur="validateSignatoryEmailExists(objContact.Contact__r.Email)" -->
                             </div>
                         </div>
 

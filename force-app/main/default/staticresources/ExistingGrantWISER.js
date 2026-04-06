@@ -415,7 +415,7 @@ angular.module('cp_app').controller('WISERgrant_ctrl', function ($scope, $rootSc
                     $scope.grantList.push(grantApplication);
                 }
 
-                ApplicantPortal_Contoller.insertExistingGrantsWISER($scope.grantList, function (result, event) {
+                ApplicantPortal_Contoller.insertExistingGrantsWISER($scope.grantList, $rootScope.apaId, function (result, event) {
                     if (event.status && result != null) {
                         console.log("Result ::" + result);
 

@@ -853,7 +853,7 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
                     //  .splice(index,1);
                     $scope.$apply();
                     if (accountid != '' && accountid != undefined) {
-                        $scope.deleteAccount(index, accountid);
+                        // $scope.deleteAccount(index, accountid);
                     } else {
                         $scope.allCoordinatorDetails.splice(index, 1);
                     }
@@ -868,13 +868,13 @@ angular.module('cp_app').controller('Consortia_Ctrl', function ($scope, $rootSco
         }
         $scope.$apply();
     }
-    $scope.deleteAccount = function (index, accountid) {
-        IndustrialFellowshipController.deleteAccount(accountid, function (result, event) {
-            if (event.status) {
-                $scope.allCoordinatorDetails.splice(index, 1);
-            }
-        });
-    }
+    // $scope.deleteAccount = function (index, accountid) {
+    //     IndustrialFellowshipController.deleteAccount(accountid, function (result, event) {
+    //         if (event.status) {
+    //             $scope.allCoordinatorDetails.splice(index, 1);
+    //         }
+    //     });
+    // }
     $scope.redirectPageURL = function (pageName) {
         var link = document.createElement("a");
         link.id = 'someLink'; //give it an ID!

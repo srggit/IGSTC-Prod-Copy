@@ -958,7 +958,7 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
                 // Create Case
                 Case c = new Case();
                 c.ContactId = contactId;
-                c.Subject = 'Support Ticket from Applicant Portal';
+                c.Subject = 'Support Ticket from Applicant Portal.';
                 c.Origin = 'Portal';
                 c.Status = 'Pending';
                 c.Program__c = program; 
@@ -2498,7 +2498,11 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
     public static Contact getDeclarationfields(string hashcode){
         return Proposal_Controller.getDeclarationfields(hashcode);
     }
-    
+    @RemoteAction
+    public static Applicant_Proposal_Association__c getDeclarationfieldsinWiser(string hashcode,string apaId){
+        return Proposal_Controller.getDeclarationfieldsinWiser(hashcode,apaId);
+    }
+
     @RemoteAction
     public static string submit2plus2(Contact conDetails,integer year,integer month,integer day,string projectid){
         return Proposal_Controller.submit2plus2(conDetails, year, month, day,projectid);
@@ -3812,7 +3816,7 @@ public static WrapperProposalDet getPECFARProposalDetails(string proposalId){
 
             // Set Contact fields
             signatoryContact.AccountId = accountId;
-            
+            signatoryContact.Is_Signatory__c= true;            
             // Map signatory fields to Contact standard fields
             if(String.isNotBlank(signatoryContact.Signatory_First_Name__c)){
                 signatoryContact.FirstName = signatoryContact.Signatory_First_Name__c;
@@ -3890,7 +3894,7 @@ public static WrapperProposalDet getPECFARProposalDetails(string proposalId){
     public static Applicant_Proposal_Association__c getSignatoryContactAPADetails(String proposalId, String apaId, String accountId){
         try {
             List<Applicant_Proposal_Association__c> signatoryAPAList = [
-                SELECT Id, Contact__r.Salutation, Contact__r.Signatory_Salutation__c, Contact__r.Institution_Name__c, Contact__r.LastName, 
+                SELECT Id, Contact__r.Id, Contact__r.Salutation, Contact__r.Signatory_Salutation__c, Contact__r.Institution_Name__c, Contact__r.LastName, 
                 Contact__r.Institute_Name__c, Contact__r.Department, Contact__r.Designation__c, Contact__r.Email, 
                 Contact__r.Account.Name, Contact__r.AccountId, Contact__r.Signatory_First_Name__c, Contact__r.Signatory_Last_Name__c, 
                 Contact__r.Signatory_Institution__c, Contact__r.Signatory_Designation__c, Is_Signatory__c, Proposals__c, Signatory_Emailist_Name__c
@@ -3911,6 +3915,49 @@ public static WrapperProposalDet getPECFARProposalDetails(string proposalId){
             return null;
         }
     }
+
+    @RemoteAction
+    public static Contact checkContactEmailExists(String email) {
+        try {
+            if (String.isBlank(email)) {
+                return null;
+            }
+            
+            List<Contact> existingContacts = [
+                SELECT Id, Email, Name 
+                FROM Contact 
+                WHERE Email = :email 
+                LIMIT 1
+            ];
+            
+            return existingContacts.isEmpty() ? null : existingContacts[0];
+        } catch (Exception e) {
+            System.debug('Error in checkContactEmailExists: ' + e.getMessage());
+            return null;
+        }
+    }
+
+    @RemoteAction
+    public static Contact getContactDetailsForWiser(String hashCode) {
+        Contact conRec = [
+            SELECT Id, Name, Title, FirstName, LastName,
+            Actual_Position__c, Department, Country__c, Head_Of_Project__c,
+            Homepage_URL__c, Email, Phone, Thesis_Submission_Date__c,
+            Industrial_Fellowship_Type__c, Birthdate, PhD_Enroll_Date__c, Awarded_PhD__c,
+            Country_Code__c, Uploaded__c, PhD_Awarded_Date__c, Gender__c, Nationality__c,
+            PassportNo__c, Passport_Expiry__c, Addess_same_as__c,
+            MailingAddress, MailingStreet, MailingCity, MailingCountry, MailingState, MailingPostalCode,
+            OtherAddress, OtherStreet, OtherCountry, OtherCity, OtherState, OtherPostalCode,
+            MobilePhone, OtherPhone, Profile_Pic_Attachment_Id__c
+            FROM Contact
+            WHERE Login_Hash_Code__c = :hashCode
+            LIMIT 1
+        ];
+
+        return conRec;
+    }
+
+
 
     // -------------- METHOD TO GET THE SIGNATORY SALUTATION PICKLIST VALUES --------------- //
     @RemoteAction

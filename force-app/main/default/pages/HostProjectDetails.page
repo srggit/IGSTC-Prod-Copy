@@ -930,7 +930,7 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <div ng-hide="proposalStage ">
-                                    <label class="font-if pt-2">Image 1 (jpg/jpeg/png, Max. 1 MB, Recommended: 1200x800 pixels)</label>
+                                    <label class="font-if pt-2">Image 1 (jpg/jpeg/png, Max. 1 MB, Recommended: 400x400 pixels)</label>
                                     <div class="input-group input-group-lg">
                                         <input type="file" accept=".jpg,.jpeg,.png" ng-disabled="proposalStage " id="Image 1" class="form-control" />
                                         <span class="input-group-btn" ng-hide="proposalStage">
@@ -953,7 +953,7 @@
                             <!-- Image 2 Upload -->
                             <div class="col-md-6">
                                 <div ng-hide="proposalStage ">
-                                    <label class="font-if pt-2">Image 2 (jpg/jpeg/png, Max. 1 MB, Recommended: 1200x800 pixels)</label>
+                                    <label class="font-if pt-2">Image 2 (jpg/jpeg/png, Max. 1 MB, Recommended: 400x400 pixels)</label>
                                     <div class="input-group input-group-lg">
                                         <input type="file" accept=".jpg,.jpeg,.png" ng-disabled="proposalStage " id="Image 2" class="form-control" />
                                         <span class="input-group-btn" ng-hide="proposalStage ">

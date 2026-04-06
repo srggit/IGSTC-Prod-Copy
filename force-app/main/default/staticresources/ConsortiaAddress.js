@@ -228,6 +228,8 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
     $scope.uploadAttachment = function (type, userDocId, fileId) {
         debugger;
         var attachmentBody = "";
+        var chunkSize = 750000;
+
         // if (fileId == undefined) {
         //     fileId = " ";
         // }
@@ -407,7 +409,7 @@ angular.module('cp_app').controller('address_ctrl', function ($scope, $sce, $roo
             $("#dept").addClass('border-theme');
             return;
         }
-         if(contact0.Designation__c == undefined || contact0.Designation__c == ""){
+        if (contact0.Designation__c == undefined || contact0.Designation__c == "") {
             swal("Address Details", "Please enter Designation.");
             $("#designation").addClass('border-theme');
             return;
