@@ -1361,7 +1361,9 @@ System.debug('No contacts found for the specified Application Proposal.');
     public static String upsertCheckbox(Application_Proposal__c proposalList, String hashcode, Integer year, Integer month, Integer day, String apaId){
         try{
             System.debug(' --------------- upsertCheckbox() ------------------- ');
-            
+            System.debug('Year  : ' + year);
+            System.debug('month  : ' + month);
+            System.debug('day  : ' + day);
             /*
             Contact userContact = [
                 SELECT Id, Name, Declaration_Sign_Date__c, Login_Hash_Code__c 
@@ -1399,6 +1401,30 @@ System.debug('No contacts found for the specified Application Proposal.');
             Id proposalId = proposalList.Id;
             System.debug('proposalId : ' + proposalId);
             
+            List<Applicant_Proposal_Association__c> apaList = [
+                SELECT Id, Proposed_Date__c, Proposals__c 
+                FROM Applicant_Proposal_Association__c
+                WHERE Proposals__c = :proposalId
+            ];
+            System.debug('apaList : ' + apaList);
+            System.debug('apaList size : ' + apaList.size());
+
+            // Updating the Declaration Date on APA 
+            if(! apaList.isEmpty()){
+                for(Applicant_Proposal_Association__c apaToUpdate : apaList){
+                    if(year == 0 && month == 0 && day == 0){
+                        
+                    }else{
+                        Date newDate = Date.newInstance(year,month,day);
+                        apaToUpdate.Proposed_Date__c = newDate;
+                    }
+                    System.debug('apaToUpdate.Proposed_Date__c : ' + apaToUpdate.Proposed_Date__c);
+                }
+            }
+            update apaList;
+            System.debug('APA Proposed Date Updated Successfully !!');
+
+
             List<Contact> contactList = [
                 SELECT Id, Name, Declaration_Sign_Date__c
                 FROM Contact

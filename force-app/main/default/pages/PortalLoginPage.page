@@ -419,6 +419,14 @@
             align-items: center;
         }
 
+        .forgot-password-modal.ng-hide {
+            display: none !important;
+        }
+
+        .forgot-password-modal:not(.ng-hide) {
+            display: flex !important;
+        }
+
         .forgot-password-content {
             background: white;
             border-radius: 20px;
@@ -517,6 +525,82 @@
             position: relative;
             left: -10px;
             content: "✗";
+        }
+
+        /* Online Registration Popup Modal Styles */
+        /* Online Popup Modal Styles */
+        .online-popup-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .online-popup-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .online-popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(135deg, #4b0082, #6e40aa);
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .online-popup-header h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .online-popup-body {
+            padding: 30px 25px;
+            text-align: left;
+        }
+
+        .online-popup-body p {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .online-popup-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .online-popup-btn {
+            background: #4b0082;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .online-popup-btn:hover {
+            background: #6e40aa;
+            transform: translateY(-2px);
         }
     </style>
 
@@ -798,7 +882,7 @@
             </div>
         </div>
         <!-- ================= SUPPORT MODAL ================= -->
-        <div class="forgot-password-modal" ng-show="showSupportModal" style="display:flex;">
+        <div class="forgot-password-modal" ng-show="showSupportModal">
 
             <div class="forgot-password-content" style="width:90%; max-width:900px; height:80vh; padding:0;">
 
@@ -818,11 +902,29 @@
         </div>
         <!-- ================= END SUPPORT MODAL ================= -->
 
+        <!-- ================= Online Registration Popup Modal ================== -->
+        <div class="online-popup-modal" ng-show="showOnlinePopup" style="display:flex;">
+            <div class="online-popup-content">
+                <div class="online-popup-header">
+                    <h3>Welcome to Online Registration!</h3>
+                    <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:20px;"
+                        ng-click="closeOnlinePopup()"></i>
+                </div>
+                <div class="online-popup-body">
+                    <p>You have been redirected from our website to complete your registration.</p>
+                    <p>Please fill in the required details to create your account and proceed with your application.</p>
+                </div>
+                <div class="online-popup-footer">
+                    <button class="online-popup-btn" ng-click="closeOnlinePopup()">Get Started</button>
+                </div>
+            </div>
+        </div>
+
 
         <!-- JS logic -->
         <script>
             var app = angular.module('captchaApp', []);
-            app.controller('captchaCtrl', function ($scope) {
+            app.controller('captchaCtrl', function ($scope, $timeout) {
                 $scope.user = { email: "" };
                 $scope.captchaDisplay = '';
                 $scope.captchaValue = '';
@@ -835,6 +937,69 @@
 
                 // Safety timeout to prevent permanent freezing
                 $scope.safetyTimeout = null;
+
+                // Function to get URL parameters with fallback
+                $scope.getUrlParameter = function (name) {
+                    console.log('=== DEBUG: getUrlParameter called for:', name);
+                    console.log('=== DEBUG: Full URL:', window.location.href);
+                    console.log('=== DEBUG: Search string:', window.location.search);
+
+                    var result = null;
+
+                    // Try URLSearchParams first
+                    try {
+                        var urlParams = new URLSearchParams(window.location.search);
+                        console.log('=== DEBUG: URLSearchParams object:', urlParams);
+                        console.log('=== DEBUG: All URL parameters:');
+
+                        // Log all parameters
+                        for (var pair of urlParams.entries()) {
+                            console.log('=== DEBUG: Parameter:', pair[0], '=', pair[1]);
+                        }
+
+                        result = urlParams.get(name);
+                        console.log('=== DEBUG: URLSearchParams result for', name, ':', result);
+                    } catch (e) {
+                        console.log('=== DEBUG: URLSearchParams failed, using fallback method ===');
+                        console.log('=== DEBUG: Error:', e);
+
+                        // Fallback method - parse manually
+                        var url = window.location.href;
+                        var name = name.replace(/[\[\]]/g, "\\$&");
+                        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+                        var results = regex.exec(url);
+
+                        if (results && results[2]) {
+                            result = decodeURIComponent(results[2].replace(/\+/g, " "));
+                        }
+
+                        console.log('=== DEBUG: Fallback method result for', name, ':', result);
+                    }
+
+                    return result;
+                };
+
+                // Online popup control
+                $scope.showOnlinePopup = false;
+
+                // Function to close online popup
+                $scope.closeOnlinePopup = function () {
+                    console.log('=== DEBUG: closeOnlinePopup called ===');
+                    console.log('=== DEBUG: Current showOnlinePopup before close:', $scope.showOnlinePopup);
+                    $scope.showOnlinePopup = false;
+                    $scope.showSupportModal = false;
+                    console.log('=== DEBUG: showOnlinePopup set to false ===');
+                    console.log('=== DEBUG: Current showOnlinePopup after close:', $scope.showOnlinePopup);
+                };
+
+                // Function to show online popup
+                $scope.showOnlinePopupModal = function () {
+                    console.log('=== DEBUG: showOnlinePopupModal called ===');
+                    console.log('=== DEBUG: Current showOnlinePopup value:', $scope.showOnlinePopup);
+                    $scope.showOnlinePopup = true;
+                    $scope.showSupportModal = false;
+                    console.log('=== DEBUG: showOnlinePopup set to true ===');
+                };
 
 
 
@@ -1192,6 +1357,32 @@
                         showImage(newIndex);
                     });
                 });
+
+                // Check if user came from website with online=true parameter (moved here after functions are defined)
+                var onlineParam = $scope.getUrlParameter('online');
+                console.log('=== DEBUG: onlineParam value:', onlineParam);
+                console.log('=== DEBUG: onlineParam type:', typeof onlineParam);
+                console.log('=== DEBUG: onlineParam === "true":', onlineParam === 'true');
+
+                if (onlineParam === 'true') {
+                    console.log('=== DEBUG: online=true detected! Switching to registration form ===');
+                    // Show registration form instead of login
+                    $scope.showSignUpForm = true;
+                    $scope.showLogInForm = false;
+                    $scope.refreshCaptcha();
+
+                    console.log('=== DEBUG: Form switched, setting up popup timer ===');
+                    // Show popup after a short delay to ensure page is loaded
+                    $timeout(function () {
+                        console.log('=== DEBUG: $timeout triggered, showing popup ===');
+                        console.log('=== DEBUG: About to call showOnlinePopupModal ===');
+                        $scope.showOnlinePopupModal();
+                        console.log('=== DEBUG: showOnlinePopupModal called from $timeout ===');
+                    }, 500);
+                } else {
+                    console.log('=== DEBUG: No online=true parameter detected, staying with login form ===');
+                }
+
             });
         </script>
 
