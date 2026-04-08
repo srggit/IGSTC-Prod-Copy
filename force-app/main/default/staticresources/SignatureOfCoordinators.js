@@ -10,7 +10,7 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
     if (localStorage.getItem('apaId')) {
         $rootScope.apaId = localStorage.getItem('apaId');
         console.log('Loaded apaId from localStorage:', $rootScope.apaId);
-    }   
+    }
 
     // Get yearlyCallId from LocalStorage
     if (localStorage.getItem('yearlyCallId')) {
@@ -36,7 +36,7 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
                 }
             }, { escape: true });
         }
-    } 
+    }
     $scope.getProposalStage();
 
     $scope.siteURL = siteURL;
@@ -140,9 +140,9 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
                     }
 
                     // Only if at least ONE contact exists:
-                    if (result.Contacts[0].Declaration_Sign_Date__c) {
-                        // $scope.signDate = new Date(result.Contacts[0].Declaration_Sign_Date);
-                        $scope.signDate = toInputDate(result.Contacts[0].Declaration_Sign_Date);
+                    if (result.Contacts[0].Declaration_Sign_Date) {
+                        $scope.signDate = new Date(result.Contacts[0].Declaration_Sign_Date);
+                        //$scope.signDate = toInputDate(result.Contacts[0].Declaration_Sign_Date);
 
                     } else {
                         $scope.signDate = new Date($rootScope.signDate);
@@ -152,10 +152,10 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
 
                     // Only if second contact exists:
                     if (result.Contacts.length > 1 &&
-                        result.Contacts[1].Declaration_Sign_Date__c) {
+                        result.Contacts[1].Declaration_Sign_Date) {
 
-                        // $scope.signDate2 = new Date(result.Contacts[1].Declaration_Sign_Date);
-                        $scope.signDate2 = toInputDate(result.Contacts[1]?.Declaration_Sign_Date);
+                        $scope.signDate2 = new Date(result.Contacts[1].Declaration_Sign_Date);
+                        //$scope.signDate2 = toInputDate(result.Contacts[1]?.Declaration_Sign_Date);
 
                     } else {
                         $scope.signDate2 = new Date($rootScope.signDate);
@@ -169,7 +169,7 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
                 $scope.isLoading = false;
                 $scope.$apply();
             }
-             else {
+            else {
                 $scope.isLoading = false;
                 $scope.$apply();
             }
@@ -234,7 +234,7 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
 
     $scope.getProjectdetils = function () {
         debugger;
-         $scope.isLoading = true;
+        $scope.isLoading = true;
         // ApplicantPortal_Contoller.getAllUserDoc($rootScope.candidateId, function (result, event) {
         WorkshopController2.getAllUserDoc($rootScope.proposalId, function (result, event) {
             debugger
@@ -253,7 +253,7 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
                 $scope.isLoading = false;
                 $scope.$apply();
             }
-             else {
+            else {
                 $scope.isLoading = false;
                 $scope.$apply();
             }
@@ -597,13 +597,27 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
         var month = 0;
         var day = 0;
 
-        if ($scope.SignDate != undefined && $scope.SignDate != '') {
-            year = $scope.SignDate.getUTCFullYear();
-            month = $scope.SignDate.getUTCMonth() + 1;
-            day = $scope.SignDate.getDate();
+        debugger;
+
+        // if ($scope.SignDate != undefined && $scope.SignDate != '') {
+        //     year = $scope.SignDate.getUTCFullYear();
+        //     month = $scope.SignDate.getUTCMonth() + 1;
+        //     day = $scope.SignDate.getDate();
+        // }
+
+        if ($scope.signDate != undefined && $scope.signDate != '') {
+            year = $scope.signDate.getUTCFullYear();
+            month = $scope.signDate.getUTCMonth() + 1;
+            day = $scope.signDate.getDate();
         }
 
-        
+        console.log('year : ', year);
+        console.log('month : ', month);
+        console.log('day : ', day);
+
+
+
+
 
         $scope.checkbox1 = angular.copy($scope.checkbox);
         delete ($scope.checkbox1.Contacts__r);
@@ -621,8 +635,8 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
         // ApplicantPortal_Contoller.upsertCheckbox($scope.checkbox, $rootScope.projectId, year, month, day, function (result, event) {
         WorkshopController2.upsertCheckbox($scope.checkbox1, $rootScope.projectId, year, month, day, $rootScope.apaId, function (result, event) {
             if (event.status) {
-                debugger; 
-                $scope.isLoading = false;           
+                debugger;
+                $scope.isLoading = false;
 
                 // swal(
                 //     'Success',
@@ -683,7 +697,7 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
         WorkshopController2.saveAsDraftWorkshop($scope.checkbox1, $rootScope.candidateId, year, month, day, function (result, event) {
             if (event.status) {
                 $scope.isLoading = false;
-                debugger;               
+                debugger;
                 //  swal(
                 //     'Success',
                 //     'Your proposal has been saved as Draft.',
@@ -704,14 +718,14 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
                 }, function () {
                     debugger;
                     $scope.redirectPageURL('Home');
-                });               
-               // $scope.checkbox = result;
+                });
+                // $scope.checkbox = result;
                 $scope.$apply();
             }
             else {
                 $scope.isLoading = false;
                 $scope.$apply();
-            }         
+            }
         },
             { escape: true }
         )
@@ -724,44 +738,44 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
     //     link.href = "#/" + pageName;
     //     link.click();
     // };
-     $scope.redirectPageURL = function(pageName) {
-    debugger;
-    var link = document.createElement("a");
+    $scope.redirectPageURL = function (pageName) {
+        debugger;
+        var link = document.createElement("a");
 
-    let baseUrl = link.baseURI;
-    // Remove hash part ( #/something )
-    if (baseUrl.includes('#/')) {
-        baseUrl = baseUrl.split('#/')[0];
-    }
-    if (pageName === 'Home') {
-        // Get id and campaign from current URL dynamically
-        let urlParams = new URLSearchParams(window.location.search);
-        let id = urlParams.get("id") || "";
-        let campaign ='Workshop';
-        // Build final HOME URL format dynamically
-        let finalUrl = baseUrl;
-        if (campaign) {
-         //   finalUrl += "&campaign=" + campaign;
+        let baseUrl = link.baseURI;
+        // Remove hash part ( #/something )
+        if (baseUrl.includes('#/')) {
+            baseUrl = baseUrl.split('#/')[0];
         }
-       // finalUrl += "#/Home";
-        finalUrl;
-        // link.href = finalUrl;
-        // link.click();
-        
-         // 1️⃣ Redirect to Home
-        window.location.replace(finalUrl);
+        if (pageName === 'Home') {
+            // Get id and campaign from current URL dynamically
+            let urlParams = new URLSearchParams(window.location.search);
+            let id = urlParams.get("id") || "";
+            let campaign = 'Workshop';
+            // Build final HOME URL format dynamically
+            let finalUrl = baseUrl;
+            if (campaign) {
+                //   finalUrl += "&campaign=" + campaign;
+            }
+            // finalUrl += "#/Home";
+            finalUrl;
+            // link.href = finalUrl;
+            // link.click();
 
-        // 2️⃣ Refresh AFTER redirect
-        setTimeout(function () {
-            window.location.reload();
-        }, 100);
- 
-    } else {
-        // For other pages → keep same base + hash routing
-        link.href = baseUrl + "#/" + pageName;
-        link.click();
-    }
-};
+            // 1️⃣ Redirect to Home
+            window.location.replace(finalUrl);
+
+            // 2️⃣ Refresh AFTER redirect
+            setTimeout(function () {
+                window.location.reload();
+            }, 100);
+
+        } else {
+            // For other pages → keep same base + hash routing
+            link.href = baseUrl + "#/" + pageName;
+            link.click();
+        }
+    };
 
 
     // $scope.redirectPageURL = function () {
@@ -771,4 +785,3 @@ angular.module('cp_app').controller('sign_Ctrl', function ($scope, $sce, $rootSc
     //         window.location.search;
     // };
 });
-        

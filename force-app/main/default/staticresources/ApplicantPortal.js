@@ -1077,7 +1077,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
         switch (programName.toUpperCase()) {
             case '2+2 CALL':
-                return 'https://indo-germansciencetechnologycentre.my.salesforce.com/sfc/p/5j00000AduBP/a/e200000HCQD3/9DzB2VddFK1jS1Qd2xIJ7s7monNiqzwHEU.p4JA54e0';
+                return 'https://indo-germansciencetechnologycentre.my.salesforce.com/sfc/p/5j00000AduBP/a/e200000Lj8Gi/IQcEjbIh7eh70BlmVc3VYvE9Z6IvW9AwZK5UyE2MBP0';
 
             case 'PECFAR':
                 return 'https://indo-germansciencetechnologycentre.my.salesforce.com/sfc/p/5j00000AduBP/a/e200000HBNXZ/CEyPpx.mUbKMmZM1sYlksJLz8_qdZm47NDiN53e5nw4';

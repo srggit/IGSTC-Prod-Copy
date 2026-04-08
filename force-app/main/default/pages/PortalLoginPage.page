@@ -530,7 +530,7 @@
         /* Online Registration Popup Modal Styles */
         /* Online Popup Modal Styles */
         .online-popup-modal {
-            display: none;
+            display: none !important;
             position: fixed;
             top: 0;
             left: 0;
@@ -540,6 +540,14 @@
             z-index: 2000;
             justify-content: center;
             align-items: center;
+        }
+
+        .online-popup-modal.ng-hide {
+            display: none !important;
+        }
+
+        .online-popup-modal:not(.ng-hide) {
+            display: flex !important;
         }
 
         .online-popup-content {
@@ -903,7 +911,7 @@
         <!-- ================= END SUPPORT MODAL ================= -->
 
         <!-- ================= Online Registration Popup Modal ================== -->
-        <div class="online-popup-modal" ng-show="showOnlinePopup" style="display:flex;">
+        <div class="online-popup-modal" ng-show="showOnlinePopup && pageFullyLoaded" style="display:flex;">
             <div class="online-popup-content">
                 <div class="online-popup-header">
                     <h3>Welcome to Online Registration!</h3>
@@ -981,6 +989,7 @@
 
                 // Online popup control
                 $scope.showOnlinePopup = false;
+                $scope.pageFullyLoaded = false;
 
                 // Function to close online popup
                 $scope.closeOnlinePopup = function () {
@@ -1376,11 +1385,15 @@
                     $timeout(function () {
                         console.log('=== DEBUG: $timeout triggered, showing popup ===');
                         console.log('=== DEBUG: About to call showOnlinePopupModal ===');
+                        // Mark page as fully loaded first, then show popup
+                        $scope.pageFullyLoaded = true;
                         $scope.showOnlinePopupModal();
                         console.log('=== DEBUG: showOnlinePopupModal called from $timeout ===');
                     }, 500);
                 } else {
                     console.log('=== DEBUG: No online=true parameter detected, staying with login form ===');
+                    // Mark page as fully loaded even if no online parameter
+                    $scope.pageFullyLoaded = true;
                 }
 
             });

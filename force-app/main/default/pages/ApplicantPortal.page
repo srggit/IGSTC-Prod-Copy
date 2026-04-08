@@ -1548,9 +1548,9 @@
                 <div class="nav-item" ng-class="{active: selectedMenu === 'Help'}" ng-click="showSection('Help')">
                     <i class="fa-solid fa-circle-question"></i> Get Help
                 </div>
-                <div class="nav-item" ng-class="{active: selectedMenu === 'FAQ'}" ng-click="showSection('FAQ')">
+                <!-- <div class="nav-item" ng-class="{active: selectedMenu === 'FAQ'}" ng-click="showSection('FAQ')">
                     <i class="fa-solid fa-question"></i> FAQ’s
-                </div>
+                </div> -->
                 <div class="bottom-nav">
                     <div class="nav-item" ng-class="{active: selectedMenu === 'Profile'}"
                         ng-click="showSection('Profile')">
@@ -2423,12 +2423,12 @@
                 </div>
 
                 <!-- FAQ Section -->
-                <div ng-if="selectedMenu === 'FAQ'">
-                    <!-- FAQ List View -->
+                <!-- <div ng-if="selectedMenu === 'FAQ'">
+                    <!- FAQ List View ->
                     <div ng-if="!selectedFAQ">
                         <h2>FAQ's</h2>
                         <div class="card-grid">
-                            <!-- 2+2 CALL -->
+                            <!- 2+2 CALL ->
                             <div class="faq-card">
                                 <div class="faq-icon blue">
                                     <i class="fa-solid fa-users"></i>
@@ -2442,7 +2442,7 @@
                                         class="fa-solid fa-arrow-right"></i></a>
                             </div>
 
-                            <!-- PECFAR -->
+                            <!- PECFAR ->
                             <div class="faq-card">
                                 <div class="faq-icon purple">
                                     <i class="fa-solid fa-handshake"></i>
@@ -2456,7 +2456,7 @@
                                         class="fa-solid fa-arrow-right"></i></a>
                             </div>
 
-                            <!-- WISER -->
+                            <!- WISER ->
                             <div class="faq-card">
                                 <div class="faq-icon orange">
                                     <i class="fa-solid fa-graduation-cap"></i>
@@ -2470,7 +2470,7 @@
                                         class="fa-solid fa-arrow-right"></i></a>
                             </div>
 
-                            <!-- SING -->
+                            <!- SING ->
                             <div class="faq-card">
                                 <div class="faq-icon red">
                                     <i class="fa-solid fa-network-wired"></i>
@@ -2483,7 +2483,7 @@
                                         class="fa-solid fa-arrow-right"></i></a>
                             </div>
 
-                            <!-- WORKSHOPS -->
+                            <!- WORKSHOPS ->
                             <div class="faq-card">
                                 <div class="faq-icon blue-purple">
                                     <i class="fa-solid fa-file-circle-check"></i>
@@ -2497,7 +2497,7 @@
                                         class="fa-solid fa-arrow-right"></i></a>
                             </div>
 
-                            <!-- IF -->
+                            <!- IF ->
                             <div class="faq-card">
                                 <div class="faq-icon brown">
                                     <i class="fa-solid fa-atom"></i>
@@ -2513,7 +2513,7 @@
                         </div>
                     </div>
 
-                    <!-- FAQ Detail View -->
+                    <!- FAQ Detail View ->
                     <div ng-if="selectedFAQ" class="faq-detail-container">
                         <div class="faq-back-button" ng-click="backToFAQ()">
                             <i class="fa-solid fa-arrow-left"></i> Back
@@ -2523,7 +2523,7 @@
                             <div class="faq-detail-title">{{selectedFAQ.name}}</div>
                             <div class="faq-detail-content">
                                 <ol>
-                                    <!-- Call Text, Basic Guidelines, FAQs -->
+                                    <!- Call Text, Basic Guidelines, FAQs ->
                                     <li
                                         ng-if="selectedFAQ.hasCallText && selectedFAQ.hasBasicGuidelines && selectedFAQ.hasFAQs">
                                         Kindly read the Call Text, Basic Guidelines and FAQs carefully before applying.
@@ -2554,21 +2554,21 @@
                                         </div>
                                     </li>
 
-                                    <!-- Project Details Format -->
+                                    <!- Project Details Format ->
                                     <li ng-if="selectedFAQ.hasProjectDetailsFormat">
                                         Download the First Stage "Project Details" upload format from here.
                                     </li>
 
-                                    <!-- Standing Instructions -->
+                                    <!- Standing Instructions ->
                                     <li ng-if="selectedFAQ.hasStandingInstructions">
                                         Download the Standing Instructions and User Manual for First Stage proposal
                                         Submission from here.
                                     </li>
 
-                                    <!-- Eligibility -->
+                                    <!- Eligibility ->
                                     <li>Please ensure your eligibility before filling the application.</li>
 
-                                    <!-- Documents Required -->
+                                    <!- Documents Required ->
                                     <li
                                         ng-if="selectedFAQ.hasDocumentsRequired && selectedFAQ.documentsRequired.length > 0">
                                         Documents required for application submission:
@@ -2578,25 +2578,25 @@
                                         </ul>
                                     </li>
 
-                                    <!-- Email -->
+                                    <!- Email ->
                                     <li>Queries, if any, should be addressed to <a href="mailto:{{selectedFAQ.email}}"
                                             class="faq-email-link">{{selectedFAQ.email}}</a></li>
 
-                                    <!-- Deadline -->
+                                    <!- Deadline ->
                                     <li>{{selectedFAQ.deadline}}</li>
 
-                                    <!-- Disqualification Note -->
+                                    <!- Disqualification Note ->
                                     <li>You may note that any false information given in the application can lead to
                                         disqualification of your candidature at any stage of the process.</li>
 
-                                    <!-- Refresh Note -->
+                                    <!- Refresh Note ->
                                     <li ng-if="selectedFAQ.hasRefreshNote">Please refresh the page with Ctrl+Shift+R and
                                         clear cache in case you face a lag or recurring error in the portal.</li>
                                 </ol>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- <div ng-if="selectedMenu === 'Help'">
                 <h2>Help</h2>
                 <div class="card-grid">
@@ -2736,7 +2736,7 @@
                                                     value="{!IF(con != null, con.Designation__c, '')}" />
                                             </div>
 
-                                            <div class="form-group">
+                                           <!-- <div class="form-group">
                                                 <label>Institution / Industry</label>
                                                 <div class="radio-group">
                                                     <label>
@@ -2748,9 +2748,9 @@
                                                             id="instTypeIndustry" /> Industry
                                                     </label>
                                                 </div>
-                                            </div>
+                                            </div>-->
 
-                                            <div class="form-group">
+                                            <div class="form-group full-width">
                                                 <label>Institution / Organisation Name</label>
                                                 <input type="text" id="contactInstitution" class="form-control"
                                                     value="{!IF(con != null && con.Account != null, con.Account.Name, '')}"
@@ -2767,7 +2767,7 @@
                                             <div class="form-group">
                                                 <label>Email <span>*</span></label>
                                                 <input type="email" id="contactEmail" class="form-control"
-                                                    value="{!IF(con != null, con.Email, '')}" />
+                                                    value="{!IF(con != null, con.Email, '')}" readonly="readonly"/>
                                             </div>
 
                                             <div class="form-group">

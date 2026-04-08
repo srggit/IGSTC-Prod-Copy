@@ -1267,6 +1267,8 @@ System.debug('No contacts found for the specified Application Proposal.');
             dto.Name = proposal.Name;
             dto.Privacy_Policy_Accepted = proposal.Privacy_Policy_Accepted__c;
 
+            // ------------- Old Code: Fetching the Declaration Sign Date from Contact ---------------- //
+            /*
             List<Contact> contacts = [SELECT Id,Name,Declaration_Sign_Date__c,Account.Country_Type__c FROM Contact 
                                         WHERE Id IN (SELECT Contact__c FROM Applicant_Proposal_Association__c WHERE Proposals__c = :proposalId)];
 
@@ -1282,8 +1284,32 @@ System.debug('No contacts found for the specified Application Proposal.');
                 cDto.Account = accDto;
                 dto.Contacts.add(cDto);
             }
+            */
+
+            // ----------- New Code: Fetching the Declaration Sign Date from APA ------------- //
+            List<Applicant_Proposal_Association__c> apaList = [
+                SELECT Id, Name, Proposed_Date__c, Proposals__c, Contact__c, Contact__r.Name, Contact__r.Account.Country_Type__c
+                FROM Applicant_Proposal_Association__c
+                WHERE Proposals__c = :proposalId
+            ];
+
+            for (Applicant_Proposal_Association__c apa : apaList) {
+                ContactDTO cDto = new ContactDTO();
+                cDto.Id = apa.Contact__c;
+                cDto.Name = apa.Contact__r.Name;
+                cDto.Declaration_Sign_Date = apa.Proposed_Date__c;
+
+                AccountDTO accDto = new AccountDTO();
+                accDto.Country_Type = apa.Contact__r.Account.Country_Type__c;
+
+                cDto.Account = accDto;
+                dto.Contacts.add(cDto);
+
+                System.debug('apa.Proposed_Date__c :  ===> ' + apa.Proposed_Date__c);
+            }
 
             System.debug('dto ---> ' + dto);
+            
             return dto;
 
         } catch (Exception e) {
