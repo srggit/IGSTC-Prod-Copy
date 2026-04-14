@@ -319,20 +319,34 @@
                                     <th style="width:2%; text-align: center" nowrap="true">No.</th>
 
                                     <th style="width:20%; text-align: center" nowrap="true">Title of the
-                                        <br/>project</th>
+                                        <br/>project
+                                        <span ng-show="grantsHandledValue === 'Yes'" class="text-danger">*</span>
+                                    </th>
 
-                                    <th style="width:15%; text-align: center" nowrap="true">Funding Agency</th>
-                                    <th style="width:14%; text-align: center" nowrap="true">Currency</th>
+                                    <th style="width:15%; text-align: center" nowrap="true">Funding Agency
+                                        <span ng-show="grantsHandledValue === 'Yes'" class="text-danger">*</span>
+                                    </th>
+                                    <th style="width:14%; text-align: center" nowrap="true">Currency
+                                        <span ng-show="grantsHandledValue === 'Yes'" class="text-danger">*</span>
+                                    </th>
 
-                                    <th style="width:14%; text-align: center" nowrap="true">Budget</th>
+                                    <th style="width:14%; text-align: center" nowrap="true">Budget
+                                        <span ng-show="grantsHandledValue === 'Yes'" class="text-danger">*</span>
+                                    </th>
 
                                     <th style="width:10%; text-align: center" nowrap="true">Start Date
-                                        <br/>(DD/MM/YYYY)</th>
+                                        <br/>(DD/MM/YYYY)
+                                        <span ng-show="grantsHandledValue === 'Yes'" class="text-danger">*</span>
+                                    </th>
 
                                     <th style="width:10%; text-align: center" nowrap="true">End Date
-                                        <br/>(DD/MM/YYYY)</th>
+                                        <br/>(DD/MM/YYYY)
+                                        <span ng-show="grantsHandledValue === 'Yes'" class="text-danger">*</span>
+                                    </th>
 
-                                    <th style="width:26%; text-align: center">Role in the project</th>
+                                    <th style="width:26%; text-align: center">Role in the project
+                                        <span ng-show="grantsHandledValue === 'Yes'" class="text-danger">*</span>
+                                    </th>
                                     <!-- <th ng-hide="proposalStage" class="text-center">
                                         <i class="fas fa-plus-circle icon" ng-click="addRow()" style="width:3%;"></i>
                                     </th> -->
@@ -447,6 +461,7 @@
                         <div class="form-group">
                             <label class="font-if color-theme">
                                 Active applications funded by DST-BMFTR (max 1000 characters without space)
+                                <span ng-show="grantsHandledValue === 'Yes'" class="text-danger">*</span>
                                 <br/>
                                 <small class="label-rtf">Please provide details of any active applications funded by DST and/or BMFTR that overlap
                                     scientifically or technically with the proposed project. If yes, provide project title,

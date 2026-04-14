@@ -1,0 +1,54 @@
+<template>
+    <div class="container">
+        <h2 class="title">Reviewer Assignment Matrix</h2>
+
+        <!-- Error handling -->
+        <template if:true={error}>
+            <div class="error-message">
+                Error loading data: {error}
+            </div>
+        </template>
+
+        <!-- Loading state -->
+        <template if:false={proposalIds.length}>
+            <div class="loading-message">
+                Loading reviewer assignments...
+            </div>
+        </template>
+
+        <!-- Grid display -->
+        <template if:true={proposalIds.length}>
+            <div class="grid-container">
+                <table class="assignment-grid">
+                    <!-- Header row with reviewer names -->
+                    <thead>
+                        <tr>
+                            <th class="proposal-header">Proposal Id</th>
+                            <template for:each={reviewerNames} for:item="reviewerName">
+                                <th key={reviewerName} class="reviewer-header">
+                                    <div class="reviewer-name">{reviewerName}</div>
+                                </th>
+                            </template>
+                        </tr>
+                    </thead>
+
+                    <!-- Data rows with proposals and assignments -->
+                    <tbody>
+                        <template for:each={gridRows} for:item="row">
+                            <tr key={row.proposalId}>
+                                <td class="proposal-cell">{row.proposalName}</td>
+                                <template for:each={row.assignments} for:item="assignment">
+                                    <td key={assignment.reviewerName} class="assignment-cell">
+                                        <template if:true={assignment.isAssigned}>
+                                            <span class="assigned-marker">1</span>
+                                        </template>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+    </div>
+</template>

@@ -3043,6 +3043,52 @@ angular.module('cp_app').controller('financialWiser_Ctrl', function ($scope, $ro
             return;
         }
 
+        // -------------------------- VALIDATIONS FOR SAVE AND NEXT ------------------------------------ //
+        // NEW VALIDATION: Check if expense table is filled
+        var hasExpenses = false;
+
+        // Check if any expense item has values greater than 0
+        if ($scope.budgetResearchStay.daysYear1 > 0 || $scope.budgetResearchStay.daysYear2 > 0 || $scope.budgetResearchStay.daysYear3 > 0) {
+            hasExpenses = true;
+        }
+
+        if (!hasExpenses && $scope.budgetTravel.costYear1 > 0) {
+            hasExpenses = true;
+        }
+
+        if (!hasExpenses && $scope.budgetConsumables.year1 > 0) {
+            hasExpenses = true;
+        }
+
+        if (!hasExpenses && $scope.minorEquipment.year1 > 0) {
+            hasExpenses = true;
+        }
+
+        if (!hasExpenses && $scope.budgetContingency.year1 > 0) {
+            hasExpenses = true;
+        }
+
+        if (!hasExpenses && $scope.budgetResearchStaffList && $scope.budgetResearchStaffList.length > 0) {
+            for (let i = 0; i < $scope.budgetResearchStaffList.length; i++) {
+                let staff = $scope.budgetResearchStaffList[i];
+                if ((staff.positionsYear1 > 0 && staff.costYear1 > 0) ||
+                    (staff.positionsYear2 > 0 && staff.costYear2 > 0) ||
+                    (staff.positionsYear3 > 0 && staff.costYear3 > 0)) {
+                    hasExpenses = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasExpenses) {
+            swal("Expense Table Required",
+                "Please fill in at least one expense item in the budget table before proceeding to the next page.",
+                "warning");
+            return;
+        }
+
+
+
         // Prepare line items for saving
         var allExpenseLineItems = [];
 

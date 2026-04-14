@@ -4,19 +4,18 @@
             <!-- Sidebar -->
             <div class={sidebarClass}>
                 <div class="d-flex flex-row sidebar-logo-container text-center mb-4">
-                    <img src={igstcLogo} width="50%"  alt="IGSTC Logo" class="d-none d-md-block my-1 mx-auto"/>
+                    <img src={igstcLogo} width="50%" alt="IGSTC Logo" class="d-none d-md-block my-1 mx-auto" />
                     <div class="contract-sidebar d-none d-md-block" onclick={toggleContraction}>
-                        <lightning-icon icon-name="utility:chevronleft" size="x-small" alternative-text="caollapse" style="--sds-c-icon-color-foreground-default: white; margin-bottom:0.35rem;"></lightning-icon>
+                        <lightning-icon icon-name="utility:chevronleft" size="x-small" alternative-text="caollapse"
+                            style="--sds-c-icon-color-foreground-default: white; margin-bottom:0.35rem;"></lightning-icon>
                     </div>
                     <div class="cls-btn d-md-none" onclick={toggleSidebar}>
-                        <lightning-icon icon-name="utility:close" size="small" alternative-text="Close" title="Close"></lightning-icon>
+                        <lightning-icon icon-name="utility:close" size="small" alternative-text="Close"
+                            title="Close"></lightning-icon>
                     </div>
                 </div>
                 <template for:each={sidebarItemsWithClasses} for:item="item">
-                    <div key={item.key}
-                        class={item.class}
-                        data-label={item.MasterLabel}
-                        data-value={item.Value__c}
+                    <div key={item.key} class={item.class} data-label={item.MasterLabel} data-value={item.Value__c}
                         onclick={setActive}>
                         <i class={item.Icon__c}></i>
                         <span class="links_name">{item.MasterLabel}</span>
@@ -38,7 +37,7 @@
                 </div>
                 <div class="scrollable-content p-3">
                     <template lwc:if={isDashboard}>
-                        
+
                     </template>
                     <template lwc:if={isApplications}>
                         <c-reviewer-allocation-application></c-reviewer-allocation-application>
@@ -54,6 +53,17 @@
                     </template>
                     <template lwc:if={isReviewerReport}>
                         <c-reviewer-report></c-reviewer-report>
+                    </template>
+                    <template lwc:if={istptreport}>
+                        <lightning-tabset>
+                            <lightning-tab label="Percentile Report" title="Percentile Report">
+                                <c-tptreport></c-tptreport>
+                            </lightning-tab>
+                            <lightning-tab label="Marking Report" title="Marking Report">
+                                <c-reviewer-marking-comp></c-reviewer-marking-comp>
+                            </lightning-tab>
+                        </lightning-tabset>
+
                     </template>
                 </div>
             </div>

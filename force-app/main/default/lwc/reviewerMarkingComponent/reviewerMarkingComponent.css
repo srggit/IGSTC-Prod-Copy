@@ -1,0 +1,160 @@
+/* Container and overall styling */
+.container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.title {
+    text-align: center;
+    color: #2c5282;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Error and loading states */
+.error-message {
+    color: #e53e3e;
+    text-align: center;
+    padding: 20px;
+    background-color: #fed7d7;
+    border: 1px solid #feb2b2;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.loading-message {
+    text-align: center;
+    color: #718096;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Grid container with horizontal scroll for wide tables */
+.grid-container {
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styling */
+.assignment-grid {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    background-color: white;
+}
+
+/* Header styling */
+.assignment-grid th {
+    background-color: #4a5568;
+    color: white;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #2d3748;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.proposal-header {
+    min-width: 120px;
+    text-align: left;
+    background-color: #2d3748;
+}
+
+.reviewer-header {
+    min-width: 100px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    height: 100px;
+}
+
+.reviewer-name {
+    transform: rotate(180deg);
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+/* Body cell styling */
+.assignment-grid td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+.proposal-cell {
+    background-color: #f7fafc;
+    font-weight: bold;
+    color: #2d3748;
+    text-align: left;
+    min-width: 120px;
+}
+
+.assignment-cell {
+    min-width: 100px;
+    height: 40px;
+}
+
+/* Assigned marker styling */
+.assigned-marker {
+    display: inline-block;
+    background-color: #48bb78;
+    color: white;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Row hover effect */
+.assignment-grid tbody tr:hover {
+    background-color: #edf2f7;
+}
+
+.assignment-grid tbody tr:hover .proposal-cell {
+    background-color: #e2e8f0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .title {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    
+    .assignment-grid th,
+    .assignment-grid td {
+        padding: 6px 4px;
+        font-size: 12px;
+    }
+    
+    .reviewer-header {
+        min-width: 80px;
+        height: 80px;
+    }
+    
+    .proposal-cell {
+        min-width: 100px;
+    }
+    
+    .assignment-cell {
+        min-width: 80px;
+    }
+    
+    .assigned-marker {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        font-size: 12px;
+    }
+}

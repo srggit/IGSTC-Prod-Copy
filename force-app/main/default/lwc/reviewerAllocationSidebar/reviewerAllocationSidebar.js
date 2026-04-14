@@ -97,4 +97,7 @@ export default class DmsPortalSideBar extends LightningElement {
     get isReviewerReport() {
         return this.activeLink == 'report';
     }
+    get istptreport  () {
+        return this.activeLink=='tptreport';
+    }
 }

@@ -347,6 +347,15 @@ angular.module('cp_app').controller('WISERgrant_ctrl', function ($scope, $rootSc
             return;
         }
 
+        // Validate all required fields when user selects 'Yes'
+        if ($scope.grantsHandledValue === 'Yes') {
+            var validationResult = $scope.validateGrantFields();
+            if (!validationResult.isValid) {
+                swal("Info", validationResult.message, "info");
+                return;
+            }
+        }
+
         // Validate RTF field character limit
         if ($scope.showGrantsTable) {
             if ($scope.objRtf[0].charCount > 1000 || $scope.objRtf[0].errorStatus) {
@@ -415,7 +424,7 @@ angular.module('cp_app').controller('WISERgrant_ctrl', function ($scope, $rootSc
                     $scope.grantList.push(grantApplication);
                 }
 
-                ApplicantPortal_Contoller.insertExistingGrantsWISER($scope.grantList, $rootScope.apaId, function (result, event) {
+                ApplicantPortal_Contoller.insertExistingGrantsWISER($scope.grantList, function (result, event) {
                     if (event.status && result != null) {
                         console.log("Result ::" + result);
 
@@ -512,6 +521,92 @@ angular.module('cp_app').controller('WISERgrant_ctrl', function ($scope, $rootSc
     }
 
     // RTF Character counting function (similar to HostProjectDetails.js)
+    $scope.validateGrantFields = function () {
+        debugger;
+
+        if (!$scope.existingGrants || $scope.existingGrants.length === 0) {
+            return {
+                isValid: false,
+                message: "Please add at least one grant record."
+            };
+        }
+
+        // Validate each grant record
+        for (var i = 0; i < $scope.existingGrants.length; i++) {
+            var grant = $scope.existingGrants[i];
+            var rowNumber = i + 1;
+
+            // Check Title of the project
+            if (!grant.Title__c || grant.Title__c.trim() === '') {
+                return {
+                    isValid: false,
+                    message: "Please enter Title of the project for row " + rowNumber + "."
+                };
+            }
+
+            // Check Funding Agency
+            if (!grant.Funding_Agency__c || grant.Funding_Agency__c.trim() === '') {
+                return {
+                    isValid: false,
+                    message: "Please enter Funding Agency for row " + rowNumber + "."
+                };
+            }
+
+            // Check Currency
+            if (!grant.Currency__c || grant.Currency__c.trim() === '' || grant.Currency__c === '-- Select --') {
+                return {
+                    isValid: false,
+                    message: "Please select Currency for row " + rowNumber + "."
+                };
+            }
+
+            // Check Budget
+            if (!grant.Budget__c || grant.Budget__c.trim() === '') {
+                return {
+                    isValid: false,
+                    message: "Please enter Budget for row " + rowNumber + "."
+                };
+            }
+
+            // Check Start Date
+            if (!grant.Starting_Date__c || grant.Starting_Date__c.trim() === '') {
+                return {
+                    isValid: false,
+                    message: "Please enter Start Date (DD/MM/YYYY) for row " + rowNumber + "."
+                };
+            }
+
+            // Check End Date
+            if (!grant.End_Date__c || grant.End_Date__c.trim() === '') {
+                return {
+                    isValid: false,
+                    message: "Please enter End Date (DD/MM/YYYY) for row " + rowNumber + "."
+                };
+            }
+
+            // Check Role in the project
+            if (!grant.Role_in_the_Project__c || grant.Role_in_the_Project__c.trim() === '') {
+                return {
+                    isValid: false,
+                    message: "Please enter Role in the project for row " + rowNumber + "."
+                };
+            }
+
+            // Check Active applications funded by DST-BMFTR field
+            if (!$scope.activeApplicationsField || $scope.activeApplicationsField.trim() === '') {
+                return {
+                    isValid: false,
+                    message: "Please enter details for Active applications funded by DST-BMFTR."
+                };
+            }
+        }
+
+        return {
+            isValid: true,
+            message: "All validations passed."
+        };
+    };
+
     $scope.readCharacter = function (event, index) {
         try {
             var rtfString = event.toString().replace(/<[^>]*>|\s/g, '').replace(/\s+/g, '').replace(/&ndash;/g, '-').replace(/&euro;/g, '1').replace(/&amp;/g, '1').replace(/&#39;/g, '1').replace(/&quot;/g, '1').replace(/&nbsp;/g, '').replace(/&mdash;/g, '-').replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&bull;/g, '');

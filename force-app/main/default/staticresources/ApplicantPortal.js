@@ -64,7 +64,15 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     var shouldSkipDashboardFunctions = function () {
         return !isDashboardRoute();
     };
-    console.log('shiva----', $rootScope.proposalStage)
+    console.log('shiva----', $rootScope.proposalStage);
+
+    // Add this function after the existing helper functions (around line 67)
+    $scope.isHomePage = function () {
+        var currentHash = window.location.hash;
+        // Home page is when there's no hash or just '#'
+        return !currentHash || currentHash === '#';
+    };
+
     // Initialize isRoutedView immediately based on current path
     $rootScope.isRoutedView = $location.path() !== '' && $location.path() !== '/';
 
@@ -75,6 +83,8 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
             $scope.initializeSecondStageFromStorage();
         });
     });
+
+
     $scope.load = function () {
         const hashCode = localStorage.getItem('hashCode');
         if (hashCode == null || hashCode == '') {
@@ -1587,6 +1597,19 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
         $scope.selectedFAQ = null;
         $rootScope.isRoutedView = false;
 
+        // Use Angular's $location service to navigate without page refresh
+        $location.path('');
+        $scope.$apply();
+    };
+
+    /*
+    // Navigate to home/dashboard - removes hash but keeps query params
+    $scope.navigateToHome = function () {
+        // Reset to dashboard view
+        $scope.selectedMenu = 'Programs';
+        $scope.selectedFAQ = null;
+        $rootScope.isRoutedView = false;
+
         // Clear any route and navigate to base URL
         var baseUrl = window.location.origin + window.location.pathname;
         if (window.location.search) {
@@ -1602,7 +1625,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
             $scope.$apply();
         }
     };
-
+    */
     $scope.downloadApplicationPdf = function (id) {
         debugger;
         ApplicantPortal_Contoller.downloadApplicationPdf(id, function (result, event) {

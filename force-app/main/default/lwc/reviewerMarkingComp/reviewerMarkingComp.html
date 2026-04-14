@@ -1,0 +1,66 @@
+<template>
+    <div class="marking-shell">
+        <!-- <h2 class="marking-title">Reviewer Marking</h2> -->
+
+        <div class="marking-toolbar">
+            <div class="toolbar-filters">
+                <lightning-combobox class="call-type-combo" name="callType" label="Call Type"
+                    placeholder="Select Call Type" value={selectedName} onchange={handleChangeName}
+                    options={campaignNameOptions}></lightning-combobox>
+
+                <template if:true={showStageFilter}>
+                    <lightning-combobox class="stage-filter" name="proposalStage" label="Proposal Stage" value={stage}
+                        options={stageOptions} placeholder="All Stages"
+                        onchange={handleStageChange}></lightning-combobox>
+                </template>
+            </div>
+        </div>
+
+        <template if:true={error}>
+            <div class="state-banner state-banner_error" role="alert">
+                {error.message}
+            </div>
+        </template>
+
+        <template if:false={selectedCampaignName}>
+            <div class="state-banner state-banner_muted">Please select a Call Type to view reviewer assignments.</div>
+        </template>
+
+        <template if:true={selectedCampaignName}>
+            <template if:false={proposalIds.length}>
+                <div class="state-banner state-banner_muted">Loading reviewer assignments…</div>
+            </template>
+        </template>
+
+        <template if:true={showGrid}>
+            <div class="table-panel" role="region" aria-label="Reviewer assignment matrix">
+                <table class="assignment-grid">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="th-proposal">Proposal</th>
+                            <template for:each={reviewerNames} for:item="reviewerName">
+                                <th key={reviewerName} scope="col" class="th-reviewer">
+                                    <span class="th-reviewer-inner">{reviewerName}</span>
+                                </th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={gridRows} for:item="row">
+                            <tr key={row.proposalId}>
+                                <th scope="row" class="td-proposal">{row.proposalName}</th>
+                                <template for:each={row.assignments} for:item="assignment">
+                                    <td key={assignment.reviewerName} class="td-assign">
+                                        <template if:true={assignment.isAssigned}>
+                                            <span class="assigned-marker" title="Assigned">1</span>
+                                        </template>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+    </div>
+</template>
