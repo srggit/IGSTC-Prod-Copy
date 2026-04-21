@@ -18,8 +18,20 @@
                     <lightning-combobox name="Call Year" label="Call Year" placeholder="Select Call Year"
                         value={selectedYear} onchange={handleChangeYear} options={yearOptions}> </lightning-combobox>
                 </div>
+                <template if:true={showStage}>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning-combobox 
+                            name="Stage"
+                            label="Stage"
+                            placeholder="Select Stage"
+                            value={selectedStage}
+                            options={stageOptions}
+                            onchange={handleStageChange}>
+                        </lightning-combobox>
+                    </div>
+                </template>
                 <div class="slds-col slds-size_1-of-6 slds-m-top_large">
-                    <lightning-button label="Search" variant="brand" onclick={handleSearch} class="slds-m-top_small">
+                    <lightning-button label="Search" variant="brand" onclick={handleSearch}   disabled={isSearchDisabled} class="slds-m-top_small">
                     </lightning-button>
                 </div>
             </div>
@@ -55,7 +67,7 @@
                                         <td>{item.Name}</td>
                                         <td>{item.Title_Of__c}</td>
                                         <td>{item.Campaign__r.Name}</td>
-                                        <td>{item.Proposal_Stage__c}</td>
+                                        <td>{item.Proposal_Stages__c}</td>
                                         <td>{item.Stage__c}</td>
                                     </tr>
                                 </template>
@@ -93,13 +105,13 @@
                 </div>
                 <template if:false={noRecords}>
                     <div class="slds-m-around_medium slds-text-align_right">
-                        <c-reusable-pagination  page-size="10"
+                        <c-reusable-pagination  page-size="50"
                         style="font-size: medium;" list={proposals} onpagechange={handlePagination}
                         current-page={currentPage}>
                        </c-reusable-pagination>  
                     </div>
                     <div class="slds-m-around_medium slds-text-align_right ">
-                        <lightning-button label="Save" variant="brand" onclick={handleSave}></lightning-button>
+                        <lightning-button label="Generate" variant="brand" onclick={handleSave}></lightning-button>
                     </div>    
 
                 </template>

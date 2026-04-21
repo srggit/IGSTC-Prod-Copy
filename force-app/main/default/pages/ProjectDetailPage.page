@@ -358,7 +358,7 @@
 
                 <div class="row box-shadow-2 mt-5 mx-5 p-3 mb-3 bg-color-list">
                     <!-- Stage 1 - Single Column -->
-                    <div class="col-12" ng-show="proposalStageCheck === '1st Stage'">
+                    <div class="col-12" ng-show="proposalStageCheck === '1st Stage'|| proposalStageCheck === ''">
                         <div><b>Document Required at stage 1</b></div>
                         <label class="font-if mb-3 mt-2">
                             <ul class="bullet-list">

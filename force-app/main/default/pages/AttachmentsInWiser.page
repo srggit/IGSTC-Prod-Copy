@@ -425,7 +425,8 @@
                                 <!-- <a class="blue-btn float-end mt-4 py-3" href="{{noObjection.ContentDistribution.DistributionPublicUrl}}" target="_blank">View</a> -->
                             </div>
                         </div>
-
+						
+                        <!--
                         <div class="col-md-6 mb-3">
                             <label class="font-if">
                                 <b> Project Proposal PDF </b>
@@ -444,6 +445,47 @@
                                     </span>
                                 </div>
                                 <div ng-show="projectProposal && projectProposal.userDocument.Status__c=='Uploaded'" class="mt-2">
+                                    <span class="text-success">
+                                        <i class="fa-solid fa-check-circle me-2"></i>
+                                        <strong>Uploaded</strong>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3" ng-show="projectProposal.userDocument.Status__c=='Uploaded'">
+                                <a class="blue-btn float-end mt-4 py-3" ng-click="filePreviewHandler(projectProposal)">View</a>
+                            </div>
+                        </div>
+						-->
+                        <div class="col-md-6 mb-3">
+                            <label class="font-if">
+                                <b> Project Proposal PDF </b>
+                                <br/> Complete and upload the Project Proposal as a single PDF file, consistent with the details
+                                and figures/images (if any) provided (if any) in the Paired Project Details section of the
+                                application. (Max size 4.5 MB &amp; 8 pages including references and images)
+                                <span class="text-danger me-2">*</span>
+                            </label>
+                            <div class="col-md-9 mt-4" style="padding-left: 0px !important; padding-right: 0px !important">
+                                <div class="input-group input-group-lg">
+                                    <input type="file" accept=".pdf" ng-disabled="proposalStage || uploadingProjectProposal || !isCoordinator" id="{{projectProposal.userDocument.Name}}"
+                                        class="form-control " />
+                                    <span class="input-group-btn" ng-hide="proposalStage">
+                                        <button class="btn btn-success" ng-click="uploadFile(projectProposal.userDocument.Name,projectProposal.userDocument.Id,'','5242880','30720')"
+                                            type="button" ng-disabled="uploadingProjectProposal||!isCoordinator">
+                                            <span ng-if="!uploadingProjectProposal">Upload</span>
+                                            <span ng-if="uploadingProjectProposal">
+                                                <i class="fa-solid fa-spinner fa-spin me-2"></i>Uploading...
+                                            </span>
+                                        </button>
+                                    </span>
+                                </div>
+                                <div ng-show="uploadingProjectProposal" class="mt-2">
+                                    <span class="text-info">
+                                        <i class="fa-solid fa-spinner fa-spin me-2"></i>
+                                        <strong>Uploading file, please wait...</strong>
+                                    </span>
+                                </div>
+                                <div ng-show="projectProposal && projectProposal.userDocument.Status__c=='Uploaded' && !uploadingProjectProposal" class="mt-2">
                                     <span class="text-success">
                                         <i class="fa-solid fa-check-circle me-2"></i>
                                         <strong>Uploaded</strong>

@@ -109,12 +109,13 @@ angular.module('cp_app').controller('POrg_ctrl', function($scope,$rootScope) {
                 }
                 $scope.accDetails = result;
                // $scope.accDetails.Account.BillingCountry = 'India';
-                if( $rootScope.IFcountry=='India'){
-                    $scope.accDetails.Account.BillingCountry = 'India';
-                  }
-                  else{
-                    $scope.accDetails.Account.BillingCountry = 'Germany';
-                  }
+                if (!$scope.accDetails.Account.BillingCountry) {
+                    if ($rootScope.IFcountry == 'India') {
+                        $scope.accDetails.Account.BillingCountry = 'India';
+                    } else {
+                        $scope.accDetails.Account.BillingCountry = 'Germany';
+                    }
+                }
                 if($scope.accDetails.Account.BillingCountry == 'India'){
                     $scope.accDetails.Account.stateList = $scope.indianStates;
                 }else if($scope.accDetails.Account.BillingCountry == 'Germany'){

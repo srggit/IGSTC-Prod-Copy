@@ -513,7 +513,7 @@ compensation in lieu thereof.
                             </div>
                             <div class="row mx-5 mt-3 mb-4">
                                 <div class="col-md-5">
-                                    <label class="font-if">Place:</label> <input type="text"  ng-disabled="proposalStage" ng-model="objContact.Signature_Place__c" class="form-control w-50"/>
+                                    <label class="font-if">Place:</label> <input type="text"  ng-disabled="proposalStage" ng-model="SignaturePlace" class="form-control w-50"/>
                                     <!-- <button class="blue-btn float-end me-2" ng-click="reviewApp()" type="button">
                                         <i class="fa-solid fa-arrow-left me-2"></i>Review</button> -->
                                 </div>

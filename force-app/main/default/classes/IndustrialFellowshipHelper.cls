@@ -737,6 +737,31 @@ return 'exception: ' + e.getMessage() + ' line no. ' + e.getLineNumber();
             return 'Exception';
         }
     }
+     public String submitProposalIFnew(String saveType,String proposalId,String signaturePlace,integer year,integer month,integer day){
+        try{            
+             if(saveType == 's') {
+
+                Application_Proposal__c prop = new Application_Proposal__c(Id = proposalId);
+
+                if(year != 0){
+                    Date newDate = Date.newInstance(year, month, day);
+
+                    prop.Proposed_Date__c = newDate;
+                    prop.Proposal_Stages__c = 'Submitted';
+                    prop.Signature_Place__c = signaturePlace;
+                    prop.Submitted__c = true;
+                }
+
+                update prop;
+            }           
+
+            return 'success';
+        }
+        catch(Exception e){
+            system.debug('exception: '+e.getMessage()+' line no. '+e.getLineNumber()+'');
+            return 'Exception';
+        }
+    }
     
     public String saveFellowshipProposal(String loginHashCode,Application_Proposal__c prop,Contact pContact,String AccountId, String recordType){
         try {

@@ -1668,16 +1668,17 @@
                                 </div>
 
 
-                                <!-- <div class="btn"
+                            <div class="btn"
                                  ng-if="p.proposalStage !== 'Draft'"
                                  ng-click="downloadApplicationPdf(p.id)">
                                 Download Application pdf
-                            </div> -->
-
+                            </div>
+                                <!--
                                 <div class="btn" ng-if="p && p.proposalStage !== 'Draft' && !wiserCampaign"
                                     ng-click="downloadApplicationPdf(p.id)">
                                     Download Application pdf
                                 </div>
+                                -->
 
                             </div>
                         </div>

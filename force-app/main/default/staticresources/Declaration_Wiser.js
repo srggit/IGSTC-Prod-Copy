@@ -139,7 +139,6 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
     $scope.getProjectdetils();
 
 
-
     $scope.saveDetails = function () {
         debugger;
         var year = 0;
@@ -196,10 +195,10 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
 
                     swal("Success", "Your Proposal has been saved as Draft.", "success");
 
-                    setTimeout(function () {
-                        $scope.redirectPageURL('Home');
-                        $scope.$apply();
-                    }, 1200); // 1 second
+                    // setTimeout(function () {
+                    //     // $scope.redirectPageURL('Home');
+                    //     $scope.$apply();
+                    // }, 1200); // 1 second
 
                     $scope.grantList = result;
                 }
@@ -254,7 +253,6 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
             $scope.$apply();
         });
     }
-
     $scope.finalSubmitWiser = function () {
         debugger;
 
@@ -283,15 +281,34 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
 
         swal({
             title: "Are you sure?",
-            text: "Are you sure? Once the proposal is submitted, it cannot be edited.",
+            // text: "Are you sure? Once the proposal is submitted, it cannot be edited.",
+            text: "Are you sure you want to submit the proposal?.",
             icon: "warning",
             buttons: true,
             dangerMode: true,
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    /*
-                    ApplicantPortal_Contoller.finalSubmitWiser(
+                    // ApplicantPortal_Contoller.finalSubmitWiser($rootScope.projectId, $rootScope.contactId, day, month, year, function (result, event) {
+                    // ApplicantPortal_Contoller.finalSubmitWiser($rootScope.proposalId, $rootScope.contactId, $rootScope.apaId, day, month, year, function (result, event) {
+                    //     if (event.status) {
+                    //         debugger;
+                    //         $rootScope.proposalStage = true;
+                    //         CKEDITOR.config.readOnly = true;
+                    //         swal(
+                    //             'Success',
+                    //             'Your proposal has been submitted successfully.',
+                    //             'success'
+                    //         );
+                    //         $scope.redirectPageURL('Home');
+                    //         $scope.proposalDetails = result;
+                    //         $scope.$apply();
+                    //     }
+                    // },
+                    //     { escape: true }
+                    // );
+
+                    /*ApplicantPortal_Contoller.finalSubmitWiser(
                         $rootScope.proposalId, $rootScope.contactId, $rootScope.apaId, day, month, year, function (result, event) {
                             if (event.status) {
                                 debugger;
@@ -311,20 +328,29 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
                                     CKEDITOR.config.readOnly = true;
                                 }
 
-                                console.log('result.message ====>', result.message);
-                                
-                                showSuccess(result.message)
-                                    .then(() => {
-                                        if (result.isProposalCompleted) {
-                                            $scope.redirectPageURL('Home');
-                                        }
-                                    });
+                                swal(
+                                    'Success',
+                                    result.message,
+                                    'success'
+                                );
+
+                                if (result.isProposalCompleted) {
+                                    setTimeout(function () {
+                                        $scope.redirectPageURL('Home');
+                                        $scope.$apply();
+                                    }, 2000); // 2 seconds delay
+                                } else {
+                                    setTimeout(function () {
+                                        $scope.redirectPageURL('Home');
+                                        $scope.$apply();
+                                    }, 2000); // 2 seconds delay
+                                }
+
                                 $scope.$apply();
                             }
                         },
                         { escape: true }
-                    );
-                    */
+                    );*/
                     ApplicantPortal_Contoller.finalSubmitWiser(
                         $rootScope.proposalId,
                         $rootScope.contactId,
@@ -333,24 +359,24 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
                         function (result, event) {
                             if (event.status) {
                                 debugger;
-
+ 
                                 // Restore button
                                 $("#btnPreview").html('<i class="fa-solid fa-check me-2"></i>Submit');
                                 $("#btnPreview").prop('disabled', false);
-
+ 
                                 // Lock current user if submitted
                                 $rootScope.isCurrentUserSubmitted = result.isCurrentUserSubmitted;
-
+ 
                                 // Lock entire proposal if completed
                                 $rootScope.proposalStage = result.isProposalCompleted;
-
+ 
                                 // Lock editor accordingly
                                 if (result.isCurrentUserSubmitted || result.isProposalCompleted) {
                                     CKEDITOR.config.readOnly = true;
                                 }
-
+ 
                                 console.log('result.message ====>', result.message);
-
+ 
                                 // Handle message based on response
                                 if (result.message === 'COMPLETED: Your application has been submitted successfully. All applicants have submitted.') {
                                     showSuccess(result.message)
@@ -368,7 +394,7 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
                                     showInfo(result.message)
                                         .then(() => {
                                             $scope.$apply();
-                                            if (result.isProposalCompleted) {
+                                            if (!result.isProposalCompleted) {
                                                 $scope.redirectPageURL('Home');
                                             }
                                         })
@@ -389,8 +415,19 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
                     );
                 }
             });
-    }
+                
 
+        // ApplicantPortal_Contoller.finalSubmitWiser($rootScope.projectId,day,month,year, function(result, event){
+        //     if(event.status){
+        //      debugger;
+        //      $scope.redirectPageURL('Home');
+        //      $scope.grantList = result;
+        //      $scope.$apply();  
+        //  }
+        // },
+        // {escape:true}
+        // )
+    }
     function showSuccess(message) {
         return swal({
             title: "Success",
@@ -404,7 +441,7 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
             button: "OK"
         });
     }
-
+ 
     function showInfo(message) {
         return swal({
             title: "",
@@ -418,6 +455,22 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
             button: "OK"
         });
     }
+
+    // $scope.createUserDocument = function(){
+    //     debugger;
+    //     ApplicantPortal_Contoller.createUserDocument("", $rootScope.contactId, $rootScope.projectId,"", function(result,event){
+    //         debugger;
+    //         if(event.status && result){
+    //             if(result != null){
+    //                 $scope.uploadFile('sign',result,'');
+    //             }
+    //             debugger;
+    //             $scope.$apply();
+    //         }
+    //     },
+    //                                               {escape: true}
+    //                                              )
+    // }
 
     $scope.uploadFile = function (type, userDocId, fileId, maxSize, minFileSize) {
         debugger;
@@ -540,11 +593,42 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
         );
     }
 
+    // $scope.redirectPageURL = function (pageName) {
+    //     debugger;
+    //     debugger;
+    //     var link = document.createElement("a");
+    //     // Get current base URL dynamically (no hard coding)
+    //     let baseUrl = link.baseURI;
+    //     // Remove hash part ( #/something )
+    //     if (baseUrl.includes('#/')) {
+    //         baseUrl = baseUrl.split('#/')[0];
+    //     }
+    //     if (pageName === 'Home') {
+    //         // Get id and campaign from current URL dynamically
+    //         let urlParams = new URLSearchParams(window.location.search);
+    //         let id = urlParams.get("id") || "";
+    //         let campaign = '2plus2';
+    //         // Build final HOME URL format dynamically
+    //         let finalUrl = baseUrl;
+    //         if (campaign) {
+    //             // finalUrl += "&campaign=" + campaign;
+    //         }
+    //         // finalUrl += "#/Home";
+    //         finalUrl;
+    //         link.href = finalUrl;
+    //         link.click();
+
+    //     } else {
+    //         // For other pages → keep same base + hash routing
+    //         link.href = baseUrl + "#/" + pageName;
+    //         link.click();
+    //     }
+    // }
+
     $scope.redirectPageURL = function (pageName) {
         debugger;
-        debugger;
         var link = document.createElement("a");
-        // Get current base URL dynamically (no hard coding)
+
         let baseUrl = link.baseURI;
         // Remove hash part ( #/something )
         if (baseUrl.includes('#/')) {
@@ -554,22 +638,30 @@ angular.module('cp_app').controller('declarationwiser_ctrl', function ($scope, $
             // Get id and campaign from current URL dynamically
             let urlParams = new URLSearchParams(window.location.search);
             let id = urlParams.get("id") || "";
-            let campaign = '2plus2';
+            let campaign = 'WISER';
             // Build final HOME URL format dynamically
             let finalUrl = baseUrl;
             if (campaign) {
-                // finalUrl += "&campaign=" + campaign;
+                //   finalUrl += "&campaign=" + campaign;
             }
             // finalUrl += "#/Home";
             finalUrl;
-            link.href = finalUrl;
-            link.click();
+            // link.href = finalUrl;
+            // link.click();
+
+            // 1️⃣ Redirect to Home
+            window.location.replace(finalUrl);
+
+            // 2️⃣ Refresh AFTER redirect
+            setTimeout(function () {
+                window.location.reload();
+            }, 100);
 
         } else {
             // For other pages → keep same base + hash routing
             link.href = baseUrl + "#/" + pageName;
             link.click();
         }
-    }
+    };
 
 });

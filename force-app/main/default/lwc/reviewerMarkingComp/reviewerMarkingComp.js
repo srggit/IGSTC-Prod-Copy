@@ -1,10 +1,8 @@
 import { LightningElement, wire, track } from 'lwc';
-import getReviewerMappingData from '@salesforce/apex/ReviewerMappingController.getReviewerMarkingData';
+import getReviewerMarkingData from '@salesforce/apex/ReviewerMappingController.getReviewerMarkingData';
 import getCampaignName from '@salesforce/apex/ReviewerMappingController.getCampaignName';
 import getStageOptions from '@salesforce/apex/ReviewerMappingController.getStageOptions';
-
-
-
+import getCallYearOptions from '@salesforce/apex/ReviewerMappingController.getCallYearOptions';
 
 export default class ReviewerMarkingComp extends LightningElement {
     proposalIds = [];
@@ -14,6 +12,25 @@ export default class ReviewerMarkingComp extends LightningElement {
     selectedName = '';
     campaignNameOptions = [];
     @track selectedCampaignName = '';
+    callYearOptions = [];
+    selectedCallYear = '';
+
+    // Call the getCallYearOptions method from the Apex controller and store in callYearOptions
+    @wire(getCallYearOptions)
+    wiredCallYears({ error, data }) {
+        if (data) {
+            this.error = undefined;
+            this.callYearOptions = [
+                { label: 'All Call Years', value: '' },
+                ...data.map((year) => ({
+                    label: year.Name,
+                    value: year.Name
+                }))
+            ];
+        } else if (error) {
+            this.error = error;
+        }
+    }
 
     // Proposal stage filter properties
     stage = '';
@@ -21,8 +38,6 @@ export default class ReviewerMarkingComp extends LightningElement {
 
     @wire(getCampaignName)
     wiredCampaigns({ error, data }) {
-        console.log('wiredCampaigns - data:', data);
-        console.log('wiredCampaigns - error:', error);
         if (data) {
             this.error = undefined;
             // First add all values from Apex
@@ -37,18 +52,15 @@ export default class ReviewerMarkingComp extends LightningElement {
             // Sort by label to maintain ASC order
             this.campaignNameOptions.sort((a, b) => a.label.localeCompare(b.label));
 
-            console.log('campaignNameOptions:', this.campaignNameOptions);
         } else if (error) {
-            console.error('Error in getCampaignName:', error);
             this.error = error;
         }
     }
 
     handleChangeName(event) {
-        debugger;
         this.selectedName = event.target.value;
-        console.log('this.stage ----> ', this.stage);
         this.stage = '';
+        this.selectedCallYear = '';
 
         const selectedCampaign = this.campaignNameOptions.find(
             (cmp) => cmp.value === this.selectedName
@@ -59,10 +71,17 @@ export default class ReviewerMarkingComp extends LightningElement {
         this.loadReviewerMappingData();
     }
 
+    handleCallYearChange(event) {
+        debugger;
+        this.selectedCallYear = event.target.value;
+        console.log('handleCallYearChange called with value:', this.selectedCallYear);
+        this.stage = '';
+
+        this.loadReviewerMappingData();
+    }
+
     @wire(getStageOptions)
     wiredStages({ error, data }) {
-        console.log('wiredStages - data:', data);
-        console.log('wiredStages - error:', error);
         if (data) {
             // Add "All Stages" option at the beginning
             this.stageOptions = [
@@ -72,9 +91,7 @@ export default class ReviewerMarkingComp extends LightningElement {
                     value: stage
                 }))
             ];
-            console.log('stageOptions:', this.stageOptions);
         } else if (error) {
-            console.error('Error in getStageOptions:', error);
             // Don't set this.error for stage options error, just log it
             this.stageOptions = [{ label: 'All Stages', value: '' }];
         }
@@ -101,42 +118,30 @@ export default class ReviewerMarkingComp extends LightningElement {
     // Imperative method to load reviewer mapping data
     async loadReviewerMappingData() {
         console.log('loadReviewerMappingData called');
-        console.log('selectedCampaignName:', this.selectedCampaignName);
-        console.log('stage:', this.stage);
+        debugger;
+        console.log('this.selectedCallYear : ', this.selectedCallYear);
 
-        if (!this.selectedCampaignName) {
+        if (!this.selectedName) {
             // Clear data if no campaign selected
             this.proposalIds = [];
             this.reviewerNames = [];
             this.gridRows = [];
             this.error = undefined;
-            console.log('No campaign selected, returning');
             return;
         }
 
         try {
-            console.log('Calling getReviewerMappingData with:', {
-                campaignName: this.selectedCampaignName,
-                proposalStage: this.stage
+            const data = await getReviewerMarkingData({
+                campaignId: this.selectedName,
+                proposalStage: this.stage,
+                proposalCallYear: this.selectedCallYear
             });
-
-            const data = await getReviewerMappingData({
-                campaignName: this.selectedCampaignName,
-                proposalStage: this.stage
-            });
-
-            console.log('getReviewerMappingData returned:', data);
 
             this.proposalIds = data.proposalIds;
             this.reviewerNames = data.reviewerNames;
             this.gridRows = this.processGridData(data.gridRows, data.reviewerNames);
             this.error = undefined;
-            console.log('Data loaded successfully');
         } catch (error) {
-            console.error('Error in loadReviewerMappingData:', error);
-            console.error('Error body:', error.body);
-            console.error('Error message:', error.body?.message || error.message);
-
             // Create a more user-friendly error message
             let errorMessage = 'Error loading reviewer assignment data.';
             if (error.body?.message) {

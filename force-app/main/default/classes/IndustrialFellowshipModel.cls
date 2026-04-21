@@ -42,6 +42,9 @@ public class IndustrialFellowshipModel {
         return [SELECT id,FirstName,LastName,Signature_Place__c,Account.Name, Industrial_Fellowship_Type__c,Uploaded__c,Declaration_Sign_Date__c,MailingCity,MailingState,MailingCountry,MailingPostalCode,MailingStreet,Nationality__c,Institute_Name__c,Department,Designation__c,Phone,Email,Homepage_URL__c,Birthdate,Profile_Pic_Attachment_Id__c,Institution_Name__c,(select name,id from Attachments Order By CreatedDate DESC limit 1)
                 From Contact WHERE Login_Hash_Code__c=: loginHashCode Limit 1];
     }
+     public  Application_Proposal__c getProposalSign(String proposalId){
+        return [SELECT Id,Proposed_Date__c,Signature_Place__c FROM Application_Proposal__c WHERE Id=: proposalId Limit 1];
+    }
 
     // public  Applicant_Proposal_Association__c getContactSingh(String loginHashCode){
     //     return [SELECT Id, Contact__r.FirstName, Contact__r.LastName, Contact__r.Signature_Place__c,  Contact__r.Industrial_Fellowship_Type__c, Contact__r.Uploaded__c, Contact__r.Declaration_Sign_Date__c, Contact__r.MailingCity, Contact__r.MailingState, Contact__r.MailingCountry, Contact__r.MailingPostalCode, Contact__r.MailingStreet, Contact__r.Nationality__c, Contact__r.Institute_Name__c, Contact__r.Department, Contact__r.Designation__c, Contact__r.Phone, Contact__r.Email, Contact__r.Homepage_URL__c, Contact__r.Birthdate, Contact__r.Profile_Pic_Attachment_Id__c, Contact__r.Institution_Name__c, (SELECT Id From User_Documents__r Order By CreatedDate DESC limit 1) 

@@ -8,27 +8,36 @@
                     placeholder="Select Call Type" value={selectedName} onchange={handleChangeName}
                     options={campaignNameOptions}></lightning-combobox>
 
+                <!-- Call Year Filter -->
+                <template if:true={callYearOptions.length}>
+                    <lightning-combobox class="call-type-combo" name="callYear" label="Call Year"
+                        placeholder="Select Call Year" value={selectedCallYear} onchange={handleCallYearChange}
+                        options={callYearOptions}>
+                    </lightning-combobox>
+                </template>
+
                 <template if:true={showStageFilter}>
                     <lightning-combobox class="stage-filter" name="proposalStage" label="Proposal Stage" value={stage}
-                        options={stageOptions} placeholder="All Stages"
-                        onchange={handleStageChange}></lightning-combobox>
+                        options={stageOptions} placeholder="All Stages" onchange={handleStageChange}>
+                    </lightning-combobox>
                 </template>
             </div>
         </div>
 
         <template if:true={error}>
-            <div class="state-banner state-banner_error" role="alert">
+            <div class="state-block empty-state" role="alert">
                 {error.message}
             </div>
         </template>
 
         <template if:false={selectedCampaignName}>
-            <div class="state-banner state-banner_muted">Please select a Call Type to view reviewer assignments.</div>
+            <div class="state-block empty-state">Please select a Call Type to view reviewer assignments.</div>
         </template>
 
         <template if:true={selectedCampaignName}>
             <template if:false={proposalIds.length}>
-                <div class="state-banner state-banner_muted">Loading reviewer assignments…</div>
+                <div class="state-block empty-state">No reviewer assignments found for the selected filters.
+                </div>
             </template>
         </template>
 

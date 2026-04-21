@@ -42,6 +42,7 @@
 }
 
 .calltype-filter,
+.callyear-filter,
 .stage-filter {
     max-width: 22rem;
 }

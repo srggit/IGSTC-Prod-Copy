@@ -352,6 +352,48 @@ public class ProposalExpenseHandler {
 
     }
     
+      public static void createExpenseCategoryAndDetailsForAPAInsert(
+        List<Applicant_Proposal_Association__c> newApaRecords
+    ) {
+
+        if (newApaRecords == null || newApaRecords.isEmpty()) {
+            return;
+        }
+
+        Set<Id> proposalIds = new Set<Id>();
+        for (Applicant_Proposal_Association__c apa : newApaRecords) {
+            if (apa != null && apa.Proposals__c != null) {
+                proposalIds.add(apa.Proposals__c);
+            }
+        }
+
+        if (proposalIds.isEmpty()) {
+            return;
+        }
+
+        List<Application_Proposal__c> proposals = [
+            SELECT Id, Stage__c
+            FROM Application_Proposal__c
+            WHERE Id IN :proposalIds
+        ];
+
+        List<Application_Proposal__c> proposalsToProcess = new List<Application_Proposal__c>();
+        Map<Id, Application_Proposal__c> oldMap = new Map<Id, Application_Proposal__c>();
+        for (Application_Proposal__c p : proposals) {
+            if (p.Stage__c == '2nd Stage') {
+                proposalsToProcess.add(p);
+                oldMap.put(p.Id, new Application_Proposal__c(Id = p.Id, Stage__c = '1st Stage'));
+            }
+        }
+
+        if (proposalsToProcess.isEmpty()) {
+            return;
+        }
+
+        ProposalExpenseHandler.createExpenseCategoryAndDetails(proposalsToProcess, oldMap);
+    }
+
+    
     public static void firstTestMethod8(){
         Integer i=0;
         i++;i++;

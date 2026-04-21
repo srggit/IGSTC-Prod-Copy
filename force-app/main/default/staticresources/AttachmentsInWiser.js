@@ -112,13 +112,17 @@ angular.module('cp_app').controller('attachmentWiser_ctrl', function ($scope, $s
                 if (event.status && result) {
                     $scope.proposalStage = (result.proposalStage != 'Draft' && result.proposalStage != null && result.proposalStage != undefined);
                     $rootScope.proposalStage = $scope.proposalStage;
+
+                    $scope.isCoordinator = false;
+                    if (result.isCoordinator === true) {
+                        $scope.isCoordinator = true;
+                    }
+
                     $scope.$apply();
                 }
             }, { escape: true });
         }
     }
-
-    $scope.getProposalStage();
 
     $scope.selectedFile;
 
@@ -143,6 +147,8 @@ angular.module('cp_app').controller('attachmentWiser_ctrl', function ($scope, $s
 
     $scope.getProjectdetils = function () {
         debugger;
+        $scope.getProposalStage();
+        
         $scope.selectedFile = '';
         $('#file_frame').attr('src', '');
         ApplicantPortal_Contoller.getContactUserDoc($rootScope.contactId, $rootScope.proposalId, function (result, event) {
@@ -359,7 +365,7 @@ angular.module('cp_app').controller('attachmentWiser_ctrl', function ($scope, $s
                         // $scope.disableSubmit = false;
 
                     }
-                    // $scope.getCandidateDetails();\
+                    // $scope.getCandidateDetails();
                     else {
                         debugger;
                         positionIndex += chunkSize;
@@ -376,13 +382,20 @@ angular.module('cp_app').controller('attachmentWiser_ctrl', function ($scope, $s
 
     $scope.saveandNext = function () {
         debugger;
-
+        
         // Validate project proposal upload
-        if (!$scope.projectProposal || !$scope.projectProposal.userDocument || $scope.projectProposal.userDocument.Status__c != 'Uploaded') {
+        if ($scope.isCoordinator && (!$scope.projectProposal || !$scope.projectProposal.userDocument || $scope.projectProposal.userDocument.Status__c != 'Uploaded')) {
             swal('Info', 'Please upload the project proposal.', 'info');
             return;
         }
 
+        // Validate project proposal upload
+        /*
+        if (!$scope.projectProposal || !$scope.projectProposal.userDocument || $scope.projectProposal.userDocument.Status__c != 'Uploaded') {
+            swal('Info', 'Please upload the project proposal.', 'info');
+            return;
+        }
+		*/
         for (var i = 0; i < $scope.allDocs.length; i++) {
             if ($scope.allDocs[i].userDocument.Name == 'No objection certificate') {
                 if ($scope.allDocs[i].userDocument.Status__c != 'Uploaded') {
@@ -424,6 +437,7 @@ angular.module('cp_app').controller('attachmentWiser_ctrl', function ($scope, $s
     $("#btnPreview").prop('disabled', true);
 
     // ----------------- CODE TO GET PROJECT PROPOSAL DOCUMENT FOR UPLOAD -------------------- //
+    /*
     $scope.getProjectProposalDoc = function () {
         debugger;
         ApplicantPortal_Contoller.getAllUserDoc($rootScope.proposalId, function (result, event) {
@@ -435,7 +449,7 @@ angular.module('cp_app').controller('attachmentWiser_ctrl', function ($scope, $s
             // console.log(result);
             if (event.status) {
                 $scope.projProposal = result;
-                var apaId = $scope.projProposal[i].userDocument.Applicant_Proposal_Association__c;
+                var apaId = $scope.projProposal[0].userDocument.Applicant_Proposal_Association__c;
 
                 for (var i = 0; i < $scope.projProposal.length; i++) {
                     if ($scope.projProposal[i].userDocument.Name == 'project Description' && apaId !== null && apaId !== undefined) {
@@ -448,8 +462,40 @@ angular.module('cp_app').controller('attachmentWiser_ctrl', function ($scope, $s
             escape: true
         })
     }
-    $scope.getProjectProposalDoc();
+    */
+	// ----------------- CODE TO GET PROJECT PROPOSAL DOCUMENT FOR UPLOAD -------------------- //
+    $scope.getProjectProposalDoc = function () {
+        debugger;
+        ApplicantPortal_Contoller.getAllUserDoc($rootScope.proposalId, function (result, event) {
+            debugger;
+            // Restore button
+            $("#btnPreview").html('<i class="fa-solid fa-check me-2"></i>Save and Next');
+            $("#btnPreview").prop('disabled', false);
+            // console.log('result return onload :: ');
+            // console.log(result);
+            if (event.status) {
+                $scope.projProposal = result;
+                for (var i = 0; i < $scope.projProposal.length; i++) {
 
+                    var doc = $scope.projProposal[i];
+
+                    var apaId = doc &&
+                        doc.userDocument &&
+                        doc.userDocument.Applicant_Proposal_Association__c;
+
+                    if ($scope.projProposal[i].userDocument.Name == 'project Description' && !apaId) {
+                        $scope.projectProposal = $scope.projProposal[i];
+                    }
+                }
+                console.log('$scope.projectProposal : ', $scope.projectProposal);
+                $scope.$apply();
+            }
+        }, {
+            escape: true
+        })
+    }
+    $scope.getProjectProposalDoc();
+	
     // $scope.getProjectDetailsOnLoad = function () {
     //     debugger;
     //     $scope.selectedFile = '';

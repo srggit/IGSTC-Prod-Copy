@@ -23,56 +23,93 @@ public with sharing class ReviewerMappingController {
     }
     
     @AuraEnabled(cacheable=true)
-    public static GridData getReviewerMarkingData(String campaignName, String proposalStage) {
+    public static GridData getReviewerMarkingData(String campaignId, String proposalStage, String proposalCallYear) {
         GridData gridData = new GridData();
         
-        System.debug('getReviewerMappingData called with campaignName: ' + campaignName + ', proposalStage: ' + proposalStage);      
+        System.debug('getReviewerMarkingData called with campaignId: ' + campaignId + ', proposalStage: ' + proposalStage);
         
-        List<Reviewer_Mapping__c> reviewerMappings;
+        if (String.isBlank(campaignId)) {
+            return gridData;
+        }
 
-        if (!String.isBlank(campaignName) && !String.isBlank(proposalStage)) {
+        DateTime startDate;
+        DateTime endDate;
+        Integer yearValue = null;
+        
+        if (!String.isBlank(proposalCallYear)) {
+            try {
+                yearValue = Integer.valueOf(proposalCallYear);
+            } catch (Exception e) {
+                return gridData;
+            }
+        }
 
+        List<Reviewer_Mapping__c> reviewerMappings = new List<Reviewer_Mapping__c>();
+        
+        // NEW LOGIC FOR YEARS > 2025
+        if(yearValue != null && yearValue > 2025) {
+            System.debug('-------------- USING NEW METHOD FOR YEARS > 2025 --------------');
             reviewerMappings = [
-                SELECT Proposals__c,
-                    Proposals__r.Campaign__r.Name,
-                    Proposals__r.Proposal_Stages__c,
-                    Proposal_Reviewer_ratings__c,
-                    Proposals__r.Name,
-                    Proposal_Count__c,
-                    Reviewer__c,
-                    Reviewer__r.Name,
-                    Reviewer_Email__c
-                FROM Reviewer_Mapping__c
-                WHERE Proposals__c != null
+                SELECT Proposals__c, 
+                Proposals__r.Campaign__r.Name, 
+                Proposals__r.Proposal_Stages__c, 
+                Proposal_Reviewer_ratings__c, 
+                Proposals__r.Name, 
+                Proposal_Count__c, 
+                Reviewer__c, 
+                Reviewer__r.Name, 
+                Reviewer_Email__c 
+                FROM Reviewer_Mapping__c 
+                WHERE Proposals__c != null 
                 AND Reviewer__c != null
                 AND Proposals__r.Proposal_Stages__c != 'Draft'
-                AND Proposals__r.Campaign__r.Name = :campaignName
-                AND Proposals__r.Stage__c = :proposalStage
+                AND Proposals__r.Campaign__c = :campaignId
+                AND Proposals__r.yearly_Call__r.Years__r.Name = :String.valueOf(yearValue)
                 ORDER BY Proposals__c, Reviewer__r.Name
             ];
-
+            System.debug('reviewerMappings size: ' + reviewerMappings.size());
         } 
-        else if (String.isBlank(proposalStage)) {
+        // EXISTING LOGIC FOR YEARS <= 2025
+        else {
+            System.debug('-------------- USING EXISTING METHOD FOR YEARS <= 2025 --------------');
+            if (yearValue != null) {
+                startDate = DateTime.newInstance(yearValue, 1, 1, 0, 0, 0);
+                endDate = DateTime.newInstance(yearValue + 1, 1, 1, 0, 0, 0);
+            }
+            System.debug('startDate: ' + startDate);
+            System.debug('endDate: ' + endDate);
 
-            reviewerMappings = [
-                SELECT Proposals__c,
-                    Proposals__r.Campaign__r.Name,
-                    Proposals__r.Proposal_Stages__c,
-                    Proposal_Reviewer_ratings__c,
-                    Proposals__r.Name,
-                    Proposal_Count__c,
-                    Reviewer__c,
-                    Reviewer__r.Name,
-                    Reviewer_Email__c
-                FROM Reviewer_Mapping__c
-                WHERE Proposals__c != null
-                AND Reviewer__c != null
-                AND Proposals__r.Proposal_Stages__c != 'Draft'
-                AND Proposals__r.Campaign__r.Name = :campaignName
-                ORDER BY Proposals__c, Reviewer__r.Name
-            ];
-        } 
-        
+            List<String> whereParts = new List<String>{
+                'Proposals__c != null',
+                'Reviewer__c != null',
+                'Proposals__r.Proposal_Stages__c != \'Draft\'',
+                'Proposals__r.Campaign__c = :campaignId'
+            };
+            
+            if (!String.isBlank(proposalStage)) {
+                whereParts.add('Proposals__r.Stage__c = :proposalStage');
+            }
+            if (yearValue != null) {
+                whereParts.add('Proposals__r.CreatedDate >= :startDate');
+                whereParts.add('Proposals__r.CreatedDate < :endDate');
+            }
+
+            String soql = 'SELECT Proposals__c, ' +
+                'Proposals__r.Campaign__r.Name, ' +
+                'Proposals__r.Proposal_Stages__c, ' +
+                'Proposal_Reviewer_ratings__c, ' +
+                'Proposals__r.Name, ' +
+                'Proposal_Count__c, ' +
+                'Reviewer__c, ' +
+                'Reviewer__r.Name, ' +
+                'Reviewer_Email__c ' +
+                'FROM Reviewer_Mapping__c ' +
+                'WHERE ' + String.join(whereParts, ' AND ') + ' ' +
+                'ORDER BY Proposals__c, Reviewer__r.Name';
+
+            reviewerMappings = Database.query(soql);
+            System.debug('reviewerMappings size: ' + reviewerMappings.size());
+        }
         
         // Collect unique proposal IDs and reviewer names
         Set<String> uniqueProposalIds = new Set<String>();
@@ -160,6 +197,13 @@ public with sharing class ReviewerMappingController {
         return stageList;
     }
 
+    @AuraEnabled(cacheable=true)
+    public static List<Year__c> getCallYearOptions() {
+        List<Year__c> yearList = [SELECT Id, Name FROM Year__c ORDER BY Name ASC];
+
+        return yearList;
+    }
+
     // ------------------------------------------------- PERCENTILE REPORT METHODS --------------------------------------------------------------- //
     public class RowData {
         @AuraEnabled public String proposalId;
@@ -226,7 +270,7 @@ public with sharing class ReviewerMappingController {
     public static List<CallTypeOption> getCallTypeFilterOptions() {
         List<CallTypeOption> options = new List<CallTypeOption>();
         CallTypeOption allOpt = new CallTypeOption();
-        allOpt.label = 'All call types';
+        allOpt.label = 'All Call Types';
         allOpt.value = '';
         options.add(allOpt);
 
@@ -262,76 +306,94 @@ public with sharing class ReviewerMappingController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static TableWrapper getReviewerMappingData(String stage, String campaignId, Integer pageSize, Integer pageNumber) {
+    public static TableWrapper getReviewerMappingData(String stage, String campaignId, String callYearValue, Integer pageSize, Integer pageNumber) {
 
         Integer offsetVal = (pageNumber - 1) * pageSize;
+        DateTime startDate;
+        DateTime endDate;
 
-        List<Reviewer_Mapping__c> data;
-        if (String.isBlank(stage) && String.isBlank(campaignId)) {
-            data = [
-                SELECT Id,
-                       Proposals__r.Id,
-                       Proposals__r.Name,
-                       Proposals__r.Stage__c,
-                       Reviewer__r.Name,
-                       Total_Score__c
-                FROM Reviewer_Mapping__c
-                WHERE Proposals__c != null
-                ORDER BY Proposals__r.Name
-                LIMIT :pageSize OFFSET :offsetVal
-            ];
-        } else if (String.isBlank(stage) && !String.isBlank(campaignId)) {
-            data = [
-                SELECT Id,
-                       Proposals__r.Id,
-                       Proposals__r.Name,
-                       Proposals__r.Stage__c,
-                       Reviewer__r.Name,
-                       Total_Score__c
-                FROM Reviewer_Mapping__c
-                WHERE Proposals__c != null
-                AND Proposals__r.Campaign__c = :campaignId
-                ORDER BY Proposals__r.Name
-                LIMIT :pageSize OFFSET :offsetVal
-            ];
-        } else if (!String.isBlank(stage) && String.isBlank(campaignId)) {
-            data = [
-                SELECT Id,
-                       Proposals__r.Id,
-                       Proposals__r.Name,
-                       Proposals__r.Stage__c,
-                       Reviewer__r.Name,
-                       Total_Score__c
-                FROM Reviewer_Mapping__c
-                WHERE Proposals__c != null
-                AND Proposals__r.Stage__c = :stage
-                ORDER BY Proposals__r.Name
-                LIMIT :pageSize OFFSET :offsetVal
-            ];
-        } else {
-            data = [
-                SELECT Id,
-                       Proposals__r.Id,
-                       Proposals__r.Name,
-                       Proposals__r.Stage__c,
-                       Reviewer__r.Name,
-                       Total_Score__c
-                FROM Reviewer_Mapping__c
-                WHERE Proposals__c != null
-                AND Proposals__r.Stage__c = :stage
-                AND Proposals__r.Campaign__c = :campaignId
-                ORDER BY Proposals__r.Name
-                LIMIT :pageSize OFFSET :offsetVal
-            ];
+        List<Reviewer_Mapping__c> data = new List<Reviewer_Mapping__c>();
+
+        // Parse callYearValue to Integer for comparison
+        Integer yearValue = null;
+        if(callYearValue != null && callYearValue != ''){
+            try {
+                yearValue = Integer.valueOf(callYearValue);
+            } catch (Exception e) {
+                TableWrapper emptyWrap = new TableWrapper();
+                emptyWrap.reviewers = new List<String>();
+                emptyWrap.rows = new List<RowData>();
+                return emptyWrap;
+            }
         }
 
+        if(yearValue != null && yearValue > 2025){
+            System.debug('-------------- IF : EXECUTING NEW METHOD FOR YEARS > 2025 --------------');
+            System.debug('yearValue : ' + yearValue);
+            // New method for years > 2025 using yearly_Call.Years__c
+            List<Reviewer_Mapping__c> data2026 = [
+                SELECT Id, 
+                Proposals__r.Id, 
+                Proposals__r.Name, 
+                Proposals__r.Stage__c, 
+                Reviewer__r.Name, 
+                Total_Score__c 
+                FROM Reviewer_Mapping__c 
+                WHERE Proposals__c != null 
+                AND Proposals__r.Proposal_Stages__c != 'Draft'
+                AND Proposals__r.yearly_Call__r.Years__r.Name = :String.valueOf(yearValue)
+                ORDER BY Proposals__r.Name 
+                LIMIT :pageSize OFFSET :offsetVal
+            ];
+            data.addAll(data2026);
+            System.debug('data in IF Block : ' + data.size());
+        }
+        else{
+            System.debug('-------------- ELSE : EXECUTING METHOD FOR YEARS <= 2025 --------------');
+            System.debug('yearValue : ' + yearValue);
+            // Keep year filter behavior aligned with ReviewerReport.getProposals (parse year -> CreatedDate range).
+            if (yearValue != null) {
+                startDate = DateTime.newInstance(yearValue, 1, 1, 0, 0, 0);
+                endDate = DateTime.newInstance(yearValue + 1, 1, 1, 0, 0, 0);
+            }
+
+            List<String> whereParts = new List<String>();
+            whereParts.add('Proposals__c != null');
+            whereParts.add('Proposals__r.Proposal_Stages__c != \'Draft\'');  // ADDED THIS LINE
+
+            if (!String.isBlank(stage)) {
+                whereParts.add('Proposals__r.Stage__c = :stage');
+            }
+            if (!String.isBlank(campaignId)) {
+                whereParts.add('Proposals__r.Campaign__c = :campaignId');
+            }
+            if (yearValue != null) {
+                whereParts.add('Proposals__r.CreatedDate >= :startDate');
+                whereParts.add('Proposals__r.CreatedDate < :endDate');
+            }
+
+            String soql =
+                'SELECT Id, ' +
+                'Proposals__r.Id, ' +
+                'Proposals__r.Name, ' +
+                'Proposals__r.Stage__c, ' +
+                'Reviewer__r.Name, ' +
+                'Total_Score__c ' +
+                'FROM Reviewer_Mapping__c ' +
+                'WHERE ' + String.join(whereParts, ' AND ') + ' ' +
+                'ORDER BY Proposals__r.Name ' +
+                'LIMIT :pageSize OFFSET :offsetVal';
+
+            data = Database.query(soql);
+            System.debug('data in ELSE Block : ' + data.size());
+        }
         // Collect unique reviewers
         Set<String> reviewerSet = new Set<String>();
         Map<Id, RowData> proposalMap = new Map<Id, RowData>();
 
         for (Reviewer_Mapping__c rec : data) {
 
-            // ✅ Null checks
+            // Null checks
             if (rec.Proposals__r == null || rec.Reviewer__r == null) {
                 continue;
             }
@@ -353,7 +415,7 @@ public with sharing class ReviewerMappingController {
 
             RowData existing = proposalMap.get(rec.Proposals__r.Id);
 
-            // ✅ Safe put
+            // Safe put
             if (rec.Total_Score__c != null) {
                 existing.reviewerScores.put(rec.Reviewer__r.Name, rec.Total_Score__c);
             }
@@ -382,6 +444,7 @@ public with sharing class ReviewerMappingController {
 
         return wrapper;
     }
+    
 
     
 }

@@ -3,11 +3,14 @@
         <div class="report-toolbar">
             <div class="toolbar-main">
                 <lightning-combobox class="calltype-filter" name="callType" label="Call Type" value={callType}
-                    options={callTypeOptions} placeholder="All call types"
+                    options={callTypeOptions} placeholder="All Call Types"
                     onchange={handleCallTypeChange}></lightning-combobox>
+                <lightning-combobox class="callyear-filter" name="callYear" label="Call Year" value={callYear}
+                    options={callYearOptions} placeholder="All Call Years"
+                    onchange={handleCallYearChange}></lightning-combobox>
                 <template if:true={showProposalStage}>
                     <lightning-combobox class="stage-filter" name="proposalStage" label="Proposal stage" value={stage}
-                        options={stageOptions} placeholder="All stages"
+                        options={stageOptions} placeholder="All Stages"
                         onchange={handleStageChange}></lightning-combobox>
                 </template>
             </div>
@@ -21,8 +24,7 @@
 
         <template if:true={showEmptyState}>
             <div class="state-block empty-state">
-                <p class="empty-title">No reviewer mappings</p>
-                <p class="empty-sub">Try another stage or move to another page.</p>
+                <p class="empty-title">Please select a Call Type to view reviewer assignments.</p>
             </div>
         </template>
 

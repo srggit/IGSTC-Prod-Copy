@@ -2,6 +2,7 @@ import { LightningElement, track, wire } from 'lwc';
 import getCampaignName from '@salesforce/apex/ReviewerReport.getCampaignName';
 import getYear from '@salesforce/apex/ReviewerReport.getYear';
 import getProposals from '@salesforce/apex/ReviewerReport.getProposals';
+import getStageOptions from '@salesforce/apex/ReviewerReport.getStageOptions';
 import getCongaSolution from '@salesforce/apex/ReviewerReport.getCongaSolution';
 import updateGenerateReviewerDoc from '@salesforce/apex/ReviewerReport.updateGenerateReviewerDoc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -20,6 +21,10 @@ export default class ReviewerReport extends NavigationMixin(LightningElement) {
     @track currentPage = 1;
     @track showSpinner = false;
     @track selectedCampaignName = '';
+
+    @track stageOptions = [];
+    @track selectedStage;
+    @track showStage = false;
 
     @wire(getCampaignName)
     wiredCampaigns({ error, data }) {
@@ -52,6 +57,35 @@ export default class ReviewerReport extends NavigationMixin(LightningElement) {
         }
     }
 
+    // @wire(getYear)
+    // wiredYear({ error, data }) {
+    //     if (data) {
+    //         this.yearOptions = data.map(rec => ({
+    //             label: rec.Name,      // or rec.Year_Value__c
+    //             value: rec.Id         // or rec.Name if needed
+    //         }));
+
+    //         console.log('Year options:', this.yearOptions);
+    //     } else if (error) {
+    //         console.error('Error fetching years:', error);
+    //     }
+    // }
+
+    //1st and 2nd Stages Dynamic values for 2+2 Call.
+    @wire(getStageOptions)
+    wiredStages({ error, data }) {
+        if (data) {
+            this.stageOptions = [
+                { label: 'All', value: '' },
+                ...data.map(stage => ({
+                    label: stage,
+                    value: stage
+                }))
+            ];
+        } else if (error) {
+            console.error('Error fetching Stage:', error);
+        }
+    }
 
     get noRecords() {
         debugger;
@@ -72,6 +106,20 @@ export default class ReviewerReport extends NavigationMixin(LightningElement) {
         this.selectedCampaignName = selectedCampaign ? selectedCampaign.label : null;
         console.log('Selected campaign name ===> ' + this.selectedCampaignName);
 
+        // Show only for 2+2 Call
+        this.showStage = this.selectedCampaignName === '2+2 Call';
+         if (this.showStage) {
+           this.selectedStage = ''; // default to All
+        }
+        else {
+            this.selectedStage = null;
+        }
+        
+
+    }
+
+    handleStageChange(event) {
+        this.selectedStage = event.target.value;
     }
 
 
@@ -83,7 +131,7 @@ export default class ReviewerReport extends NavigationMixin(LightningElement) {
     handleSearch() {
         if (this.selectedName && this.selectedYear) {
             console.log('selected year ===> ' + this.selectedYear);
-            getProposals({ campaignId: this.selectedName, yearValue: this.selectedYear })
+            getProposals({ campaignId: this.selectedName, yearValue: this.selectedYear, stageValue: this.selectedStage })
                 .then(result => {
 
                     this.proposals = result.map(p => ({
@@ -104,6 +152,20 @@ export default class ReviewerReport extends NavigationMixin(LightningElement) {
             alert('Please select both Campaign and Year');
         }
     }
+    
+    get isSearchDisabled() {
+        // Campaign & Year mandatory
+        if (!this.selectedName || !this.selectedYear) {
+            return true;
+        }
+        // If 2+2 Call → Stage must NOT be blank ('')
+       if (this.showStage && this.selectedStage === undefined) {
+            return true;
+        }
+        return false;
+    }
+
+    
 
 
     handlePagination(event) {

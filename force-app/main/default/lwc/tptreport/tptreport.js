@@ -3,15 +3,18 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getReviewerMappingData from '@salesforce/apex/ReviewerMappingController.getReviewerMappingData';
 import getProposalStageFilterOptions from '@salesforce/apex/ReviewerMappingController.getProposalStageFilterOptions';
 import getCallTypeFilterOptions from '@salesforce/apex/ReviewerMappingController.getCallTypeFilterOptions';
+import getCallYearOptions from '@salesforce/apex/ReviewerMappingController.getCallYearOptions';
 
 export default class Tptreport extends LightningElement {
     @track reviewers = [];
     @track rows = [];
 
     stage = '';
-    stageOptions = [{ label: 'All stages', value: '' }];
+    stageOptions = [{ label: 'All Stages', value: '' }];
     callType = '';
-    callTypeOptions = [{ label: 'All call types', value: '' }];
+    callTypeOptions = [{ label: 'All Call Types', value: '' }];
+    callYear = '';
+    callYearOptions = [{ label: 'All Call Years', value: '' }];
 
     pageNumber = 1;
     pageSize = 50;
@@ -27,7 +30,7 @@ export default class Tptreport extends LightningElement {
             }));
             console.log('this.stageOptions ===>  ', this.stageOptions);
         } else if (error) {
-            this.stageOptions = [{ label: 'All stages', value: '' }];
+            this.stageOptions = [{ label: 'All Stages', value: '' }];
         }
     }
 
@@ -39,21 +42,37 @@ export default class Tptreport extends LightningElement {
                 value: o.value == null ? '' : o.value
             }));
         } else if (error) {
-            this.callTypeOptions = [{ label: 'All call types', value: '' }];
+            this.callTypeOptions = [{ label: 'All Call Types', value: '' }];
         }
     }
 
-    connectedCallback() {
-        this.loadData();
+    @wire(getCallYearOptions)
+    wiredCallYearOptions({ data, error }) {
+        if (data && data.length) {
+            this.callYearOptions = [
+                { label: 'All Call Years', value: '' },
+                ...data.map((y) => ({
+                    label: y.Name,
+                    // ReviewerReport year filter expects year text (e.g., 2024), not Year__c Id.
+                    value: y.Name
+                }))
+            ];
+        } else if (error) {
+            this.callYearOptions = [{ label: 'All Call Years', value: '' }];
+        }
     }
 
+    // connectedCallback() {
+    //     this.loadData();
+    // }
+
     loadData() {
-        debugger;
         this.isLoading = true;
         this.loadError = false;
         getReviewerMappingData({
             stage: this.stage,
             campaignId: this.callType,
+            callYearValue: this.callYear,
             pageSize: this.pageSize,
             pageNumber: this.pageNumber
         })
@@ -141,7 +160,6 @@ export default class Tptreport extends LightningElement {
     }
 
     handleStageChange(event) {
-        debugger;
         this.stage = event.detail.value;
         this.pageNumber = 1;
         this.loadData();
@@ -172,6 +190,12 @@ export default class Tptreport extends LightningElement {
         this.stage = '';
         this.pageNumber = 1;
 
+        this.loadData();
+    }
+
+    handleCallYearChange(event) {
+        this.callYear = event.detail.value;
+        this.pageNumber = 1;
         this.loadData();
     }
 

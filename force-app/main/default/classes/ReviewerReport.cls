@@ -56,6 +56,15 @@ public with sharing class ReviewerReport {
         ];
     }
 
+    // @AuraEnabled(cacheable=true)
+    // public static List<Year__c> getYear(){
+    //     return [
+    //         SELECT Id, Name 
+    //         FROM Year__c 
+    //         ORDER BY Name DESC
+    //     ];
+    // }
+
 
     //@AuraEnabled(cacheable=true)
     // public static List<Application_Proposal__c > getProposals(Id campaignId, String yearValue) {
@@ -65,7 +74,7 @@ public with sharing class ReviewerReport {
     //     ];
     // }
     @AuraEnabled(cacheable=true)
-    public static List<Application_Proposal__c> getProposals(Id campaignId, String yearValue) {
+    public static List<Application_Proposal__c> getProposals(Id campaignId, String yearValue, String stageValue) {
 
         if (campaignId == null || String.isBlank(yearValue)) {
             return new List<Application_Proposal__c>();
@@ -81,11 +90,44 @@ public with sharing class ReviewerReport {
         DateTime startDate = DateTime.newInstance(year, 1, 1, 0, 0, 0);
         DateTime endDate   = DateTime.newInstance(year + 1, 1, 1, 0, 0, 0);
 
+        /*
         return [
             SELECT Id, Name, Campaign__r.Name, Title_Of__c, Stage__c, Proposal_Stages__c,Question_Template__r.Yearly_Call__r.Year__c FROM Application_Proposal__c
             WHERE Campaign__c = :campaignId AND CreatedDate >= :startDate AND CreatedDate <  :endDate AND Proposal_Stages__c IN ('Under Review', 'Under SC Review')
             ORDER BY CreatedDate DESC
-        ];
+        ];*/
+
+        /*Changed query Filter from Proposal_Stages__c IN ('Under Review', 'Under SC Review') to Proposal_Stages__c != 'Draft' */
+          //Case 1: No Stage filter
+            if (String.isBlank(stageValue) || stageValue == 'All') {
+                return [
+                    SELECT Id, Name, Campaign__r.Name, Title_Of__c, Stage__c, Proposal_Stages__c,Question_Template__r.Yearly_Call__r.Year__c FROM Application_Proposal__c
+                    WHERE Campaign__c = :campaignId AND CreatedDate >= :startDate AND CreatedDate <  :endDate AND Proposal_Stages__c != 'Draft'
+                    ORDER BY CreatedDate DESC
+                ];
+            }
+            // Case 2: With Stage filter
+            return [
+                SELECT Id, Name, Campaign__r.Name, Title_Of__c, Stage__c, Proposal_Stages__c,Question_Template__r.Yearly_Call__r.Year__c FROM Application_Proposal__c
+                WHERE Campaign__c = :campaignId AND CreatedDate >= :startDate AND CreatedDate <  :endDate AND Proposal_Stages__c != 'Draft'
+                AND Stage__c = :stageValue
+                ORDER BY CreatedDate DESC
+            ];
+
+    }
+    @AuraEnabled(cacheable=true)
+    public static List<String> getStageOptions() {
+        List<String> stageList = new List<String>();
+
+        Schema.DescribeFieldResult fieldResult = Application_Proposal__c.Stage__c.getDescribe();
+
+        for (Schema.PicklistEntry entry : fieldResult.getPicklistValues()) {
+            if (entry.isActive()) {
+                stageList.add(entry.getValue());
+            }
+        }
+
+        return stageList;
     }
 
     @AuraEnabled(cacheable=true)

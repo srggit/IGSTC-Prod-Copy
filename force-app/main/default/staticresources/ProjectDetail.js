@@ -112,6 +112,9 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
     $scope.uploadProgress = 0;
     $scope.showProgressBar = false;
 
+    // Base64 chunk size for Visualforce remoting (~1M char limit; keep margin)
+    var chunkSize = 750000;
+
     // Separate uploading flags per document type
     $scope.isUploadingProjectProposal = false;
     $scope.isUploadingFinancialStatement = false;
@@ -1493,6 +1496,43 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
     };
 
+    /**
+     * Chained upload for doCUploadAttachmentAa: first chunk with blank cvId creates the Attachment;
+     * later chunks pass returned Attachment Id as cvId to append base64 on the server.
+     */
+    function uploadAttachmentAaChunked(attachmentB64, fileName, userDocId, progressFn, successFn, errorFn) {
+        var localChunkSize = chunkSize;
+        var pos = 0;
+        var totalLen = attachmentB64.length;
+
+        function sendNext(attachmentId) {
+            var isLast = totalLen <= pos + localChunkSize;
+            var body = isLast ? attachmentB64.substring(pos) : attachmentB64.substring(pos, pos + localChunkSize);
+            if (progressFn) {
+                progressFn(totalLen ? Math.min(100, Math.round((pos / totalLen) * 100)) : 100);
+            }
+            ApplicantPortal_Contoller.doCUploadAttachmentAa(
+                body,
+                fileName,
+                attachmentId || null,
+                userDocId,
+                function (result, event) {
+                    if (event.type === 'exception' || !event.status) {
+                        if (errorFn) errorFn(event);
+                        return;
+                    }
+                    if (isLast) {
+                        if (successFn) successFn(result);
+                    } else {
+                        pos += localChunkSize;
+                        sendNext(result);
+                    }
+                },
+                { buffer: true, escape: true, timeout: 120000 }
+            );
+        }
+        sendNext(null);
+    }
 
     $scope.uploadAttachment = function (type, userDocId, fileId) {
         debugger;
@@ -1502,7 +1542,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         // }
 
         $scope.$applyAsync(function () {
-            var pct = Math.round((positionIndex / fileSize) * 100);
+            var pct = fileSize ? Math.round((positionIndex / fileSize) * 100) : 0;
             $scope.uploadProgress = pct;
             if ($scope.showProjectDescriptionProgressBar) {
                 $scope.projectDescriptionUploadProgress = pct;
@@ -1511,8 +1551,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             }
         });
 
-        //if (fileSize <= positionIndex + chunkSize) {
-        if (true) {
+        if (fileSize <= positionIndex + chunkSize) {
             debugger;
             attachmentBody = attachment.substring(positionIndex);
             doneUploading = true;
@@ -1520,6 +1559,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
             $scope.showSpinnereditProf = false;
         } else {
             attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+            doneUploading = false;
         }
         console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
         var stringAttachmentBody = String(attachmentBody);
@@ -1538,6 +1578,8 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     console.log(event);
                     $scope.isUploadingProjectProposal = false;
                     $scope.showSpinnereditProf = false;
+                    $scope.resetUploadState();
+                    swal('Error', 'Upload failed. Please try again with a smaller file or check your connection.', 'error');
                 } else if (event.status) {
                     if (doneUploading == true) {
                         $scope.isUploadingProjectProposal = false;
@@ -1560,6 +1602,7 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                             $scope.isUploading = false; // Allow button to be clickable again
                             $scope.showProgressBar = false;
                             $scope.showProjectProposalProgressBar = false;
+                            $scope.showProjectDescriptionProgressBar = false;
                             $scope.getDocsDet(); // Refresh doc list to get the new file link
                             if (!$scope.$$phase) $scope.$apply();
                         }, 1500);
@@ -1575,6 +1618,11 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                     }
                     $scope.showUplaodUserDoc = false;
                     // $scope.getCandidateDetails();
+                } else {
+                    $scope.isUploadingProjectProposal = false;
+                    $scope.showSpinnereditProf = false;
+                    $scope.resetUploadState();
+                    swal('Error', 'Upload failed. Please try again.', 'error');
                 }
 
             },
@@ -1582,103 +1630,6 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
             { buffer: true, escape: true, timeout: 120000 }
         );
-    }
-
-    // ----------------------------- AUDITED FINANCIAL STATEMENT UPLOAD - OLD FUNCTIONALITY ----------------------------- //
-
-    $scope.uploadAuditedFinancial = function () {
-        debugger;
-
-        $scope.uploadProgress = 0;
-        $scope.showProgressBar = true;
-        $scope.isUploading = true;
-        $scope.showSpinnereditProf = true;
-
-        var file;
-        var maxFileSize = 5191680;
-        file = document.getElementById('auditedFinancialFile').files[0];
-
-        if (!file) {
-            swal("Info", "You must choose a file before trying to upload it", "info");
-            $scope.isUploading = false;
-            $scope.showSpinnereditProf = false;
-            $scope.showProgressBar = false;
-            return;
-        }
-
-        var fileName = file.name;
-        var typeOfFile = fileName.split(".");
-        var lengthOfType = typeOfFile.length;
-
-        if (typeOfFile[lengthOfType - 1].toLowerCase() !== "pdf") {
-            $scope.isUploading = false;
-            $scope.showSpinnereditProf = false;
-            $scope.showProgressBar = false;
-            swal('Info', 'Please choose PDF file only.', 'info');
-            return;
-        }
-
-        if (file.size > maxFileSize) {
-            $scope.isUploading = false;
-            $scope.showSpinnereditProf = false;
-            $scope.showProgressBar = false;
-            swal("Info", "File must be under 5 MB in size.", "info");
-            return;
-        }
-
-        var fileReader = new FileReader();
-        fileReader.onloadend = function (e) {
-            var attachmentData = window.btoa(this.result);
-
-            swal({
-                title: "Confirm Upload",
-                text: "Are you sure you want to upload the Audited Financial Statement?",
-                icon: "warning",
-                buttons: {
-                    cancel: "Cancel",
-                    confirm: { text: "Upload", value: true }
-                }
-            }).then((willUpload) => {
-                if (willUpload) {
-                    var userDocId = $scope.auditedFinancialDoc ? $scope.auditedFinancialDoc.userDocument.Id : '';
-                    var fileId = ($scope.auditedFinancialDoc && $scope.auditedFinancialDoc.userDocument.Attachments && $scope.auditedFinancialDoc.userDocument.Attachments[0])
-                        ? $scope.auditedFinancialDoc.userDocument.Attachments[0].Id : '';
-
-                    ApplicantPortal_Contoller.doCUploadAttachmentProjectDet(
-                        attachmentData, fileName, fileId, userDocId,
-                        function (result, event) {
-                            if (event.status) {
-                                swal('success', 'Audited Financial Statement uploaded successfully!', 'success');
-                                $scope.getDocsDet();
-                            } else {
-                                swal('error', 'Error uploading file. Please try again.', 'error');
-                            }
-                            $scope.isUploading = false;
-                            $scope.showSpinnereditProf = false;
-                            $scope.showProgressBar = false;
-                            document.getElementById('auditedFinancialFile').value = "";
-                            $scope.$applyAsync();
-                        },
-                        { buffer: true, escape: true, timeout: 120000 }
-                    );
-                } else {
-                    $scope.isUploading = false;
-                    $scope.showSpinnereditProf = false;
-                    $scope.showProgressBar = false;
-                    document.getElementById('auditedFinancialFile').value = "";
-                    $scope.$applyAsync();
-                }
-            });
-        };
-
-        fileReader.onerror = function (e) {
-            $scope.isUploading = false;
-            $scope.showSpinnereditProf = false;
-            $scope.showProgressBar = false;
-            swal("Info", "Error reading file. Please try again.", "info");
-        };
-
-        fileReader.readAsBinaryString(file);
     }
 
     // ----------------------------- GRANT ACCEPTANCE UNDERTAKING UPLOAD (STAGE 1 ONLY) ----------------------------- //
@@ -1771,22 +1722,35 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         return;
                     }
 
-                    ApplicantPortal_Contoller.doCUploadAttachmentAa(
-                        attachmentData, fileName, null, userDocId,
-                        function (result, event) {
-                            if (event.status) {
-                                swal('Success', 'Grant Acceptance uploaded successfully!', 'success');
-                                $scope.loadAPAUserDocs();
-                            } else {
-                                swal('Error', 'Error uploading file. Please try again.', 'error');
-                            }
+                    uploadAttachmentAaChunked(
+                        attachmentData,
+                        fileName,
+                        userDocId,
+                        function (pct) {
+                            $scope.$applyAsync(function () {
+                                $scope.uploadProgress = pct;
+                            });
+                        },
+                        function () {
+                            $scope.$applyAsync(function () {
+                                $scope.uploadProgress = 100;
+                            });
+                            swal('Success', 'Grant Acceptance uploaded successfully!', 'success');
+                            $scope.loadAPAUserDocs();
                             $scope.isUploadingGrantAcceptanceUndertaking = false;
                             $scope.showSpinnereditProf = false;
                             $scope.showProgressBar = false;
                             document.getElementById(inputId).value = "";
                             $scope.$applyAsync();
                         },
-                        { buffer: true, escape: true, timeout: 120000 }
+                        function () {
+                            swal('Error', 'Error uploading file. Please try again.', 'error');
+                            $scope.isUploadingGrantAcceptanceUndertaking = false;
+                            $scope.showSpinnereditProf = false;
+                            $scope.showProgressBar = false;
+                            document.getElementById(inputId).value = "";
+                            $scope.$applyAsync();
+                        }
                     );
                 } else {
                     $scope.isUploadingGrantAcceptanceUndertaking = false;
@@ -1898,22 +1862,35 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
                         return;
                     }
 
-                    ApplicantPortal_Contoller.doCUploadAttachmentAa(
-                        attachmentData, fileName, null, userDocId,
-                        function (result, event) {
-                            if (event.status) {
-                                swal('Success', 'Sensitivity Security undertaking uploaded successfully!', 'success');
-                                $scope.loadAPAUserDocs();
-                            } else {
-                                swal('Error', 'Error uploading file. Please try again.', 'error');
-                            }
+                    uploadAttachmentAaChunked(
+                        attachmentData,
+                        fileName,
+                        userDocId,
+                        function (pct) {
+                            $scope.$applyAsync(function () {
+                                $scope.uploadProgress = pct;
+                            });
+                        },
+                        function () {
+                            $scope.$applyAsync(function () {
+                                $scope.uploadProgress = 100;
+                            });
+                            swal('Success', 'Sensitivity Security undertaking uploaded successfully!', 'success');
+                            $scope.loadAPAUserDocs();
                             $scope.isUploadingSensitivitySecurityUndertaking = false;
                             $scope.showSpinnereditProf = false;
                             $scope.showProgressBar = false;
                             document.getElementById(inputId).value = "";
                             $scope.$applyAsync();
                         },
-                        { buffer: true, escape: true, timeout: 120000 }
+                        function () {
+                            swal('Error', 'Error uploading file. Please try again.', 'error');
+                            $scope.isUploadingSensitivitySecurityUndertaking = false;
+                            $scope.showSpinnereditProf = false;
+                            $scope.showProgressBar = false;
+                            document.getElementById(inputId).value = "";
+                            $scope.$applyAsync();
+                        }
                     );
                 } else {
                     $scope.isUploadingSensitivitySecurityUndertaking = false;
@@ -2025,24 +2002,35 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
                     // Always create a new attachment (fileId = null) to keep old attachments
                     // The latest attachment will be fetched when loadAPAUserDocs() is called
-                    ApplicantPortal_Contoller.doCUploadAttachmentAa(
-                        attachmentData, fileName, null, userDocId,
-                        function (result, event) {
-                            if (event.status) {
+                    uploadAttachmentAaChunked(
+                        attachmentData,
+                        fileName,
+                        userDocId,
+                        function (pct) {
+                            $scope.$applyAsync(function () {
+                                $scope.financialStatementUploadProgress = pct;
+                            });
+                        },
+                        function () {
+                            $scope.$applyAsync(function () {
                                 $scope.financialStatementUploadProgress = 100;
-                                swal('Success', 'Financial Statement Report uploaded successfully!', 'success');
-                                // Reload APA User Documents to refresh the UI and get the latest attachment
-                                $scope.loadAPAUserDocs();
-                            } else {
-                                swal('Error', 'Error uploading file. Please try again.', 'error');
-                            }
+                            });
+                            swal('Success', 'Financial Statement Report uploaded successfully!', 'success');
+                            $scope.loadAPAUserDocs();
                             $scope.isUploadingFinancialStatement = false;
                             $scope.showSpinnereditProf = false;
                             $scope.showFinancialStatementProgressBar = false;
                             document.getElementById(inputId).value = "";
                             $scope.$applyAsync();
                         },
-                        { buffer: true, escape: true, timeout: 120000 }
+                        function () {
+                            swal('Error', 'Error uploading file. Please try again.', 'error');
+                            $scope.isUploadingFinancialStatement = false;
+                            $scope.showSpinnereditProf = false;
+                            $scope.showFinancialStatementProgressBar = false;
+                            document.getElementById(inputId).value = "";
+                            $scope.$applyAsync();
+                        }
                     );
                 } else {
                     $scope.isUploadingFinancialStatement = false;
@@ -2251,24 +2239,35 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
 
                     // Always create a new attachment (fileId = null) to keep old attachments
                     // The latest attachment will be fetched when loadAPAUserDocs() is called
-                    ApplicantPortal_Contoller.doCUploadAttachmentAa(
-                        attachmentData, fileName, null, userDocId,
-                        function (result, event) {
-                            if (event.status) {
+                    uploadAttachmentAaChunked(
+                        attachmentData,
+                        fileName,
+                        userDocId,
+                        function (pct) {
+                            $scope.$applyAsync(function () {
+                                $scope.quotationEquipmentUploadProgress = pct;
+                            });
+                        },
+                        function () {
+                            $scope.$applyAsync(function () {
                                 $scope.quotationEquipmentUploadProgress = 100;
-                                swal('Success', 'Quotation For Equipment/Accessories uploaded successfully!', 'success');
-                                // Reload APA User Documents to refresh the UI and get the latest attachment
-                                $scope.loadAPAUserDocs();
-                            } else {
-                                swal('Error', 'Error uploading file. Please try again.', 'error');
-                            }
+                            });
+                            swal('Success', 'Quotation For Equipment/Accessories uploaded successfully!', 'success');
+                            $scope.loadAPAUserDocs();
                             $scope.isUploadingQuotation = false;
                             $scope.showSpinnereditProf = false;
                             $scope.showQuotationEquipmentProgressBar = false;
                             document.getElementById(inputId).value = "";
                             $scope.$applyAsync();
                         },
-                        { buffer: true, escape: true, timeout: 120000 }
+                        function () {
+                            swal('Error', 'Error uploading file. Please try again.', 'error');
+                            $scope.isUploadingQuotation = false;
+                            $scope.showSpinnereditProf = false;
+                            $scope.showQuotationEquipmentProgressBar = false;
+                            document.getElementById(inputId).value = "";
+                            $scope.$applyAsync();
+                        }
                     );
                 } else {
                     $scope.isUploadingQuotation = false;
@@ -4726,51 +4725,18 @@ angular.module('cp_app').controller('projectCtrl', function ($scope, $sce, $root
         }
     };
 
-    // $scope.validateDeliverableMonths = function (wp, deliverable) {
-    //     deliverable.startMonthError = false;
-    //     deliverable.endMonthError = false;
-    //     if (wp.wpStartMonth && deliverable.startMonth) {
-    //         if (parseInt(deliverable.startMonth) < parseInt(wp.wpStartMonth)) {
-    //             deliverable.startMonthError = true;
-    //         }
-    //     }
-    //     if (wp.wpEndMonth && deliverable.endMonth) {
-    //         if (parseInt(deliverable.endMonth) > parseInt(wp.wpEndMonth)) {
-    //             deliverable.endMonthError = true;
-    //         }
-    //     }
-    // };
-
     $scope.validateDeliverableMonths = function (wp, deliverable) {
-        debugger;
-        // Reset errors
         deliverable.startMonthError = false;
         deliverable.endMonthError = false;
-        deliverable.endMonthGreaterThanStartError = false;
-
-        // Convert to numbers
-        var wpStartMonth = wp.wpStartMonth ? parseInt(wp.wpStartMonth) : null;
-        var wpEndMonth = wp.wpEndMonth ? parseInt(wp.wpEndMonth) : null;
-        var delivStartMonth = deliverable.startMonth ? parseInt(deliverable.startMonth) : null;
-        var delivEndMonth = deliverable.endMonth ? parseInt(deliverable.endMonth) : null;
-
-        // Validate deliverable start month (must be >= WP start month)
-        if (wpStartMonth !== null && delivStartMonth !== null && delivStartMonth < wpStartMonth) {
-            deliverable.startMonthError = true;
-            return; // Stop further validation if start month is invalid
-        }
-
-        // Validate deliverable end month vs deliverable start month
-        if (delivStartMonth !== null && delivEndMonth !== null) {
-            if (delivEndMonth < delivStartMonth) {
-                deliverable.endMonthGreaterThanStartError = true;
-                return; // Stop further validation if end month is less than start month
+        if (wp.wpStartMonth && deliverable.startMonth) {
+            if (parseInt(deliverable.startMonth) < parseInt(wp.wpStartMonth)) {
+                deliverable.startMonthError = true;
             }
         }
-
-        // Validate deliverable end month (must be <= WP end month)
-        if (wpEndMonth !== null && delivEndMonth !== null && delivEndMonth > wpEndMonth) {
-            deliverable.endMonthError = true;
+        if (wp.wpEndMonth && deliverable.endMonth) {
+            if (parseInt(deliverable.endMonth) > parseInt(wp.wpEndMonth)) {
+                deliverable.endMonthError = true;
+            }
         }
     };
 

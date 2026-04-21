@@ -69,6 +69,11 @@ angular.module('cp_app').controller('ReviewAndSubmitIF_Ctrl', function ($scope, 
         console.log('Loaded proposalId from localStorage:', $rootScope.proposalId);
     }
 
+    if (localStorage.getItem('apaId')) {
+        $rootScope.apaId = localStorage.getItem('apaId');
+        console.log('Loaded apaId from localStorage:', $rootScope.apaId);
+    }
+
 
     $scope.getProposalStage = function () {
         debugger;
@@ -148,18 +153,37 @@ angular.module('cp_app').controller('ReviewAndSubmitIF_Ctrl', function ($scope, 
             escape: true
         })
     }
+    // $scope.getOnload = function () {
+    //     IndustrialFellowshipController.getContactSingh($rootScope.candidateId, function (result, event) {
+    //         debugger
+    //         console.log(result);
+    //         $scope.getProjectdetils();
+    //         console.log(event);
+    //         if (event.status) {
+    //             if (result.Declaration_Sign_Date__c != undefined && $rootScope.proposalStage) {
+    //                 $scope.SignDate = new Date(result.Declaration_Sign_Date__c);
+    //             }
+    //             $scope.objContact = result;
+
+    //             $scope.$apply();
+    //         }
+    //     });
+
+    //     //  $scope.getProjectdetils();
+    // }
+    // $scope.getOnload();
+
     $scope.getOnload = function () {
-        IndustrialFellowshipController.getContactSingh($rootScope.candidateId, function (result, event) {
+        IndustrialFellowshipController.getProposalSign($rootScope.proposalId, function (result, event) {
             debugger
             console.log(result);
             $scope.getProjectdetils();
             console.log(event);
             if (event.status) {
-                if (result.Declaration_Sign_Date__c != undefined && $rootScope.proposalStage) {
-                    $scope.SignDate = new Date(result.Declaration_Sign_Date__c);
+                if (result.Proposed_Date__c != undefined && $rootScope.proposalStage) {
+                    $scope.SignDate = new Date(result.Proposed_Date__c);
                 }
-                $scope.objContact = result;
-
+                $scope.SignaturePlace = result.Signature_Place__c;
                 $scope.$apply();
             }
         });
@@ -248,9 +272,69 @@ angular.module('cp_app').controller('ReviewAndSubmitIF_Ctrl', function ($scope, 
             if (!$scope.$$phase) $scope.$apply();
         });
     }
+    // $scope.submitApplicationDetail = function (saveType, year, month, day) {
+    //   //  delete $scope.objContact.Attachments
+    //     IndustrialFellowshipController.submitProposalIF($scope.objContact, saveType, $rootScope.proposalId, year, month, day, function (result, event) {
+    //         console.log(result);
+    //         console.log(event);
+    //         debugger
+    //         if (event.status) {
+    //             if (saveType == 'd') {
+    //                 swal({
+    //                     title: "Save as a draft",
+    //                     text: "Your Proposal has been saved as Draft!",
+    //                     icon: "success",
+    //                     buttons: "OK",
+    //                     dangerMode: false,
+    //                 }).then((willDelete) => {
+    //                     if (willDelete) {
+    //                         $scope.redirectPageURL('Home');                            
+    //                         // $scope.redirectPageURL = function (URL) {
+    //                         //     var link = document.createElement("a");
+    //                         //     link.id = 'someLink'; //give it an ID!
+    //                         //     link.href = '#/' + URL + '';
+    //                         //     link.click();
+                                
+    //                         // }
+    //                     } else {
+    //                         return;
+    //                     }
+    //                 });
+    //             }
+    //             else {
+    //                 $rootScope.proposalStage = true;
+    //                 CKEDITOR.config.readOnly = true;
+    //                 swal({
+    //                     title: "Submit",
+    //                     text: "Your Proposal has been submitted successfully!",
+    //                     icon: "success",
+    //                     buttons: "OK",
+    //                     dangerMode: false,
+    //                 }).then((willDelete) => {
+    //                     if (willDelete) {
+    //                          $scope.redirectPageURL('Home');                          
+    //                         // $scope.redirectPageURL = function (URL) {
+    //                         //     var link = document.createElement("a");
+    //                         //     link.id = 'someLink'; //give it an ID!
+    //                         //     link.href = '#/' + URL + '';
+    //                         //     link.click();
+    //                         // }
+    //                     } else {
+    //                         return;
+    //                     }
+    //                 });
+    //                 // swal('success','Your Proposal has been submitted successfully','success');
+    //                 // $rootScope.proposalStage=true;
+    //                 // CKEDITOR.config.readOnly = true;
+    //             }
+    //             //$scope.redirectPageURL('Home');
+    //         }
+    //     });
+    // }
+
     $scope.submitApplicationDetail = function (saveType, year, month, day) {
-        delete $scope.objContact.Attachments
-        IndustrialFellowshipController.submitProposalIF($scope.objContact, saveType, $rootScope.proposalId, year, month, day, function (result, event) {
+      //  delete $scope.objContact.Attachments
+        IndustrialFellowshipController.submitProposalIFnew(saveType,$rootScope.proposalId,$scope.SignaturePlace, year, month, day, function (result, event) {
             console.log(result);
             console.log(event);
             debugger

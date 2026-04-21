@@ -56,6 +56,12 @@ public withOut sharing class IndustrialFellowshipController {
         return instanceIFM.getContactSingh(loginHashCode);
     }
 
+    @RemoteAction
+    public static Application_Proposal__c getProposalSign(String proposalId){
+        IndustrialFellowshipModel instanceIFM=new IndustrialFellowshipModel();
+        return instanceIFM.getProposalSign(proposalId);
+    }
+
 // ********************Added by Harsh 21/12/2025 12:45**************************
     @RemoteAction
 public static Application_Proposal__c getProposalData(String proposalId) {
@@ -256,6 +262,11 @@ public static String saveApplicantPortalSingh(String loginHashCode,Contact con,A
     public static String submitProposalIF(Contact con,String saveType,String proposalId,integer year,integer month,integer day) {
         IndustrialFellowshipHelper instanceIFH = new IndustrialFellowshipHelper();
         return instanceIFH.submitProposalIF(con,saveType,proposalId,year,month,day);
+    }
+     @RemoteAction
+    public static String submitProposalIFnew(String saveType,String proposalId,String signaturePlace,integer year,integer month,integer day) {
+        IndustrialFellowshipHelper instanceIFH = new IndustrialFellowshipHelper();
+        return instanceIFH.submitProposalIFnew(saveType,proposalId,signaturePlace,year,month,day);
     }
     @RemoteAction
     public static String UploadAttachments(String attachmentBody, String attachmentName, string cvId, String udId) {

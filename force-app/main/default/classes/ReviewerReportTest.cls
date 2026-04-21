@@ -53,7 +53,7 @@ public class ReviewerReportTest {
         APXTConga4__Conga_Solution__c sol = new APXTConga4__Conga_Solution__c(Name = 'Test Solution');
         insert sol;
 
-        // ✅ Prevents callout-related errors
+        //Prevents callout-related errors
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
 
         Test.startTest();
@@ -61,7 +61,7 @@ public class ReviewerReportTest {
         ReviewerReport.getReviewerDetails(reviewer.Name);
         ReviewerReport.getCampaignName();
         ReviewerReport.getYear();
-        ReviewerReport.getProposals(camp.Id, '2025');
+        ReviewerReport.getProposals(camp.Id, '2025','');
         ReviewerReport.getCongaSolution('Test Solution');
         ReviewerReport.updateGenerateReviewerDoc(new List<Application_Proposal__c>{proposal1, proposal2});
         Test.stopTest();

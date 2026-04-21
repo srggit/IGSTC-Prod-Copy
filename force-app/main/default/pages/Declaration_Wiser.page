@@ -355,9 +355,7 @@
                             <br />
                             <li>
                                 <i class="fa-solid fa-circle text-success me-3"></i>
-                                <!-- The final submission of the application will be done by the Primary applicant only. -->
-                                The application is first submitted by the Paired Applicant and then by the Primary Applicant. The final submission of the
-                                application is done by the Primary Applicant.
+                                The final submission of the application will be done by the Primary applicant only.
                             </li>
                             <br />
                             <li>

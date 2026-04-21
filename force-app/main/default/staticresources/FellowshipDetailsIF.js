@@ -160,12 +160,14 @@ $scope.callRTF=function(){
         $scope.$apply();
         }
        // $scope.accDetails.BillingCountry = 'Germany';
-       if( $rootScope.IFcountry=='India'){
+       if($scope.accDetails.BillingCountry == undefined || $scope.accDetails.BillingCountry == ""){
+        if( $rootScope.IFcountry=='India'){
             $scope.accDetails.BillingCountry = 'Germany';
           }
           else{
             $scope.accDetails.BillingCountry = 'India';
           }
+       }
          $scope.$apply();
       },{escape: true}
       )
