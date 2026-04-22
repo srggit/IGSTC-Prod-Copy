@@ -233,7 +233,7 @@ public with sharing class ReviewerMappingController {
     public static List<StageOption> getProposalStageFilterOptions() {
         List<StageOption> options = new List<StageOption>();
         StageOption allOpt = new StageOption();
-        allOpt.label = 'All stages';
+        allOpt.label = 'All Stages';
         allOpt.value = '';
         options.add(allOpt);
 

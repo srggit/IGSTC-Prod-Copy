@@ -305,6 +305,7 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
      };
      $scope.loadSignatorySalutations();
 
+     /*
      // Get Signatory Contact Details
      $scope.getContactWiser = function () {
 
@@ -384,8 +385,73 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
                }
           );
      };
+     */
+
+     // ############## GET SIGNATORY DETAILS FROM APA - NEW REQUIREMENT ############## //
+     $scope.getSignatoryDetails = function () {
+
+          ApplicantPortal_Contoller.getSignatoryDetailsFromAPA(
+               $rootScope.proposalId,
+               $rootScope.apaId,
+               function (result, event) {
+
+                    console.log('event : ', event);
+                    console.log('result : ', JSON.stringify(result));
+
+                    if (!event.status) {
+                         // If there's an error or no signatory exists, initialize empty structure with CORRECT field names
+                         $scope.signatoryObject = {
+                              Signatory_Salutation__c: '',
+                              Signatory_First_Name__c: '',
+                              Signatory_Last_Name__c: '',
+                              Signatory_Institution__c: '',  // Changed from Institution_Name__c
+                              Signatory_Designation__c: '',  // Changed from Designation__c
+                              Signatory_Email__c: '',         // Changed from Email
+                              Contact__c: '',
+                              Contact__r: null
+                         };
+                         $scope.$applyAsync();
+                         return;
+                    }
+
+                    // If result is null (no signatory exists), initialize empty structure with CORRECT field names
+                    if (!result) {
+                         $scope.signatoryObject = {
+                              Signatory_Salutation__c: '',
+                              Signatory_First_Name__c: '',
+                              Signatory_Last_Name__c: '',
+                              Signatory_Institution__c: '',  // Changed from Institution_Name__c
+                              Signatory_Designation__c: '',  // Changed from Designation__c
+                              Signatory_Email__c: '',         // Changed from Email
+                              Contact__c: '',
+                              Contact__r: null
+                         };
+                         $scope.$applyAsync();
+                         return;
+                    }
+
+                    // Map the result directly - it already has the correct field names
+                    $scope.signatoryObject = {
+                         Signatory_Salutation__c: result.Signatory_Salutation__c || '',
+                         Signatory_First_Name__c: result.Signatory_First_Name__c || '',
+                         Signatory_Last_Name__c: result.Signatory_Last_Name__c || '',
+                         Signatory_Institution__c: result.Signatory_Institution__c || '',  // Changed
+                         Signatory_Designation__c: result.Signatory_Designation__c || '',  // Changed
+                         Signatory_Email__c: result.Signatory_Email__c || '',              // Changed
+                         Contact__c: result.Contact__c || '',
+                         Contact__r: result.Contact__r || null
+                    };
+
+                    console.log('##### $scope.signatoryObject : ', $scope.signatoryObject);
+                    $scope.$applyAsync();
+               }
+          )
+     }
+     $scope.getSignatoryDetails();
+
 
      // Get current logged-in user contact details
+     /*
      $scope.getCurrentUserContactDetails = function () {
           if (!$rootScope.hashCode) {
                console.log('No hashCode found for current user');
@@ -403,8 +469,10 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
                }
           });
      };
+     */
 
      // Validate signatory email against current user
+     /*
      $scope.validateSignatoryEmail = function (signatoryEmail) {
           if (!signatoryEmail || !$scope.currentUserContact) {
                return true; // No validation needed if email is empty or current user not loaded
@@ -418,7 +486,7 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
 
           return true;
      };
-
+     */
      // Enhanced email validation with signatory check
      /*
      $scope.validateSignatoryEmailExists = function (signatoryEmail) {
@@ -446,8 +514,8 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
      };
      */
 
-     $scope.getContactWiser();
-     $scope.getCurrentUserContactDetails();
+     // $scope.getContactWiser();
+     // $scope.getCurrentUserContactDetails();
 
      function decode(val) {
           if (!val) return val;
@@ -472,7 +540,9 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
           });
      }
 
+     // #################### OLD METHOD TO SAVE RECORDS #####################
      // METHOD TO SAVE REFERENCES AND SIGNATORY CONTACT
+     /*
      $scope.saveParticipants = function () {
           debugger;
           //var ind = indexNum-1;
@@ -526,7 +596,6 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
 
 
           // Signatory Validations
-
           let contact = $scope.objContact?.Contact__r;
 
           // Salutation validation
@@ -570,34 +639,6 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
                angular.element('#signatoryEmail').addClass('error-border');
                return;
           }
-
-          // Validate that signatory is not the current user
-          if (!$scope.validateSignatoryEmail(contact.Email)) {
-               angular.element('#signEmail').addClass('error-border');
-               return;
-          }
-
-          // Institution_Name__c validation
-          // if (!contact.Institution_Name__c || contact.Institution_Name__c.trim() === '') {
-          //      swal("Info", "Please enter Institution.", "info");
-          //      angular.element('#signInstitution2').addClass('error-border');
-          //      return;
-          // }
-
-          // Designation__c validation
-          // if (!contact.Designation__c || contact.Designation__c.trim() === '') {
-          //      swal("Info", "Please enter Designation.", "info");
-          //      angular.element('#signDesignation2').addClass('error-border');
-          //      return;
-          // }
-
-          // Signatory Emailst Name validation
-          // if (!$scope.objContact.Signatory_Emailist_Name__c || $scope.objContact.Signatory_Emailist_Name__c.trim() === '') {
-          //      swal("Info", "Please enter Signatory Emailist Name.", "info");
-          //      angular.element('#signEmailistName').addClass('error-border');
-          //      return;
-          // }
-
 
 
 
@@ -770,6 +811,156 @@ angular.module('cp_app').controller('twoReferencePageCtrl', function ($scope, $r
                }
           });
      }
+     */
+
+     // #################### NEW METHOD TO SAVE RECORDS #####################
+     // METHOD TO SAVE REFERENCES AND SIGNATORY CONTACT
+     $scope.saveParticipants = function () {
+          debugger;
+
+          for (var i = 0; i < $scope.ParticipantList.length; i++) {
+               if ($scope.ParticipantList[i].Name == undefined || $scope.ParticipantList[i].Name == "") {
+                    swal("Info", "Please Enter Reference name.", "info");
+                    $("#name" + i + "").addClass('border-theme');
+                    return;
+               }
+               if ($scope.ParticipantList[i].Designation__c == undefined || $scope.ParticipantList[i].Designation__c == "") {
+                    swal("Indo", "Please Enter Designation.", "info");
+                    $("#designation" + i + "").addClass('border-theme');
+                    return;
+               }
+               if ($scope.ParticipantList[i].Organisation_Institute__c == undefined || $scope.ParticipantList[i].Organisation_Institute__c == "") {
+                    swal("Info", "Please Enter Organisation/Institute.", "info");
+                    $("#organisation" + i + "").addClass('border-theme');
+                    return;
+               }
+               if ($scope.ParticipantList[i].Email__c == undefined || $scope.ParticipantList[i].Email__c == "") {
+                    swal("Info", "Please Enter Email.", "info");
+                    $("#email" + i + "").addClass('border-theme');
+                    return;
+               } else {
+                    if ($scope.valid($scope.ParticipantList[i].Email__c)) {
+                         swal(
+                              'Info',
+                              'Check Your Registered Email!',
+                              'info'
+                         )
+                         $("#email" + i + "").addClass('border-theme');
+                         return;
+                    }
+               }
+          }
+
+          for (var i = 0; i < $scope.ParticipantList.length; i++) {
+               delete ($scope.ParticipantList[i]['$$hashKey']);
+          }
+          if ($scope.ParticipantList.length < 2) {
+               swal("Max Reference Limit", "Add one more 'Reference'.");
+               return;
+          }
+
+
+          // Signatory Validations
+          let signatoryDet = $scope.signatoryObject;
+
+          // Salutation validation
+          if (!signatoryDet || !signatoryDet.Signatory_Salutation__c || signatoryDet.Signatory_Salutation__c === '' || signatoryDet.Signatory_Salutation__c === '-- Select Salutation --') {
+               swal("Info", "Please select Signatory Salutation.", "info");
+               angular.element('#signatorySalutation').addClass('error-border');
+               return;
+          }
+
+          // First Name validation
+          if (!signatoryDet.Signatory_First_Name__c || signatoryDet.Signatory_First_Name__c.trim() === '') {
+               swal("Info", "Please enter Signatory First Name.", "info");
+               angular.element('#signFirstName').addClass('error-border');
+               return;
+          }
+
+          // Last Name validation
+          if (!signatoryDet.Signatory_Last_Name__c || signatoryDet.Signatory_Last_Name__c.trim() === '') {
+               swal("Info", "Please enter Signatory Last Name.", "info");
+               angular.element('#signLastName').addClass('error-border');
+               return;
+          }
+
+          // Signatory_Institution__c validation
+          if (!signatoryDet.Signatory_Institution__c || signatoryDet.Signatory_Institution__c.trim() === '') {
+               swal("Info", "Please enter Signatory Institution.", "info");
+               angular.element('#signInstitution').addClass('error-border');
+               return;
+          }
+
+          // Signatory_Designation__c validation
+          if (!signatoryDet.Signatory_Designation__c || signatoryDet.Signatory_Designation__c.trim() === '') {
+               swal("Info", "Please enter Signatory Designation.", "info");
+               angular.element('#signDesignation').addClass('error-border');
+               return;
+          }
+
+          // Signatory_Email__c validation
+          if (!signatoryDet.Signatory_Email__c || signatoryDet.Signatory_Email__c.trim() === '') {
+               swal("Info", "Please enter Signatory Email.", "info");
+               angular.element('#signatoryEmail').addClass('error-border');
+               return;
+          }
+
+          // ------------ METHOD UPDATED TO SAVE SIGNATORY DETAILS ALSO ------------ //
+
+
+          // Show spinner on button
+          $("#btnPreview").html('<i class="fa-solid fa-spinner fa-spin-pulse me-3"></i>Please wait...');
+          $("#btnPreview").prop('disabled', true);
+
+          ApplicantPortal_Contoller.insertParticipantsReferences($scope.ParticipantList, $rootScope.proposalId, $rootScope.apaId, signatoryDet, $rootScope.accountId, function (result, event) {
+               debugger;
+               // Restore button
+               $("#btnPreview").html('<i class="fa-solid fa-check me-2"></i>Save and Next');
+               $("#btnPreview").prop('disabled', false);
+
+               console.log('Result:', result);
+               console.log('Event status:', event.status);
+               console.log('Event message:', event.message);
+
+               // Check if result is an error (starts with "Error:")
+               if (result && typeof result === 'string' && (result.startsWith('Error:') || result.startsWith('Error'))) {
+                    swal({
+                         title: "Error",
+                         text: result,
+                         icon: "error",
+                         button: "ok!",
+                    });
+                    return;
+               }
+
+               if (event.status && result != null && result != '') {
+                    // Check if result is a valid Id (18 characters)
+                    if (result === 'Success') {
+                         //localStorage.setItem("signatoryAPAId", result);
+
+                         showSuccess('References & Signatory details have been saved successfully.').then(function () {
+                              $scope.redirectPageURL('AttachmentsInWiser');
+                         });
+                    } else {
+                         // Result might be an error message
+                         swal({
+                              title: "Error",
+                              text: result || "An error occurred while saving.",
+                              icon: "error",
+                              button: "ok!",
+                         });
+                    }
+               } else {
+                    swal({
+                         title: "Error",
+                         text: event.message || result || "An error occurred while saving. Please try again.",
+                         icon: "error",
+                         button: "ok!",
+                    });
+               }
+          });
+     }
+
 
      function showSuccess(message) {
           return swal({

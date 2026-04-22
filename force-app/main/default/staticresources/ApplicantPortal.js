@@ -2256,16 +2256,16 @@ function addEducationRowHTML(edu, index) {
     var degreeValue = edu ? (edu.Degree__c || '') : '';
     var institutionValue = edu ? (edu.Institution_Name__c || '') : '';
     var specializationValue = edu ? (edu.Area_of_specialization__c || '') : '';
-    var startDateValue = edu && edu.Start_Date__c ? edu.Start_Date__c.split('T')[0] : '';
-    var endDateValue = edu && edu.End_Date__c ? edu.End_Date__c.split('T')[0] : '';
+    var startDateValue = edu ? (edu.Start_Year__c || '') : '';
+    var endDateValue = edu ? (edu.End_Year__c || '') : '';
     var eduId = edu ? (edu.Id || '') : '';
 
     row.innerHTML = '<input type="hidden" class="eduId" value="' + (eduId || '') + '"/>' +
         '<input type="text" class="eduDegree form-control" value="' + degreeValue + '" placeholder="Degree"/>' +
         '<input type="text" class="eduInstitution form-control" value="' + institutionValue + '" placeholder="Institution"/>' +
         '<input type="text" class="eduSpecialization form-control" value="' + specializationValue + '" placeholder="Specialization"/>' +
-        '<input type="date" class="eduStartDate form-control" value="' + startDateValue + '"/>' +
-        '<input type="date" class="eduEndDate form-control" value="' + endDateValue + '"/>' +
+        '<input type="text" class="eduStartDate form-control" value="' + startDateValue + '"/>' +
+        '<input type="text" class="eduEndDate form-control" value="' + endDateValue + '"/>' +
         '<div class="action-icons"><button type="button" class="icon-btn icon-delete" onclick="removeEducationRow(' + index + ')">×</button></div>';
 
     container.appendChild(row);
@@ -2333,15 +2333,15 @@ function addEmploymentRowHTML(emp, index) {
 
     var orgValue = emp ? (emp.Organization_Name__c || '') : '';
     var positionValue = emp ? (emp.Position__c || '') : '';
-    var startDateValue = emp && emp.Start_Date__c ? emp.Start_Date__c.split('T')[0] : '';
-    var endDateValue = emp && emp.End_Date__c ? emp.End_Date__c.split('T')[0] : '';
+    var startDateValue = emp ? (emp.Start_Year__c || '') : '';
+    var endDateValue = emp ? (emp.End_Year__c || '') : '';
     var empId = emp ? (emp.Id || '') : '';
 
     row.innerHTML = '<input type="hidden" class="empId" value="' + (empId || '') + '"/>' +
         '<input type="text" class="empOrganization form-control" value="' + orgValue + '" placeholder="Organization"/>' +
         '<input type="text" class="empPosition form-control" value="' + positionValue + '" placeholder="Position"/>' +
-        '<input type="date" class="empStartDate form-control" value="' + startDateValue + '"/>' +
-        '<input type="date" class="empEndDate form-control" value="' + endDateValue + '"/>' +
+        '<input type="text" class="empStartDate form-control" value="' + startDateValue + '"/>' +
+        '<input type="text" class="empEndDate form-control" value="' + endDateValue + '"/>' +
         '<div class="action-icons"><button type="button" class="icon-btn icon-delete" onclick="removeEmploymentRow(' + index + ')">×</button></div>';
 
     container.appendChild(row);
@@ -2484,8 +2484,8 @@ function saveEducationData() {
             Degree__c: row.querySelector('.eduDegree').value,
             Institution_Name__c: row.querySelector('.eduInstitution').value,
             Area_of_specialization__c: row.querySelector('.eduSpecialization').value,
-            Start_Date__c: row.querySelector('.eduStartDate').value,
-            End_Date__c: row.querySelector('.eduEndDate').value,
+            Start_Year__c: row.querySelector('.eduStartDate').value,
+            End_Year__c: row.querySelector('.eduEndDate').value,
             Contact__c: contactId
         };
         if (edu.Degree__c || edu.Institution_Name__c) {
@@ -2529,8 +2529,8 @@ function saveEmploymentData() {
             Id: row.querySelector('.empId').value || null,
             Organization_Name__c: row.querySelector('.empOrganization').value,
             Position__c: row.querySelector('.empPosition').value,
-            Start_Date__c: row.querySelector('.empStartDate').value,
-            End_Date__c: row.querySelector('.empEndDate').value,
+            Start_Year__c: row.querySelector('.empStartDate').value,
+            End_Year__c: row.querySelector('.empEndDate').value,
             Contact__c: contactId
         };
         if (emp.Organization_Name__c || emp.Position__c) {

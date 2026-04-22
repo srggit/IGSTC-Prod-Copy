@@ -1,6 +1,6 @@
 public class DummyClass4 {
     
-    public static void firstMethod(){
+   public static void firstMethod(){
         Integer i=0;
         i++;i++;
         i++;i++;

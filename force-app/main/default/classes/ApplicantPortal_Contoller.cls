@@ -3789,6 +3789,7 @@ public static WrapperProposalDet getPECFARProposalDetails(string proposalId){
     // }
 
     // ------------ METHOD UPDATED TO SAVE SIGNATORY DETAILS ------------ //
+    /*
     @RemoteAction
     public static String insertParticipantsReferences(List<References__c> insertParticipantsList, String proposalId, String apaId, Contact signatoryContact, Applicant_Proposal_Association__c apaRecord, String signatoryAPAId, String accountId){
         try{
@@ -3890,8 +3891,64 @@ public static WrapperProposalDet getPECFARProposalDetails(string proposalId){
             return 'Error: ' + e.getMessage() + ' at line ' + e.getLineNumber();
         }
     }
+    */
 
-    // ------------ METHOD UPDATED TO GET SIGNATORY DETAILS ------------ //
+    @RemoteAction
+    public static String insertParticipantsReferences(List<References__c> insertParticipantsList, String proposalId, String apaId, Applicant_Proposal_Association__c signatoryDet, String accountId){
+        Savepoint sp = Database.setSavepoint();
+        try {
+            // Save References
+            if(!insertParticipantsList.isEmpty()){
+                for(References__c ref : insertParticipantsList){
+                    if(ref.Applicant_Proposal_Association__c == null)
+                        ref.Applicant_Proposal_Association__c = apaId;
+                }
+                upsert insertParticipantsList;
+            }
+            
+            // Update Signatory Details on Applicant_Proposal_Association__c
+            if(signatoryDet != null && String.isNotBlank(apaId)) {
+                // Fetch the existing APA record
+                Applicant_Proposal_Association__c apaRecord = [
+                    SELECT Id, Signatory_Salutation__c, Signatory_First_Name__c, 
+                        Signatory_Last_Name__c, Signatory_Institution__c, 
+                        Signatory_Designation__c, Signatory_Email__c
+                    FROM Applicant_Proposal_Association__c 
+                    WHERE Id = :apaId 
+                    AND Proposals__c = :proposalId
+                    LIMIT 1
+                ];
+                
+                // Update with signatory details from the parameter
+                apaRecord.Signatory_Salutation__c  = signatoryDet.Signatory_Salutation__c;
+                apaRecord.Signatory_First_Name__c  = signatoryDet.Signatory_First_Name__c;
+                apaRecord.Signatory_Last_Name__c   = signatoryDet.Signatory_Last_Name__c;
+                apaRecord.Signatory_Institution__c = signatoryDet.Signatory_Institution__c;
+                apaRecord.Signatory_Designation__c = signatoryDet.Signatory_Designation__c;
+                apaRecord.Signatory_Email__c       = signatoryDet.Signatory_Email__c;
+                
+                // Update the record
+                update apaRecord;
+                
+                System.debug('APA Updated with Signatory Details: ' + apaRecord);
+            }
+            
+            System.debug('References and Signatory details saved successfully');
+            return 'Success';
+            
+        } catch(DmlException e){
+            Database.rollback(sp);
+            System.debug('DML Exception: ' + e.getMessage() + ' at line ' + e.getLineNumber());
+            return 'Error: ' + e.getMessage() + ' at line ' + e.getLineNumber();
+        } catch(Exception e){
+            Database.rollback(sp);
+            System.debug('Exception: ' + e.getMessage() + ' at line ' + e.getLineNumber());
+            return 'Error: ' + e.getMessage() + ' at line ' + e.getLineNumber();
+        }
+    }
+
+    // ------------ OLD: METHOD UPDATED TO GET SIGNATORY DETAILS ------------ //
+    /*
     @RemoteAction
     public static Applicant_Proposal_Association__c getSignatoryContactAPADetails(String proposalId, String apaId, String accountId){
         try {
@@ -3912,6 +3969,32 @@ public static WrapperProposalDet getPECFARProposalDetails(string proposalId){
             }
             
             return signatoryAPAList[0];
+        } catch (Exception e) {
+            System.debug('Error in getSignatoryContactAPADetails: ' + e.getMessage());
+            return null;
+        }
+    }
+    */
+
+    // ------------ NEW: METHOD TO GET SIGNATORY DETAILS FROM APA ------------ //
+    @RemoteAction
+    public static Applicant_Proposal_Association__c getSignatoryDetailsFromAPA(String proposalId, String apaId){
+        try {
+            System.debug('------------------ NEW : getSignatoryDetailsFromAPA -------------------');
+            List<Applicant_Proposal_Association__c> signatoryDetails = [
+                SELECT Id, Signatory_Designation__c, Signatory_Email__c, Signatory_First_Name__c, Signatory_Institution__c, Signatory_Last_Name__c, Signatory_Salutation__c, Contact__r.Id
+                FROM Applicant_Proposal_Association__c 
+                WHERE Id = :apaId
+                AND Proposals__c =: proposalId
+                LIMIT 1
+            ];
+            
+            if (signatoryDetails.isEmpty()) {
+                return null;
+            }
+            
+            System.debug('signatoryDetails[0] : ' + signatoryDetails[0]);
+            return signatoryDetails[0];
         } catch (Exception e) {
             System.debug('Error in getSignatoryContactAPADetails: ' + e.getMessage());
             return null;
@@ -4693,15 +4776,17 @@ public static void updateProposalStage(Id proposalId) {
                 edu.Area_of_specialization__c = (String) row.get('Area_of_specialization__c');
                 
                 // Safe date handling
-                String startDateStr = (String) row.get('Start_Date__c');
-                if (String.isNotBlank(startDateStr)) {
-                    edu.Start_Date__c = Date.valueOf(startDateStr);
-                }
+                String startDateStr = (String) row.get('Start_Year__c');
+                edu.Start_Year__c = startDateStr; // Store original string for reference
+                // if (String.isNotBlank(startDateStr)) {
+                //     edu.Start_Date__c = Date.valueOf(startDateStr);
+                // }
                 
-                String endDateStr = (String) row.get('End_Date__c');
-                if (String.isNotBlank(endDateStr)) {
-                    edu.End_Date__c = Date.valueOf(endDateStr);
-                }
+                String endDateStr = (String) row.get('End_Year__c');
+                edu.End_Year__c = endDateStr; // Store original string for reference
+                // if (String.isNotBlank(endDateStr)) {
+                //     edu.End_Date__c = Date.valueOf(endDateStr);
+                // }
                 
                 educationList.add(edu);
             }

@@ -1,7 +1,7 @@
 @isTest
 public class IndustrialFellowshipHelper_Test2 {
 	
-    @isTest
+   /* @isTest
     public static void testCoverage(){
         IndustrialFellowshipHelper.firstTestMethod1();
         IndustrialFellowshipHelper.firstTestMethod2();
@@ -11,5 +11,7 @@ public class IndustrialFellowshipHelper_Test2 {
         IndustrialFellowshipHelper.firstTestMethod6();
         IndustrialFellowshipHelper.firstTestMethod7();
         IndustrialFellowshipHelper.firstTestMethod8();
-    }
+    }*/
+    
+    
 }

@@ -1110,6 +1110,12 @@
                 color: red;
             }
 
+            .three-field-row {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px 20px;
+            }
+
             .contact-profile-container input,
             .contact-profile-container select,
             .contact-profile-container .form-control {
@@ -1282,6 +1288,10 @@
                 display: none;
                 padding: 14px;
                 background: #fff;
+
+                 max-height: 250px;   /* adjust as needed */
+                overflow-y: auto;
+
             }
 
             .contact-profile-container .accordion-item.active .accordion-body {
@@ -2710,15 +2720,16 @@
 
                                         <!-- ===== Form ===== -->
                                         <div class="form-grid">
+                                            <div class="three-field-row full-width">
                                             <div class="form-group">
                                                 <label>Salutation <span>*</span></label>
                                                 <select id="contactSalutation" class="form-control">
                                                     <option value="">--Select--</option>
-                                                    <option value="Dr">Dr</option>
-                                                    <option value="Mr">Mr</option>
-                                                    <option value="Mrs">Mrs</option>
-                                                    <option value="Ms">Ms</option>
-                                                    <option value="Prof">Prof</option>
+                                                    <option value="Dr.">Dr.</option>
+                                                    <option value="Mr.">Mr.</option>
+                                                    <option value="Mrs.">Mrs.</option>
+                                                    <option value="Ms.">Ms.</option>
+                                                    <option value="Prof.">Prof.</option>
                                                 </select>
                                             </div>
 
@@ -2733,8 +2744,9 @@
                                                 <input type="text" id="contactLastName" class="form-control"
                                                     value="{!IF(con != null, con.LastName, '')}" />
                                             </div>
+                                            </div>
 
-                                            <div class="form-group full-width">
+                                            <div class="form-group">
                                                 <label>Current Position / Designation <span>*</span></label>
                                                 <input type="text" id="contactDesignation" class="form-control"
                                                     value="{!IF(con != null, con.Designation__c, '')}" />
@@ -2754,8 +2766,8 @@
                                                 </div>
                                             </div>-->
 
-                                            <div class="form-group full-width">
-                                                <label>Institution / Organisation Name</label>
+                                            <div class="form-group">
+                                                <label>Institution / Organisation Name <span>*</span></label>
                                                 <input type="text" id="contactInstitution" class="form-control"
                                                     value="{!IF(con != null && con.Account != null, con.Account.Name, '')}"
                                                     readonly="readonly" />
@@ -2837,8 +2849,8 @@
                                             <div>Degree<span style="color:red">*</span></div>
                                             <div>Institution<span style="color:red">*</span></div>
                                             <div>Specialisation<span style="color:red">*</span></div>
-                                            <div>Start Date<span style="color:red">*</span></div>
-                                            <div>End Date<span style="color:red">*</span></div>
+                                            <div>Start Date(DD/MM/YYYY)<span style="color:red">*</span></div>
+                                            <div>End Date(DD/MM/YYYY)<span style="color:red">*</span></div>
                                             <div></div>
                                         </div>
                                         <div id="educationRowsContainer"></div>
@@ -2861,8 +2873,8 @@
                                             style="grid-template-columns: 1.8fr 1.4fr 1fr 1fr 60px;">
                                             <div>Organisation<span style="color:red">*</span></div>
                                             <div>Position<span style="color:red">*</span></div>
-                                            <div>Start Date<span style="color:red">*</span></div>
-                                            <div>End Date<span style="color:red">*</span></div>
+                                            <div>Start Date(DD/MM/YYYY)<span style="color:red">*</span></div>
+                                            <div>End Date(DD/MM/YYYY)<span style="color:red">*</span></div>
                                             <div></div>
                                         </div>
                                         <div id="employmentRowsContainer"></div>
@@ -2885,7 +2897,7 @@
                                             <div class="accordion-item">
                                                 <div class="accordion-header" onclick="toggleAccordion(this)">Awards and
                                                     Honours</div>
-                                                <div class="accordion-body">
+                                                <div class="accordion-body ">
                                                     <div id="achievementAwards" contenteditable="true"
                                                         class="form-control"
                                                         style="width:100%; min-height:200px; padding:10px;"></div>

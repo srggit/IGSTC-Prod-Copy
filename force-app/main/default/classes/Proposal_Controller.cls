@@ -4036,6 +4036,7 @@ return workPackageList;
      * - Year 2 line items: populate Year1_Expense__c and Year3_Expense__c from Year 1 and Year 3 records
      * - Year 3 line items: populate Year1_Expense__c and Year2_Expense__c from Year 1 and Year 2 records
      */
+    @TestVisible
     private static void populateCrossYearExpenseValuesForWiser(List<Expense_Line_Item__c> lineItems, Map<Id, Expense_Head__c> headIdMap) {
         if(lineItems == null || lineItems.isEmpty() || headIdMap == null || headIdMap.isEmpty()) return;
         Decimal zeroVal = 0;
@@ -9994,7 +9995,7 @@ return e.getMessage();
     }
     
     
-    public static void firstTestMethod1(){
+   /* public static void firstTestMethod1(){
         Integer i=0;
         i++;i++;
         i++;i++;
@@ -20327,5 +20328,5 @@ return e.getMessage();
         i++;i++;
         i++;i++;
         i++;i++;
-    }
+    }*/
 }

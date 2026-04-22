@@ -1261,5 +1261,130 @@ private class IndustrialFellowshipHelperTest {
         Test.stopTest();
     }
     
+    @isTest
+static void testInsertApplicantDetailsOld_AllScenarios() {
+    
+    // Get Campaign
+    Campaign camp = [SELECT Id FROM Campaign LIMIT 1];
+    
+    // -------------------------------
+    // CASE 1: No Association exists
+    // -------------------------------
+    Account acc1 = new Account(Name = 'Acc1', Country_Type__c = 'India');
+    Contact con1 = new Contact(
+        FirstName = 'Case1',
+        LastName = 'User',
+        Email = 'karthikke129+test1@gmail.com',
+        State__c = 'KA'
+    );
+
+    IndustrialFellowshipHelper helper = new IndustrialFellowshipHelper();
+    
+    Test.startTest();
+    String proposalId1 = helper.insertApplicantDetailsold(
+        con1,
+        acc1,
+        1990,
+        1,
+        1,
+        camp.Id
+    );
+    Test.stopTest();
+    
+    System.assertNotEquals(null, proposalId1, 'Proposal should be created');
+
+   
+
+    // -------------------------------
+    // CASE 2: Association exists with SAME WISER RecordType
+    // -------------------------------
+    Account acc2 = new Account(Name = 'Acc2');
+    insert acc2;
+
+    Contact con2 = new Contact(
+        FirstName = 'Case2',
+        LastName = 'User',
+        Email = 'karthikke129+test2@gmail.com',
+        AccountId = acc2.Id
+    );
+    insert con2;
+
+    Id wiserRtId = Utility.getProposalRecordType('WISER');
+
+    Application_Proposal__c prop2 = new Application_Proposal__c(
+        Campaign__c = camp.Id,
+        RecordTypeId = wiserRtId,
+        Proposal_Stages__c = 'Draft'
+    );
+    insert prop2;
+
+    Applicant_Proposal_Association__c apa2 = new Applicant_Proposal_Association__c(
+        Contact__c = con2.Id,
+        Proposals__c = prop2.Id
+    );
+    insert apa2;
+
+    Test.startTest();
+    String proposalId2 = helper.insertApplicantDetailsold(
+        con2,
+        acc2,
+        1991,
+        2,
+        2,
+        camp.Id
+    );
+    Test.stopTest();
+
+    System.assertEquals(prop2.Id, proposalId2, 'Should reuse existing proposal');
+
+    // -------------------------------
+    // CASE 3: Association exists with DIFFERENT RecordType
+    // -------------------------------
+    Account acc3 = new Account(Name = 'Acc3');
+    insert acc3;
+
+    Contact con3 = new Contact(
+        FirstName = 'Case3',
+        LastName = 'User',
+        Email = 'karthikke129+test3@gmail.com',
+        AccountId = acc3.Id
+    );
+    insert con3;
+
+    // Create proposal with DIFFERENT record type (null or any other)
+    Application_Proposal__c prop3 = new Application_Proposal__c(
+        Campaign__c = camp.Id,
+        Proposal_Stages__c = 'Draft'
+    );
+    insert prop3;
+
+    Applicant_Proposal_Association__c apa3 = new Applicant_Proposal_Association__c(
+        Contact__c = con3.Id,
+        Proposals__c = prop3.Id
+    );
+    insert apa3;
+
+    Test.startTest();
+    String proposalId3 = helper.insertApplicantDetailsold(
+        con3,
+        acc3,
+        1992,
+        3,
+        3,
+        camp.Id
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(prop3.Id, proposalId3, 'New proposal should be created');
+
+    // -------------------------------
+    // CASE 4: Birthdate check
+    // -------------------------------
+    Contact updatedCon = [
+        SELECT Birthdate FROM Contact WHERE Id = :con3.Id
+    ];
+    System.assertEquals(Date.newInstance(1992,3,3), updatedCon.Birthdate);
+}
+    
     
 }

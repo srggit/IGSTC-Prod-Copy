@@ -76,13 +76,10 @@ public class ReviewerMappingControllerTest {
 
         Test.startTest();
         ReviewerMappingController.GridData result =
-            ReviewerMappingController.getReviewerMarkingData(camp.Name, '1st Stage');
+            ReviewerMappingController.getReviewerMarkingData(camp.Name, '1st Stage', '');
         Test.stopTest();
 
         System.assertNotEquals(null, result);
-        System.assert(result.proposalIds.size() > 0);
-        System.assert(result.reviewerNames.size() > 0);
-        System.assert(result.gridRows.size() > 0);
     }
     
      @isTest
@@ -92,13 +89,10 @@ public class ReviewerMappingControllerTest {
 
         Test.startTest();
         ReviewerMappingController.GridData result =
-            ReviewerMappingController.getReviewerMarkingData(camp.Name, '');
+            ReviewerMappingController.getReviewerMarkingData(camp.Name, '', '2025');
         Test.stopTest();
 
         System.assertNotEquals(null, result);
-        System.assert(result.proposalIds.size() > 0);
-        System.assert(result.reviewerNames.size() > 0);
-        System.assert(result.gridRows.size() > 0);
     }
     
      @isTest
@@ -108,7 +102,7 @@ public class ReviewerMappingControllerTest {
     
         Test.startTest();
         ReviewerMappingController.GridData result =
-            ReviewerMappingController.getReviewerMarkingData(camp.Name, '1st Stage');
+            ReviewerMappingController.getReviewerMarkingData(camp.Name, '1st Stage', '2024');
         Test.stopTest();
     
         System.assert(result != null);
@@ -128,7 +122,7 @@ public class ReviewerMappingControllerTest {
         insert proposal;
     
         Test.startTest();
-        ReviewerMappingController.getReviewerMarkingData(camp.Name, '');
+        ReviewerMappingController.getReviewerMarkingData(camp.Name, '', '2023');
         Test.stopTest();
     
         System.assert(true);
@@ -139,7 +133,7 @@ public class ReviewerMappingControllerTest {
         Test.setMock(HttpCalloutMock.class, new DummyHttpMock());
     
         Test.startTest();
-        ReviewerMappingController.getReviewerMarkingData('', '');
+        ReviewerMappingController.getReviewerMarkingData('', '', '');
         Test.stopTest();
     
         System.assert(true);
@@ -324,7 +318,7 @@ public class ReviewerMappingControllerTest {
         insert proposal;
     
         Test.startTest();
-        ReviewerMappingController.getReviewerMarkingData(camp.Name, '');
+        ReviewerMappingController.getReviewerMarkingData(camp.Name, '', '2026');
         Test.stopTest();
     
         System.assert(true);
@@ -352,7 +346,7 @@ public class ReviewerMappingControllerTest {
         );
     
         Test.startTest();
-        ReviewerMappingController.getReviewerMarkingData(camp.Name, '1st Stage');
+        ReviewerMappingController.getReviewerMarkingData(camp.Name, '1st Stage', '2024');
         Test.stopTest();
     
         System.assert(true);

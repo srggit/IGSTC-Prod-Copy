@@ -425,6 +425,7 @@
                     </div>
                     <hr />
 
+                    <!--
                     <div class="col-md-12 mt-4">
 
                         <div class="row">
@@ -492,7 +493,7 @@
                                     ng-model="objContact.Contact__r.Email" 
                                     ng-focus="removeClass('signEmail')"
                                     id="signEmail" />
-                                    <!-- ng-blur="validateSignatoryEmailExists(objContact.Contact__r.Email)" -->
+                                    <!-- ng-blur="validateSignatoryEmailExists(objContact.Contact__r.Email)" --
                             </div>
                         </div>
 
@@ -525,9 +526,83 @@
                                     ng-disabled="proposalStage"
                                     ng-focus="removeClass('signEmailistName')" />
                             </div>
-                        </div> -->
+                        </div> --
 
                     </div>
+                    -->
+
+                    <!-- NEW SIGNATORY REQUIREMENT START : SIGNATORY DETAILS NEEDS TO BE SAVED ON APA FIELDS -->
+                    <div class="col-md-12 mt-4">
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="font-if">
+                                    Salutation <span class="text-danger me-2">*</span>
+                                </label>
+
+                                <select class="form-control" ng-disabled="proposalStage"
+                                    ng-model="signatoryObject.Signatory_Salutation__c"
+                                    ng-options="item for item in signatorySalutationList"
+                                    ng-focus="removeClass('signSalutation')" id="signSalutation">
+
+                                    <option value="">-- Select Salutation --</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="font-if" for="txtName">Signatory First Name
+                                    <span class="text-danger me-2">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                    ng-disabled="proposalStage"
+                                    ng-model="signatoryObject.Signatory_First_Name__c"
+                                    ng-focus="removeClass('signFirstName')" id="signFirstName" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="font-if" for="txtName">Signatory Last Name
+                                    <span class="text-danger me-2">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                    ng-disabled="proposalStage"
+                                    ng-model="signatoryObject.Signatory_Last_Name__c"
+                                    ng-focus="removeClass('signLastName')" id="signLastName" />
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-4 mt-3">
+                                <label class="font-if">Signatory Institution
+                                    <span class="text-danger me-2">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                    ng-disabled="proposalStage || objContact.Contact__r.Id"
+                                    ng-model="signatoryObject.Signatory_Institution__c"  
+                                    ng-focus="removeClass('signInstitution')" id="signInstitution" />
+                            </div>
+
+                            <div class="col-md-4 mt-3">
+                                <label class="font-if">Signatory Designation
+                                    <span class="text-danger me-2">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                    ng-disabled="proposalStage"
+                                    ng-model="signatoryObject.Signatory_Designation__c"  
+                                    ng-focus="removeClass('signDesignation')" id="signDesignation" />
+                            </div>
+
+                            <div class="col-md-4 mt-3">
+                                <label class="font-if">Signatory Email
+                                    <span class="text-danger me-2">*</span>
+                                </label>
+                                <input type="text" class="form-control"
+                                    ng-disabled="proposalStage || objContact.Contact__r.Id"
+                                    ng-model="signatoryObject.Signatory_Email__c"  
+                                    ng-focus="removeClass('signEmail')"
+                                    id="signEmail" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- NEW SIGNATORY REQUIREMENT END -->
                 </div>
 
                 <div class="row mt-5 mx-5">
