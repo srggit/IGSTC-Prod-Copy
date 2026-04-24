@@ -43,7 +43,7 @@ angular.module('cp_app').controller('achievements_ctrl', function($scope,$rootSc
 
     $scope.saveDetails = function(){
         debugger;
-        $scope.achievementDetails.Contact__c = $rootScope.contactId;
+        //$scope.achievementDetails.Contact__c = $rootScope.contactId;
         // $scope.achievementDetailss = {"Awards_Honours__c":$scope.achievementDetails.Awards_Honours__c,"List_of_Publications__c":$scope.achievementDetails.List_of_Publications__c,
         // "List_of_Patents_filed__c":$scope.achievementDetails.List_of_Patents_filed__c,"Any_other_achievements__c":$scope.achievementDetails.Any_other_achievements__c,"Contact__c":$rootScope.contactId};
 

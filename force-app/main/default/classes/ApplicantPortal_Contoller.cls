@@ -1823,6 +1823,214 @@ public static List<YealyCall__c> getActiveCampaignIf(String yearlyCallId) {
     }
     
     @RemoteAction
+    public static String saveCVDetails(String apaId, Map<String, Object> apaRecordData, String educationDetailsJson, String employmentDetailsJson) {
+        try {
+            System.debug('------------------- saveCVDetails() --------------------');
+            System.debug('apaId: ' + apaId);
+            System.debug('apaRecordData: ' + apaRecordData);
+            System.debug('educationDetailsJson: ' + educationDetailsJson);
+            System.debug('employmentDetailsJson: ' + employmentDetailsJson);
+            if(apaRecordData != null){
+                Applicant_Proposal_Association__c apaToUpdate = new Applicant_Proposal_Association__c(Id = apaId);
+                apaToUpdate.Publications_Patents__c = sanitizeString(apaRecordData.get('Publications_Patents__c'));
+                apaToUpdate.List_Of_Patents_Filed_Granted__c = sanitizeString(apaRecordData.get('List_Of_Patents_Filed_Granted__c'));
+                apaToUpdate.Book_Chapters_Monographs__c = sanitizeString(apaRecordData.get('Book_Chapters_Monographs__c'));
+                apaToUpdate.Any_Other_Notable_Achievements__c = sanitizeString(apaRecordData.get('Any_Other_Notable_Achievements__c'));
+                update apaToUpdate;
+            }else{
+                return 'ERROR: APA Record Data is required.';
+            }
+
+            if (String.isBlank(apaId)) {
+                return 'ERROR: APA Id is required.';
+            }
+
+            List<Object> educationDetails = new List<Object>();
+            if (!String.isBlank(educationDetailsJson)) {
+                Object parsedEducation = JSON.deserializeUntyped(educationDetailsJson);
+                if (parsedEducation instanceof List<Object>) {
+                    educationDetails = (List<Object>) parsedEducation;
+                }
+            }
+
+            List<Object> employmentDetails = new List<Object>();
+            if (!String.isBlank(employmentDetailsJson)) {
+                Object parsedEmployment = JSON.deserializeUntyped(employmentDetailsJson);
+                if (parsedEmployment instanceof List<Object>) {
+                    employmentDetails = (List<Object>) parsedEmployment;
+                }
+            }
+
+            // List<Education_Details__c> existingEdu = [
+            //     SELECT Id
+            //     FROM Education_Details__c
+            //     WHERE Applicant_Proposal_Association__c = :apaId
+            // ];
+            // if (!existingEdu.isEmpty()) {
+            //     delete existingEdu;
+            // }
+
+            // List<Employment_Details__c> existingEmp = [
+            //     SELECT Id
+            //     FROM Employment_Details__c
+            //     WHERE Applicant_Proposal_Association__c = :apaId
+            // ];
+            // if (!existingEmp.isEmpty()) {
+            //     delete existingEmp;
+            // }
+
+            List<Education_Details__c> newEducationList = new List<Education_Details__c>();
+            if (!educationDetails.isEmpty()) {
+                System.debug('educationDetails size: ' + educationDetails.size());
+                System.debug('educationDetails: ' + educationDetails);
+                for (Object eduObj : educationDetails) {
+                    Map<String, Object> eduMap = (Map<String, Object>) eduObj;
+                    Education_Details__c newEdu = new Education_Details__c();
+                    String eduId = sanitizeString(eduMap.get('Id'));
+                    System.debug('eduId: ' + eduId);
+
+                    if (!String.isBlank(eduId)) {
+                        newEdu.Id = eduId;
+                    }
+                    newEdu.Degree__c = String.valueOf(eduMap.get('Degree__c'));
+                    newEdu.Institution_Name__c = String.valueOf(eduMap.get('Institution_Name__c'));
+                    newEdu.Area_of_specialization__c = String.valueOf(eduMap.get('Area_of_specialization__c'));
+                    newEdu.Start_Year__c = sanitizeYear(eduMap.get('Start_Year__c'));
+                    newEdu.End_Year__c = sanitizeYear(eduMap.get('End_Year__c'));
+                    // newEdu.Percentage__c = sanitizeDecimal(eduMap.get('Percentage__c'));
+                    // newEdu.Percentage_cgpa__c = sanitizeString(eduMap.get('Percentage_cgpa__c'));
+                    newEdu.Applicant_Proposal_Association__c = apaId;
+                    newEducationList.add(newEdu);
+                }
+            }
+            System.debug('newEducationList size: ' + newEducationList.size());
+            System.debug('newEducationList: ' + newEducationList);
+
+            List<Employment_Details__c> newEmploymentList = new List<Employment_Details__c>();
+            if (!employmentDetails.isEmpty()) {
+                System.debug('employmentDetails size: ' + employmentDetails.size());
+                System.debug('employmentDetails: ' + employmentDetails);
+                for (Object empObj : employmentDetails) {
+                    Map<String, Object> empMap = (Map<String, Object>) empObj;
+                    Employment_Details__c newEmp = new Employment_Details__c();
+                    String empId = sanitizeString(empMap.get('Id'));
+                    if (!String.isBlank(empId)) {
+                        newEmp.Id = empId;
+                    }
+                    System.debug('empId: ' + empId);
+                    
+                    newEmp.Organization_Name__c = sanitizeString(empMap.get('Organization_Name__c'));
+                    newEmp.Position__c = sanitizeString(empMap.get('Position__c'));
+                    newEmp.Start_Year__c = String.valueOf(empMap.get('Start_Year__c'));
+                    newEmp.End_Year__c = String.valueOf(empMap.get('End_Year__c'));
+                    // newEmp.current_employement__c = parseBooleanValue(empMap.get('current_employement__c'));
+                    // newEmp.Nature_of_Job__c = sanitizeString(empMap.get('Nature_of_Job__c'));
+                    newEmp.Applicant_Proposal_Association__c = apaId;
+                    newEmploymentList.add(newEmp);
+                }
+            }
+            System.debug('newEmploymentList size: ' + newEmploymentList.size());
+            System.debug('newEmploymentList: ' + newEmploymentList);
+
+            if (!newEducationList.isEmpty()) {
+                Database.UpsertResult[] eduResults = Database.upsert(newEducationList, false);
+                String eduError = extractDmlErrors(eduResults, 'Education');
+                if (eduError != null) {
+                    System.debug('eduError: ' + eduError);
+                    return eduError;
+                }
+            }
+
+            if (!newEmploymentList.isEmpty()) {
+                Database.UpsertResult[] empResults = Database.upsert(newEmploymentList, false);
+                String empError = extractDmlErrors(empResults, 'Employment');
+                if (empError != null) {
+                    return empError;
+                }
+            }
+
+            return 'SUCCESS';
+        } catch (Exception e) {
+            System.debug('Error: ' + e.getMessage());
+            System.debug('Error Line Number: ' + e.getLineNumber());
+            System.debug('Stack Trace: ' + e.getStackTraceString());
+            return 'ERROR: ' + e.getMessage();
+        }
+    }
+
+    private static String sanitizeString(Object value) {
+        if (value == null) {
+            return null;
+        }
+        String strValue = String.valueOf(value).trim();
+        return String.isBlank(strValue) ? null : strValue;
+    }
+
+    private static String sanitizeYear(Object value) {
+        String yearValue = sanitizeString(value);
+        if (String.isBlank(yearValue)) {
+            return null;
+        }
+        return yearValue.isNumeric() ? yearValue : null;
+    }
+
+    private static Decimal sanitizeDecimal(Object value) {
+        String decimalValue = sanitizeString(value);
+        if (String.isBlank(decimalValue)) {
+            return null;
+        }
+        if (decimalValue.equalsIgnoreCase('Percentage') || decimalValue.equalsIgnoreCase('CGPA')) {
+            return null;
+        }
+        try {
+            return Decimal.valueOf(decimalValue);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private static Boolean parseBooleanValue(Object value) {
+        if (value == null) {
+            return false;
+        }
+        if (value instanceof Boolean) {
+            return (Boolean) value;
+        }
+        String boolValue = String.valueOf(value);
+        return boolValue != null && boolValue.toLowerCase() == 'true';
+    }
+
+    private static String extractDmlErrors(Database.UpsertResult[] results, String sectionName) {
+        List<String> errorMessages = new List<String>();
+        for (Integer i = 0; i < results.size(); i++) {
+            if (!results[i].isSuccess()) {
+                for (Database.Error err : results[i].getErrors()) {
+                    errorMessages.add(sectionName + ' row ' + String.valueOf(i + 1) + ': ' + err.getMessage());
+                }
+            }
+        }
+        if (!errorMessages.isEmpty()) {
+            return 'ERROR: ' + String.join(errorMessages, ' | ');
+        }
+        return null;
+    }
+
+    private static String extractDmlErrors(Database.SaveResult[] results, String sectionName) {
+        List<String> errorMessages = new List<String>();
+        for (Integer i = 0; i < results.size(); i++) {
+            if (!results[i].isSuccess()) {
+                for (Database.Error err : results[i].getErrors()) {
+                    errorMessages.add(sectionName + ' row ' + String.valueOf(i + 1) + ': ' + err.getMessage());
+                }
+            }
+        }
+        if (!errorMessages.isEmpty()) {
+            return 'ERROR: ' + String.join(errorMessages, ' | ');
+        }
+        return null;
+    }
+
+    @RemoteAction
     public static String insertCoordinatorsInformation(String proposalId,List<Account> accList,List<Contact> conList){
         return Proposal_Controller.insertCoordinatorsInformation(proposalId,accList,conList);
     }
@@ -3449,11 +3657,15 @@ userDocc.Id = udId;
         return Proposal_Controller.createHostContact(conID,projectid);
     }
     
-   
     @RemoteAction
-    public static Contact getCVDetailsForWiserApplicant(string candidateId,String apaId){
+    public static Proposal_Controller.CVWrapper getCVDetailsForWiserApplicant(string candidateId,String apaId){
         return Proposal_Controller.getCVDetailsForWiserApplicant(candidateId, apaId);
     }
+
+    // @RemoteAction
+    // public static Contact getCVDetailsForWiserApplicant(string candidateId,String apaId){
+    //     return Proposal_Controller.getCVDetailsForWiserApplicant(candidateId, apaId);
+    // }
  /*   
     @RemoteAction
     public static WrapperProposalDet getPECFARProposalDetails(string proposalId){
@@ -5081,9 +5293,22 @@ public static void updateProposalStage(Id proposalId) {
             ];
             return proposal;
         }
-        
         return null;
-     
+    }
+
+    @RemoteAction
+    public static Applicant_Proposal_Association__c getUserPopupChoiceFromAPA(String apaId, String proposalId) {
+
+        if(String.isNotBlank(apaId) && String.isNotBlank(proposalId)){
+            Applicant_Proposal_Association__c apa = [
+                SELECT  Id, User_Popup_Choice__c 
+                FROM Applicant_Proposal_Association__c 
+                WHERE Id = :apaId
+                AND Proposals__c = :proposalId
+            ];
+            return apa;
+        }
+        return null;
     }
 
     @RemoteAction
@@ -5100,6 +5325,24 @@ public static void updateProposalStage(Id proposalId) {
             return false;
         } catch(Exception e) {
             System.debug('Error saving user popup choice: ' + e.getMessage());
+            return false;
+        }
+    }
+
+    @RemoteAction
+    public static Boolean saveUserPopupChoiceOnAPA(String apaId, String popupChoice) {
+        try {
+            if(String.isNotBlank(apaId) && String.isNotBlank(popupChoice)){
+                Applicant_Proposal_Association__c apa = new Applicant_Proposal_Association__c(
+                    Id = apaId,
+                    User_Popup_Choice__c = popupChoice
+                );
+                update apa;
+                return true;
+            }
+            return false;
+        } catch(Exception e) {
+            System.debug('Error saving user popup choice on APA: ' + e.getMessage());
             return false;
         }
     }

@@ -1,0 +1,101 @@
+<template>
+    <lightning-card title="Proposal SharePoint Explorer" icon-name="standard:folder" class="proposal-card">
+        <template if:true={loading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+
+        <div class="explorer-layout slds-p-around_medium">
+            <aside class="left-panel">
+                <div class="panel-header">
+                    <p class="panel-title">Hierarchy View</p>
+                    <p class="panel-meta">{hierarchyFolderCountLabel}</p>
+                </div>
+
+                <div class="tree-shell">
+                    <lightning-tree-grid
+                        key-field="key"
+                        columns={treeColumns}
+                        data={hierarchy}
+                        onrowselection={handleRowSelection}
+                        ontoggle={handleTreeToggle}
+                        hide-checkbox-column>
+                    </lightning-tree-grid>
+                </div>
+
+                <div class="selection-meta">
+                    <p class="meta-label">Selected</p>
+                    <p class="meta-value">{selectedNodeLabel}</p>
+                    <p class="meta-path">{selectedPath}</p>
+                </div>
+
+                <lightning-button
+                    class="delete-folder-btn"
+                    label="Delete Selected Folder"
+                    variant="destructive"
+                    onclick={handleDeleteFolder}
+                    disabled={disableDeleteFolder}>
+                </lightning-button>
+            </aside>
+
+            <section class="right-panel">
+                <div class="toolbar">
+                    <lightning-input
+                        class="folder-input"
+                        type="text"
+                        variant="label-hidden"
+                        placeholder="New folder name..."
+                        value={folderName}
+                        onchange={handleFolderNameChange}>
+                    </lightning-input>
+                    <lightning-button
+                        label="Create Folder"
+                        variant="brand"
+                        onclick={handleCreateFolder}
+                        disabled={disableCreateFolder}>
+                    </lightning-button>
+                    <lightning-button-icon
+                        icon-name="utility:refresh"
+                        alternative-text="Refresh Hierarchy"
+                        title="Refresh Hierarchy"
+                        onclick={loadHierarchy}
+                        disabled={loading}>
+                    </lightning-button-icon>
+                </div>
+
+                <div class="files-table-wrap">
+                    <p class="table-title">Files ({fileCountLabel})</p>
+                    <lightning-datatable
+                        key-field="UniqueId"
+                        data={files}
+                        columns={fileColumns}
+                        onrowaction={handleFileRowAction}
+                        hide-checkbox-column>
+                    </lightning-datatable>
+                </div>
+
+                <div class="upload-dropzone">
+                    <lightning-input
+                        type="file"
+                        label="Upload Files"
+                        disabled={loading}
+                        onchange={handleFileSelected}>
+                    </lightning-input>
+                    <template if:true={selectedUploadFileName}>
+                        <p class="selected-file">Selected: {selectedUploadFileName}</p>
+                    </template>
+                    <lightning-button
+                        class="upload-btn"
+                        label="Upload"
+                        variant="brand"
+                        onclick={handleUploadFile}
+                        disabled={disableUploadFile}>
+                    </lightning-button>
+                    <p class="upload-hint">
+                        You can upload files to <span>{selectedNodeLabel}</span>
+                    </p>
+                </div>
+            </section>
+        </div>
+
+    </lightning-card>
+</template>

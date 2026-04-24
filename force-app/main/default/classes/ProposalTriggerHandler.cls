@@ -9,9 +9,13 @@ public class ProposalTriggerHandler {
     
     public void afterInsert(Map<Id,Application_Proposal__c> proposalMap){
         List<String> proposalIds = new List<String>();
+        Set<Id> proposalIdSetForSharePoint = new Set<Id>();
         for(String Str : proposalMap.keySet()){
             proposalIds.add(Str);
+            proposalIdSetForSharePoint.add((Id) Str);
         }
+
+        SharePointFolderSyncQueueable.enqueue('PROPOSAL', proposalIdSetForSharePoint);
         //SharePointCallout.createFolder(proposalMap.keySet());
         //
         

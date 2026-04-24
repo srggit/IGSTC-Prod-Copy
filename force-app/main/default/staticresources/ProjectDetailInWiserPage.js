@@ -132,7 +132,6 @@ angular.module('cp_app').controller('ProjectDetailInWiserCtrl', function ($scope
     $scope.getProjectdetils();
 
     $scope.readCharacter = function (event, index) {
-        debugger
         try {
             var rtfString = event.toString().replace(/<[^>]*>|\s/g, '').replace(/\s+/g, '').replace(/&ndash;/g, '-').replace(/&euro;/g, '1').replace(/&amp;/g, '1').replace(/&#39;/g, '1').replace(/&quot;/g, '1').replace(/&nbsp;/g, '').replace(/&mdash;/g, '-').replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&bull;/g, '');
             charLength = rtfString.length;
@@ -855,7 +854,9 @@ angular.module('cp_app').controller('ProjectDetailInWiserCtrl', function ($scope
 
     $scope.redirectToApplicantPortal = function () {
         // $scope.redirectPageURL('HostProjectDetails');
-        window.location.href = 'https://indo-germansciencetechnologycentre--newdevutil.sandbox.my.salesforce-sites.com/ApplicantDashboard/ApplicantPortal?id=%27 + $rootScope.candidateId'
+        window.location.href = 'https://indo-germansciencetechnologycentre--prodcopy.sandbox.my.salesforce-sites.com/ApplicantDashboard/ApplicantPortal?id=' + $rootScope.candidateId;
+        // window.location.href = 'https://indo-germansciencetechnologycentre.my.salesforce-sites.com/ApplicantDashboard/ApplicantPortal?id=' + $rootScope.candidateId;
+
     };
 
     $scope.valid = function (value) {

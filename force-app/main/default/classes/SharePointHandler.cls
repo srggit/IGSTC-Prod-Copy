@@ -8,7 +8,7 @@ global without sharing class SharePointHandler {
         HttpRequest req = new HttpRequest();
         
         
-        req.setEndpoint('callout:Sharepoint_IGSTC/sites/'+siteName+'/_api/web/lists/GetByTitle('+'\'Documents\''+')/items');
+        req.setEndpoint('callout:SharePoint_Graph_API/sites/'+siteName+'/_api/web/lists/GetByTitle('+'\'Documents\''+')/items');
         req.setMethod('GET');
         
         HTTPResponse res = http.send(req);
@@ -24,7 +24,7 @@ global without sharing class SharePointHandler {
         //String url = 'sites/'+siteName+'/_api/web/GetFolderByServerRelativeUrl('+'\'/sites/'+siteName+'/Shared%20Documents/'+folderName+'\''+')/'+type;
         String url = 'sites/'+'SalesforceSharepoint'+'/_api/web/GetFolderByServerRelativeUrl('+'\'/sites/'+'SalesforceSharepoint'+'/Shared%20Documents/'+folderName+'\''+')/'+type;
         System.debug('URL------'+url);
-        req.setEndpoint('callout:Sharepoint_IGSTC/'+url);
+        req.setEndpoint('callout:SharePoint_Graph_API/'+url);
         req.setMethod('GET');
         req.setHeader('Accept', 'application/json;odata=verbose');
         req.setHeader('odata-version','');
@@ -40,7 +40,7 @@ global without sharing class SharePointHandler {
         HTTP http = new HTTP();
         HttpRequest req = new HttpRequest();
         System.debug('URL------'+url);
-        req.setEndpoint('callout:Sharepoint_IGSTC/'+url);
+        req.setEndpoint('callout:SharePoint_Graph_API/'+url);
         req.setMethod('GET');
         req.setHeader('Accept', 'application/json;odata=verbose');
         req.setHeader('odata-version','');
@@ -72,7 +72,7 @@ global without sharing class SharePointHandler {
         req.setMethod('POST');
         //commented endpoint by rutuja
         //req.setEndpoint('callout:Amit_SPSF/sites/'+url);
-        req.setEndpoint('callout:Sharepoint_IGSTC/sites/SalesforceSharepoint/_api/web/folders');
+        req.setEndpoint('callout:SharePoint_Graph_API/sites/SalesforceSharepoint/_api/web/folders');
         //https://vq8ky.sharepoint.com/sites/IGSTC/_api/web/folders
         
         HTTPResponse res = http.send(req);
@@ -102,7 +102,7 @@ global without sharing class SharePointHandler {
         req.setHeader('X-RequestDigest','{form_digest_value}');
         req.setBody(body);
         req.setMethod('POST');
-        req.setEndpoint('callout:Sharepoint_IGSTC/sites/'+url);
+        req.setEndpoint('callout:SharePoint_Graph_API/sites/'+url);
         
         HTTPResponse res = http.send(req);
         System.debug(res.getBody());
@@ -127,7 +127,7 @@ global without sharing class SharePointHandler {
         req.setHeader('X-RequestDigest','{form_digest_value}');
         
         req.setMethod('POST');
-        req.setEndpoint('callout:Sharepoint_IGSTC/'+url);
+        req.setEndpoint('callout:SharePoint_Graph_API/'+url);
         
         HTTPResponse res = http.send(req);
         System.debug(res.getBody());
@@ -150,7 +150,7 @@ global without sharing class SharePointHandler {
         req.setBody(EncodingUtil.base64Decode(body).toString());
         
         req.setMethod('POST');
-        req.setEndpoint('callout:Sharepoint_IGSTC/'+url);
+        req.setEndpoint('callout:SharePoint_Graph_API/'+url);
         
         HTTPResponse res = http.send(req);
         System.debug(res.getBody());
@@ -175,7 +175,7 @@ global without sharing class SharePointHandler {
         req.setBodyAsBlob(content);
         
         req.setMethod('POST');
-        req.setEndpoint('callout:Sharepoint_IGSTC/'+url);
+        req.setEndpoint('callout:SharePoint_Graph_API/'+url);
         
         HTTPResponse res = http.send(req);
         System.debug(res.getBody());
@@ -205,7 +205,7 @@ global without sharing class SharePointHandler {
         req.setHeader('X-RequestDigest','{form_digest_value}');
         
         req.setMethod('POST');
-        req.setEndpoint('callout:Sharepoint_IGSTC/'+url);
+        req.setEndpoint('callout:SharePoint_Graph_API/'+url);
         
         HTTPResponse res = http.send(req);
         System.debug(res.getBody());
@@ -225,7 +225,7 @@ global without sharing class SharePointHandler {
         HTTP http = new HTTP();
         HttpRequest req = new HttpRequest();
         System.debug('URL------'+url);
-        req.setEndpoint('callout:Sharepoint_IGSTC/'+url);
+        req.setEndpoint('callout:SharePoint_Graph_API/'+url);
         req.setMethod('GET');
         req.setHeader('Accept', 'application/json;odata=verbose');
         req.setHeader('odata-version','');

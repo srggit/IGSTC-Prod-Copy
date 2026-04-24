@@ -2,7 +2,7 @@ public class IndustrialFellowshipModel {
     public List<Education_Details__c> getEduQualification(String loginHashCode,String apaId){
         // List<Education_Details__c> lEduDet=
         return [SELECT Name,Degree__c,Start_Year__c,End_Year__c,CGPA__c,End_Date__c,Start_Date__c,Nature_of_PhD_Work__c,Nature_of_Thesis_Work__c,Institution_Name__c,Area_of_specialization__c,Percentage__c,Percentage_cgpa__c,
-                Thesis_Supervisor__c,Thesis_Type__c,Recordtype.Name,RecordTypeId,Title_Thesis__c FROM Education_Details__c WHERE  Applicant_Proposal_Association__c=:apaId]; 
+                Thesis_Supervisor__c,Thesis_Type__c,Recordtype.Name,RecordTypeId,Title_Thesis__c FROM Education_Details__c WHERE  Applicant_Proposal_Association__c=:apaId or Contact__r.Login_Hash_Code__c=:loginHashCode]; 
         // return lEduDet;
     }
     public Achievement__c getAchievementsDet(String loginHashCode){

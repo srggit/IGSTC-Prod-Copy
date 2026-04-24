@@ -51,6 +51,11 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     debugger;
     $scope.isLoading = false;
 
+    $scope.showWhatToExpectPopup_2Plus2 = false;
+    $scope.showWhatToExpectPopup_WISER = false;
+    $scope.showWhatToExpectPopup_PECFAR = false;
+    $scope.showWhatToExpectPopup_IF = false;
+
     // Helper function to check if current route is the dashboard route
     // Only dashboard routes should load getContactName() and getApplicantData()
     var isDashboardRoute = function () {
@@ -140,7 +145,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
     $rootScope.proposalId = '';
     $rootScope.yearlyCallId = '';
-    //$rootScope.apaId='';
+    $rootScope.apaId = '';
 
     $rootScope.currencyPickList = currencyPickList;
     //  $rootScope.accList = accList;
@@ -231,6 +236,8 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
         $scope.showDocumentPopup = false;
     }
 
+    // OLD CODE : save popup choice to proposal
+    /*
     $scope.dontShowAgain = function () {
         debugger;
 
@@ -266,6 +273,52 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
         });
         $scope.redirectToForm($scope.selectedProgram);
     };
+    */
+
+    // NEW CODE : save popup choice to APA
+    $scope.dontShowAgain = function () {
+        debugger;
+        $scope.setLocalStorageValues($scope.selectedProgram);
+
+        $rootScope.userSelectedDSA = true;
+        localStorage.setItem('userPopupChoice', 'DAA');
+        var apaIdd = $scope.selectedProgram.apaId;
+        debugger;
+        console.log('apaIdd : ========> ', apaIdd);
+        // Save the choice to the APA
+        ApplicantPortal_Contoller.saveUserPopupChoiceOnAPA(apaIdd, 'DAA', function (result, event) {
+            if (event.status && result) {
+                console.log('Popup choice DAA saved successfully');
+            } else {
+                console.error('Failed to save popup choice DAA');
+            }
+        });
+
+        $scope.redirectToForm($scope.selectedProgram);
+    };
+
+    $scope.remindMeLater = function () {
+        debugger;
+        $scope.setLocalStorageValues($scope.selectedProgram);
+
+        $rootScope.userSelectedRML = true;
+        localStorage.setItem('userPopupChoice', 'RML');
+        var apaIdd = $scope.selectedProgram.apaId;
+        debugger;
+        console.log('apaIdd : ========> ', apaIdd);
+        //$scope.showDocumentPopup = false;
+
+        // Save the choice to the proposal
+        ApplicantPortal_Contoller.saveUserPopupChoiceOnAPA($rootScope.apaId, 'RML', function (result, event) {
+            if (event.status && result) {
+                console.log('Popup choice RML saved successfully');
+            } else {
+                console.error('Failed to save popup choice RML');
+            }
+        });
+        $scope.redirectToForm($scope.selectedProgram);
+    };
+
     // ----------- Apply Button Popup Code - Finish ;------------ //
 
     // Toggle user dropdown menu
@@ -324,6 +377,13 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
     // Navigate to reset password page
     $scope.navigateToResetPassword = function () {
+        $scope.showDocumentPopup = false;
+        $scope.showWhatToExpectPopup_2Plus2 = false;
+        $scope.showWhatToExpectPopup_WISER = false;
+        $scope.showWhatToExpectPopup_PECFAR = false;
+        $scope.showWhatToExpectPopup_IF = false;
+        $scope.showUserDropdown = false;
+
         var baseURL = window.location.origin;
         var resetPasswordUrl = baseURL + '/ApplicantDashboard/PortalResetPassword';
         window.location.href = resetPasswordUrl;
@@ -1117,6 +1177,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
     $scope.redirectToForm2 = function (val) {
         debugger;
+
         console.log('val in redirectToForm2() ===> ', val);
         console.log('val.campaignName ===> ', val.campaignName);
         console.log('val.name : ===> ', val.name);
@@ -1136,6 +1197,8 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
         // Reset popupValue for fresh call
         $scope.popupValue = '';
 
+        /*
+        // OLD CODE : get popup value from proposal
         ApplicantPortal_Contoller.getUserPopupChoiceFromProposal($rootScope.proposalId, function (result, event) {
             if (event.status && result != null) {
                 console.log('&&&&&&&& popupValue : ', result.User_Popup_Choice__c);
@@ -1162,6 +1225,42 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
                 });
             }
         });
+        */
+
+        // NEW CODE : get popup value from APA
+        ApplicantPortal_Contoller.getUserPopupChoiceFromAPA(val.apaId, $rootScope.proposalId, function (result, event) {
+            if (event.status && result != null) {
+                console.log('&&&&&&&& popupValue from APA : ', result.User_Popup_Choice__c);
+                $scope.popupValue = result.User_Popup_Choice__c;
+                console.log('**** $scope.popupValue **** : ', $scope.popupValue);
+
+                // Use $apply to ensure Angular updates the scope
+                $scope.$apply(function () {
+                    // Process after getting popup value
+                    if (val.name === '2+2 Call') {
+                        if ($scope.popupValue === 'RML' || $scope.popupValue === '' || $scope.popupValue === null || $scope.popupValue === undefined) {
+                            $scope.openDocumentPopup(val);
+                        } else {
+                            $scope.redirectToForm(val);
+                        }
+                    } else {
+                        $scope.redirectToForm(val);
+                    }
+                });
+            } else {
+                console.error('Failed to get popup choice, redirecting to form');
+                $scope.$apply(function () {
+                    $scope.redirectToForm(val);
+                });
+            }
+        });
+    }
+
+    $scope.setLocalStorageValues = function (val) {
+        debugger;
+        localStorage.setItem('proposalId', val.proposalId);
+        localStorage.setItem('yearlyCallId', val.yearlyCallId);
+        localStorage.setItem('apaId', val.apaId);
     }
 
     $scope.redirectToForm = function (val) {
@@ -1592,6 +1691,13 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
 
     // Navigate to home/dashboard - removes hash but keeps query params
     $scope.navigateToHome = function () {
+        $scope.showDocumentPopup = false;
+        $scope.showWhatToExpectPopup_2Plus2 = false;
+        $scope.showWhatToExpectPopup_WISER = false;
+        $scope.showWhatToExpectPopup_PECFAR = false;
+        $scope.showWhatToExpectPopup_IF = false;
+        $scope.showUserDropdown = false;
+
         // Reset to dashboard view
         $scope.selectedMenu = 'Programs';
         $scope.selectedFAQ = null;
@@ -1667,6 +1773,7 @@ app.controller('cp_dashboard_ctrl', function ($scope, $rootScope, $timeout, $win
     };
     */
         $scope.isLoading = true;
+        $scope.showDocumentPopup = false;
         ApplicantPortal_Contoller.LogoutApplicant($rootScope.candidateId, function (result, event) {
             debugger;
             if (event.status && result === 'Success') {
@@ -1902,6 +2009,7 @@ function loadAllProfileData() {
         console.warn('Profile section DOM elements not found yet, retrying...');
         setTimeout(function () {
             loadAllProfileData();
+
         }, 200);
         return;
     }
@@ -1912,6 +2020,7 @@ function loadAllProfileData() {
         loadContactData();
         loadEducationData();
         loadEmploymentData();
+        initCKEditors();
         loadAchievementData();
         loadProfileImage();
     }, 100);
@@ -2124,72 +2233,153 @@ function loadEmploymentData() {
     }
 }
 
+// function loadAchievementData() {
+//     console.log('loadAchievementData called');
+//     try {
+//         var jsonString = contactProfileData && contactProfileData.achievementListJSON
+//             ? contactProfileData.achievementListJSON
+//             : '[]';
+
+//         console.log('Achievement JSON string:', jsonString);
+
+//         // Handle empty string or null
+//         if (!jsonString || jsonString === '' || jsonString === 'null' || jsonString === 'undefined') {
+//             jsonString = '[]';
+//         }
+
+//         var achievementData = JSON.parse(jsonString);
+//         console.log('Parsed achievement data:', achievementData);
+
+//         if (achievementData && achievementData.length > 0) {
+//             var ach = achievementData[0];
+//             console.log('Loading achievement:', ach);
+
+//             var awardsEl = document.getElementById('achievementAwards');
+//             if (awardsEl) {
+//                 awardsEl.innerHTML = ach.Awards_Honours__c || '';
+//                 console.log('Loaded Awards_Honours__c:', ach.Awards_Honours__c);
+//             } else {
+//                 console.warn('achievementAwards element not found');
+//             }
+
+//             var patentsEl = document.getElementById('achievementPatents');
+//             if (patentsEl) {
+//                 patentsEl.innerHTML = ach.List_of_Patents_filed__c || '';
+//                 console.log('Loaded List_of_Patents_filed__c:', ach.List_of_Patents_filed__c);
+//             } else {
+//                 console.warn('achievementPatents element not found');
+//             }
+
+//             var bookChaptersEl = document.getElementById('achievementBookChapters');
+//             if (bookChaptersEl) {
+//                 bookChaptersEl.innerHTML = ach.Book_Chapters__c || '';
+//                 console.log('Loaded Book_Chapters__c:', ach.Book_Chapters__c);
+//             } else {
+//                 console.warn('achievementBookChapters element not found');
+//             }
+
+//             var otherEl = document.getElementById('achievementOther');
+//             if (otherEl) {
+//                 otherEl.innerHTML = ach.Any_other_achievements__c || '';
+//                 console.log('Loaded Any_other_achievements__c:', ach.Any_other_achievements__c);
+//             } else {
+//                 console.warn('achievementOther element not found');
+//             }
+
+//             var publicationsEl = document.getElementById('achievementPublications');
+//             if (publicationsEl) {
+//                 publicationsEl.innerHTML = ach.List_of_Publications__c || '';
+//                 console.log('Loaded List_of_Publications__c:', ach.List_of_Publications__c);
+//             } else {
+//                 console.warn('achievementPublications element not found');
+//             }
+//         } else {
+//             console.log('No achievement data found');
+//         }
+//     } catch (e) {
+//         console.error('Error loading achievement data', e);
+//         console.error('JSON string was:', contactProfileData ? contactProfileData.achievementListJSON : 'undefined');
+//     }
+// }
+
+function initCKEditors() {
+    var ids = [
+        'achievementAwards',
+        'achievementPatents',
+        'achievementBookChapters',
+        'achievementOther',
+        'achievementPublications'
+    ];
+
+    ids.forEach(function (id) {
+        if (CKEDITOR.instances[id]) {
+            CKEDITOR.instances[id].destroy(true);
+        }
+        var el = document.getElementById(id);
+
+        if (el && !CKEDITOR.instances[id]) {
+            CKEDITOR.replace(id, {
+                height: 200
+            });
+        }
+    });
+}
 function loadAchievementData() {
     console.log('loadAchievementData called');
+
     try {
-        var jsonString = contactProfileData && contactProfileData.achievementListJSON
-            ? contactProfileData.achievementListJSON
-            : '[]';
+        var jsonString = contactProfileData?.achievementListJSON || '[]';
 
-        console.log('Achievement JSON string:', jsonString);
-
-        // Handle empty string or null
         if (!jsonString || jsonString === '' || jsonString === 'null' || jsonString === 'undefined') {
             jsonString = '[]';
         }
 
         var achievementData = JSON.parse(jsonString);
-        console.log('Parsed achievement data:', achievementData);
+
+        // Ensure editors are initialized FIRST
+        initCKEditors();
 
         if (achievementData && achievementData.length > 0) {
             var ach = achievementData[0];
-            console.log('Loading achievement:', ach);
 
-            var awardsEl = document.getElementById('achievementAwards');
-            if (awardsEl) {
-                awardsEl.innerHTML = ach.Awards_Honours__c || '';
-                console.log('Loaded Awards_Honours__c:', ach.Awards_Honours__c);
-            } else {
-                console.warn('achievementAwards element not found');
-            }
-
-            var patentsEl = document.getElementById('achievementPatents');
-            if (patentsEl) {
-                patentsEl.innerHTML = ach.List_of_Patents_filed__c || '';
-                console.log('Loaded List_of_Patents_filed__c:', ach.List_of_Patents_filed__c);
-            } else {
-                console.warn('achievementPatents element not found');
-            }
-
-            var bookChaptersEl = document.getElementById('achievementBookChapters');
-            if (bookChaptersEl) {
-                bookChaptersEl.innerHTML = ach.Book_Chapters__c || '';
-                console.log('Loaded Book_Chapters__c:', ach.Book_Chapters__c);
-            } else {
-                console.warn('achievementBookChapters element not found');
-            }
-
-            var otherEl = document.getElementById('achievementOther');
-            if (otherEl) {
-                otherEl.innerHTML = ach.Any_other_achievements__c || '';
-                console.log('Loaded Any_other_achievements__c:', ach.Any_other_achievements__c);
-            } else {
-                console.warn('achievementOther element not found');
-            }
-
-            var publicationsEl = document.getElementById('achievementPublications');
-            if (publicationsEl) {
-                publicationsEl.innerHTML = ach.List_of_Publications__c || '';
-                console.log('Loaded List_of_Publications__c:', ach.List_of_Publications__c);
-            } else {
-                console.warn('achievementPublications element not found');
-            }
-        } else {
-            console.log('No achievement data found');
+            waitForEditor('achievementAwards', ach.Awards_Honours__c);
+            waitForEditor('achievementPatents', ach.List_of_Patents_filed__c);
+            waitForEditor('achievementBookChapters', ach.Book_Chapters__c);
+            waitForEditor('achievementOther', ach.Any_other_achievements__c);
+            waitForEditor('achievementPublications', ach.List_of_Publications__c);
         }
+
     } catch (e) {
         console.error('Error loading achievement data', e);
-        console.error('JSON string was:', contactProfileData ? contactProfileData.achievementListJSON : 'undefined');
+    }
+}
+
+function waitForEditor(id, value) {
+    var interval = setInterval(function () {
+        if (CKEDITOR.instances[id]) {
+            CKEDITOR.instances[id].setData(value || '');
+            clearInterval(interval);
+        }
+        retry++;
+        if (retry > 20) {
+            clearInterval(interval);
+            console.warn('CKEditor not initialized for:', id);
+        }
+    }, 200);
+}
+
+function setEditorData(id, value) {
+    if (CKEDITOR.instances[id]) {
+        CKEDITOR.instances[id].setData(value || '');
+    }
+}
+
+function getEditorData(id) {
+    if (CKEDITOR.instances[id]) {
+        return CKEDITOR.instances[id].getData();
+    } else {
+        console.warn('Editor not ready:', id);
+        return document.getElementById(id)?.value || '';
     }
 }
 
@@ -2278,18 +2468,74 @@ function addEducationRow() {
     addEducationRowHTML(null, index);
 }
 
+// function removeEducationRow(index) {
+//     if (!confirm('Are you sure you want to delete this education record?')) {
+//         return;
+//     }
+
+//     var row = document.getElementById('eduRow_' + index);
+//     if (!row) return;
+
+//     var recordId = row.querySelector('.eduId').value;
+
+//     // If record already saved → delete from Salesforce
+//     if (recordId) {
+//         var remoteAction = REMOTE_ACTION_DELETE_EDUCATION;
+//         if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
+//             remoteAction = 'ApplicantPortal_Contoller.deleteEducationRecord';
+//         }
+
+//         Visualforce.remoting.Manager.invokeAction(
+//             remoteAction,
+//             recordId,
+//             function (result, event) {
+//                 if (event.status && result === 'SUCCESS') {
+//                     row.remove();
+//                     showMessage(
+//                         'educationMessages',
+//                         'Education record deleted successfully.',
+//                         'success'
+//                     );
+//                 } else {
+//                     showMessage(
+//                         'educationMessages',
+//                         result || 'Error deleting record',
+//                         'error'
+//                     );
+//                 }
+//             },
+//             { escape: true }
+//         );
+//     } else {
+//         // Unsaved row → just remove UI
+//         row.remove();
+//     }
+// }
 function removeEducationRow(index) {
-    if (!confirm('Are you sure you want to delete this education record?')) {
-        return;
-    }
 
-    var row = document.getElementById('eduRow_' + index);
-    if (!row) return;
+    swal({
+        title: "Are you sure?",
+        text: "Do you want to delete this education record?",
+        type: "warning",   // ✅ NOT "icon"
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel"
+    }, function (isConfirm) {
 
-    var recordId = row.querySelector('.eduId').value;
+        if (!isConfirm) return;
 
-    // If record already saved → delete from Salesforce
-    if (recordId) {
+        var row = document.getElementById('eduRow_' + index);
+        if (!row) return;
+
+        var recordId = row.querySelector('.eduId').value;
+
+        // Unsaved row
+        if (!recordId) {
+            row.remove();
+            swal("Deleted!", "Row removed successfully.", "success");
+            return;
+        }
+
         var remoteAction = REMOTE_ACTION_DELETE_EDUCATION;
         if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
             remoteAction = 'ApplicantPortal_Contoller.deleteEducationRecord';
@@ -2299,27 +2545,21 @@ function removeEducationRow(index) {
             remoteAction,
             recordId,
             function (result, event) {
+
                 if (event.status && result === 'SUCCESS') {
+
                     row.remove();
-                    showMessage(
-                        'educationMessages',
-                        'Education record deleted successfully.',
-                        'success'
-                    );
+                    swal("Deleted!", "Education record deleted.", "success");
+
                 } else {
-                    showMessage(
-                        'educationMessages',
-                        result || 'Error deleting record',
-                        'error'
-                    );
+
+                    swal("Error!", result || "Delete failed", "error");
+
                 }
             },
             { escape: true }
         );
-    } else {
-        // Unsaved row → just remove UI
-        row.remove();
-    }
+    });
 }
 
 function addEmploymentRowHTML(emp, index) {
@@ -2354,51 +2594,107 @@ function addEmploymentRow() {
     addEmploymentRowHTML(null, index);
 }
 
+// function removeEmploymentRow(index) {
+//     if (!confirm('Are you sure you want to delete this employment record?')) {
+//         return;
+//     }
+
+//     var row = document.getElementById('empRow_' + index);
+//     if (!row) return;
+
+//     var recordId = row.querySelector('.empId').value;
+
+//     if (recordId) {
+//         var remoteAction = REMOTE_ACTION_DELETE_EMPLOYMENT;
+//         if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
+//             remoteAction = 'ApplicantPortal_Contoller.deleteEmploymentRecord';
+//         }
+
+//         Visualforce.remoting.Manager.invokeAction(
+//             remoteAction,
+//             recordId,
+//             function (result, event) {
+//                 if (event.status && result === 'SUCCESS') {
+//                     row.remove();
+//                     showMessage(
+//                         'employmentMessages',
+//                         'Employment record deleted successfully.',
+//                         'success'
+//                     );
+//                 } else {
+//                     showMessage(
+//                         'employmentMessages',
+//                         result || 'Error deleting record',
+//                         'error'
+//                     );
+//                 }
+//             },
+//             { escape: true }
+//         );
+//     } else {
+//         row.remove();
+//     }
+// }
+
 function removeEmploymentRow(index) {
-    if (!confirm('Are you sure you want to delete this employment record?')) {
-        return;
-    }
 
-    var row = document.getElementById('empRow_' + index);
-    if (!row) return;
+    swal({
+        title: "Are you sure?",
+        text: "Do you want to delete this employment record?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel"
+    }, function (isConfirm) {
 
-    var recordId = row.querySelector('.empId').value;
+        if (!isConfirm) return;
 
-    if (recordId) {
-        var remoteAction = REMOTE_ACTION_DELETE_EMPLOYMENT;
-        if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
-            remoteAction = 'ApplicantPortal_Contoller.deleteEmploymentRecord';
+        var row = document.getElementById('empRow_' + index);
+        if (!row) return;
+
+        var recordId = row.querySelector('.empId').value;
+
+        // 🔹 If already saved → delete from Salesforce
+        if (recordId) {
+
+            var remoteAction = REMOTE_ACTION_DELETE_EMPLOYMENT;
+            if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
+                remoteAction = 'ApplicantPortal_Contoller.deleteEmploymentRecord';
+            }
+
+            Visualforce.remoting.Manager.invokeAction(
+                remoteAction,
+                recordId,
+                function (result, event) {
+
+                    if (event.status && result === 'SUCCESS') {
+
+                        row.remove();
+
+                        swal("Deleted!", "Employment record deleted successfully.", "success");
+
+                    } else {
+
+                        swal("Error!", result || "Error deleting record", "error");
+
+                    }
+                },
+                { escape: true }
+            );
+
+        } else {
+            // 🔹 Unsaved row → remove directly
+            row.remove();
+
+            swal("Deleted!", "Row removed successfully.", "success");
         }
-
-        Visualforce.remoting.Manager.invokeAction(
-            remoteAction,
-            recordId,
-            function (result, event) {
-                if (event.status && result === 'SUCCESS') {
-                    row.remove();
-                    showMessage(
-                        'employmentMessages',
-                        'Employment record deleted successfully.',
-                        'success'
-                    );
-                } else {
-                    showMessage(
-                        'employmentMessages',
-                        result || 'Error deleting record',
-                        'error'
-                    );
-                }
-            },
-            { escape: true }
-        );
-    } else {
-        row.remove();
-    }
+    });
 }
 
 // ========== SAVE FUNCTIONS ==========
 
 function saveContactData() {
+    debugger
     var contactId = contactProfileData ? contactProfileData.contactId : '';
     var contactData = {
         Id: contactId,
@@ -2445,12 +2741,14 @@ function saveContactData() {
                 console.log('Remoting event:', event);
 
                 if (event.status) {
+                    debugger
                     if (result === 'SUCCESS') {
                         showMessage('messages', 'Profile saved successfully!', 'success');
                         // Reload page data after successful save
                         setTimeout(function () {
                             location.reload();
-                        }, 1500);
+                        }, 1000);
+                        // loadContactData();
                     } else {
                         showMessage('messages', result, 'error');
                     }
@@ -2474,6 +2772,7 @@ function saveContactData() {
 }
 
 function saveEducationData() {
+    debugger
     var contactId = contactProfileData ? contactProfileData.contactId : '';
     var rows = document.querySelectorAll('#educationRowsContainer .grid-row');
     var educationList = [];
@@ -2504,13 +2803,12 @@ function saveEducationData() {
         JSON.stringify(educationList),
         function (result, event) {
             if (event.status) {
-                showMessage(
-                    'educationMessages',
-                    result === 'SUCCESS'
-                        ? 'Education details saved successfully!'
-                        : result,
-                    result === 'SUCCESS' ? 'success' : 'error'
-                );
+                debugger
+                showMessage('educationMessages', result === 'SUCCESS' ? 'Education details saved successfully!' : result, result === 'SUCCESS' ? 'success' : 'error');
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+
             } else {
                 showMessage('educationMessages', event.message, 'error');
             }
@@ -2520,6 +2818,7 @@ function saveEducationData() {
 }
 
 function saveEmploymentData() {
+    debugger
     var contactId = contactProfileData ? contactProfileData.contactId : '';
     var rows = document.querySelectorAll('#employmentRowsContainer .grid-row');
     var employmentList = [];
@@ -2531,6 +2830,8 @@ function saveEmploymentData() {
             Position__c: row.querySelector('.empPosition').value,
             Start_Year__c: row.querySelector('.empStartDate').value,
             End_Year__c: row.querySelector('.empEndDate').value,
+            Start_Date__c: row.querySelector('.empStartDate').value,
+            End_Date__c: row.querySelector('.empEndDate').value,
             Contact__c: contactId
         };
         if (emp.Organization_Name__c || emp.Position__c) {
@@ -2549,12 +2850,16 @@ function saveEmploymentData() {
         JSON.stringify(employmentList),
         function (result, event) {
             if (event.status) {
+                debugger
                 if (result === 'SUCCESS') {
                     showMessage(
                         'employmentMessages',
                         'Employment details saved successfully!',
                         'success'
                     );
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
                 } else {
                     showMessage('employmentMessages', result, 'error');
                 }
@@ -2570,32 +2875,122 @@ function saveEmploymentData() {
     );
 }
 
+// function saveAchievementData() {
+//     var contactId = contactProfileData ? contactProfileData.contactId : '';
+
+//     var achievement = {
+//         Contact__c: contactId,
+//         Awards_Honours__c: document.getElementById('achievementAwards').innerHTML,
+//         List_of_Patents_filed__c: document.getElementById('achievementPatents').innerHTML,
+//         Book_Chapters__c: document.getElementById('achievementBookChapters').innerHTML,
+//         Any_other_achievements__c: document.getElementById('achievementOther').innerHTML,
+//         List_of_Publications__c: document.getElementById('achievementPublications').innerHTML
+//     };
+
+//     // Attach existing Id if present
+//     try {
+//         if (contactProfileData && contactProfileData.achievementListJSON) {
+//             var list = JSON.parse(contactProfileData.achievementListJSON);
+//             if (list && list.length > 0) {
+//                 achievement.Id = list[0].Id;
+//             }
+//         }
+//     } catch (e) { }
+
+//     var remoteAction = REMOTE_ACTION_SAVE_ACHIEVEMENT;
+//     if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
+//         remoteAction = 'ApplicantPortal_Contoller.saveAchievementDetails';
+//     }
+
+//     Visualforce.remoting.Manager.invokeAction(
+//         remoteAction,
+//         contactId,
+//         JSON.stringify([achievement]),
+//         function (result, event) {
+//             if (event.status) {
+//                 showMessage(
+//                     'achievementMessages',
+//                     result === 'SUCCESS'
+//                         ? 'Achievements saved successfully!'
+//                         : result,
+//                     result === 'SUCCESS' ? 'success' : 'error'
+//                 );
+//             } else {
+//                 showMessage('achievementMessages', event.message, 'error');
+//             }
+//         },
+//         { escape: true }
+//     );
+// }
+
+// function savePublicationData() {
+//     var contactId = contactProfileData ? contactProfileData.contactId : '';
+
+//     var achievement = {
+//         Contact__c: contactId,
+//         List_of_Publications__c: document.getElementById('achievementPublications').innerHTML
+//     };
+
+//     // Attach existing Achievement Id if present
+//     try {
+//         if (contactProfileData && contactProfileData.achievementListJSON) {
+//             var list = JSON.parse(contactProfileData.achievementListJSON);
+//             if (list && list.length > 0) {
+//                 achievement.Id = list[0].Id;
+//             }
+//         }
+//     } catch (e) { }
+
+//     var remoteAction = REMOTE_ACTION_SAVE_ACHIEVEMENT;
+//     if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
+//         remoteAction = 'ApplicantPortal_Contoller.saveAchievementDetails';
+//     }
+
+//     Visualforce.remoting.Manager.invokeAction(
+//         remoteAction,
+//         contactId,
+//         JSON.stringify([achievement]),
+//         function (result, event) {
+//             if (event.status) {
+//                 showMessage(
+//                     'publicationMessages',
+//                     result === 'SUCCESS'
+//                         ? 'Publications saved successfully!'
+//                         : result,
+//                     result === 'SUCCESS' ? 'success' : 'error'
+//                 );
+//             } else {
+//                 showMessage('publicationMessages', event.message, 'error');
+//             }
+//         },
+//         { escape: true }
+//     );
+// }
+
 function saveAchievementData() {
+    debugger
+
     var contactId = contactProfileData ? contactProfileData.contactId : '';
 
     var achievement = {
         Contact__c: contactId,
-        Awards_Honours__c: document.getElementById('achievementAwards').innerHTML,
-        List_of_Patents_filed__c: document.getElementById('achievementPatents').innerHTML,
-        Book_Chapters__c: document.getElementById('achievementBookChapters').innerHTML,
-        Any_other_achievements__c: document.getElementById('achievementOther').innerHTML,
-        List_of_Publications__c: document.getElementById('achievementPublications').innerHTML
+        Awards_Honours__c: getEditorData('achievementAwards'),
+        List_of_Patents_filed__c: getEditorData('achievementPatents'),
+        Book_Chapters__c: getEditorData('achievementBookChapters'),
+        Any_other_achievements__c: getEditorData('achievementOther'),
+        List_of_Publications__c: getEditorData('achievementPublications')
     };
 
-    // Attach existing Id if present
     try {
-        if (contactProfileData && contactProfileData.achievementListJSON) {
+        if (contactProfileData?.achievementListJSON) {
             var list = JSON.parse(contactProfileData.achievementListJSON);
-            if (list && list.length > 0) {
+            if (list.length > 0) {
                 achievement.Id = list[0].Id;
             }
         }
     } catch (e) { }
 
-    var remoteAction = REMOTE_ACTION_SAVE_ACHIEVEMENT;
-    if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
-        remoteAction = 'ApplicantPortal_Contoller.saveAchievementDetails';
-    }
+    var remoteAction = REMOTE_ACTION_SAVE_ACHIEVEMENT || 'ApplicantPortal_Contoller.saveAchievementDetails';
 
     Visualforce.remoting.Manager.invokeAction(
         remoteAction,
@@ -2603,13 +2998,11 @@ function saveAchievementData() {
         JSON.stringify([achievement]),
         function (result, event) {
             if (event.status) {
-                showMessage(
-                    'achievementMessages',
-                    result === 'SUCCESS'
-                        ? 'Achievements saved successfully!'
-                        : result,
-                    result === 'SUCCESS' ? 'success' : 'error'
-                );
+                debugger
+                showMessage('achievementMessages', result === 'SUCCESS' ? 'Achievements saved successfully!' : result, result === 'SUCCESS' ? 'success' : 'error');
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
             } else {
                 showMessage('achievementMessages', event.message, 'error');
             }
@@ -2617,29 +3010,25 @@ function saveAchievementData() {
         { escape: true }
     );
 }
-
 function savePublicationData() {
+
     var contactId = contactProfileData ? contactProfileData.contactId : '';
 
     var achievement = {
         Contact__c: contactId,
-        List_of_Publications__c: document.getElementById('achievementPublications').innerHTML
+        List_of_Publications__c: getEditorData('achievementPublications')
     };
 
-    // Attach existing Achievement Id if present
     try {
-        if (contactProfileData && contactProfileData.achievementListJSON) {
+        if (contactProfileData?.achievementListJSON) {
             var list = JSON.parse(contactProfileData.achievementListJSON);
-            if (list && list.length > 0) {
+            if (list.length > 0) {
                 achievement.Id = list[0].Id;
             }
         }
     } catch (e) { }
 
-    var remoteAction = REMOTE_ACTION_SAVE_ACHIEVEMENT;
-    if (!remoteAction || remoteAction === '' || remoteAction.indexOf('$RemoteAction') !== -1) {
-        remoteAction = 'ApplicantPortal_Contoller.saveAchievementDetails';
-    }
+    var remoteAction = REMOTE_ACTION_SAVE_ACHIEVEMENT || 'ApplicantPortal_Contoller.saveAchievementDetails';
 
     Visualforce.remoting.Manager.invokeAction(
         remoteAction,
@@ -2647,13 +3036,10 @@ function savePublicationData() {
         JSON.stringify([achievement]),
         function (result, event) {
             if (event.status) {
-                showMessage(
-                    'publicationMessages',
-                    result === 'SUCCESS'
-                        ? 'Publications saved successfully!'
-                        : result,
-                    result === 'SUCCESS' ? 'success' : 'error'
-                );
+                showMessage('publicationMessages', result === 'SUCCESS' ? 'Publications saved successfully!' : result, result === 'SUCCESS' ? 'success' : 'error');
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
             } else {
                 showMessage('publicationMessages', event.message, 'error');
             }

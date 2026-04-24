@@ -400,6 +400,7 @@
                             </ul>
                         </div>
 
+                        <!-- Education Section -->
                         <div class="vertical-scroll">
                             <div class="progress-icon">
                                 <i class="fa-solid fa-user-graduate"></i>
@@ -432,68 +433,45 @@
                                                 <th class="pb-3 color-theme">End Year
                                                     <span class="required-asterisk" style="color:red;">*</span>
                                                 </th>
-                                                <!-- <th ng-hide="proposalStage || isCurrentUserSubmitted" class="text-center">
-                                                    <i class="fas fa-plus-circle icon" ng-click="addEducationRow()"></i>
-                                                </th> -->
                                                 <th ng-if="!proposalStage" class="text-center">
-                                                    <!-- || isCurrentUserSubmitted -->
                                                     <i class="fas fa-plus-circle icon" ng-click="addEducationRow()"></i>
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="row in contactData.Education_Details__r">
+                                            <tr ng-repeat="row in educationList track by $index">
                                                 <td>
-                                                    <input ng-focus="removeClass('degree',$index)" id="degree{{$index}}" ng-model="row.Degree__c" ng-disabled="proposalStage"
-                                                        class="form-control" type="text" />
-                                                    <!-- || isCurrentUserSubmitted -->
-                                                    <!-- <select class="form-control" aria-label="Default select example" ng-focus="removeClass('degree',$index)" id="degree{{$index}}" ng-model="row.Degree__c" ng-disabled="proposalStage">
-                                                            <option ng-repeat="staff in degree">{{staff}}</option>
-                                                            </select> -->
+                                                    <input ng-model="row.Degree__c" class="form-control" type="text" ng-disabled="proposalStage"
+                                                        id="degree{{$index}}" ng-change="removeClass('degree', $index)" />
                                                 </td>
                                                 <td>
-                                                    <input type="text" ng-focus="removeClass('institution',$index)" id="institution{{$index}}" ng-model="row.Institution_Name__c"
-                                                        class="form-control" ng-disabled="proposalStage" />
-                                                    <!-- || isCurrentUserSubmitted -->
+                                                    <input ng-model="row.Institution_Name__c" class="form-control" type="text"
+                                                        ng-disabled="proposalStage" id="institution{{$index}}" ng-change="removeClass('institution', $index)" />
                                                 </td>
-
                                                 <td>
-                                                    <input ng-focus="removeClass('specialization',$index)" id="specialization{{$index}}" ng-model="row.Area_of_specialization__c"
-                                                        ng-disabled="proposalStage" class="form-control" type="text" />
-                                                    <!-- || isCurrentUserSubmitted -->
-                                                    <!-- <select class="form-control" aria-label="Default select example" ng-focus="removeClass('specialization',$index)" id="specialization{{$index}}" ng-model="row.Specialization__c" required="true" ng-disabled="proposalStage">
-                                                            <option ng-repeat="staff in specialization">{{staff}}</option>
-                                                            </select> -->
+                                                    <input ng-model="row.Area_of_specialization__c" class="form-control" type="text"
+                                                        ng-disabled="proposalStage" id="specialization{{$index}}" ng-change="removeClass('specialization', $index)" />
                                                 </td>
-
                                                 <td>
-                                                    <input type="text" ng-focus="removeClass('zipCode1',$index)" ng-model="row.Start_Year__c" id="zipCode1{{$index}}" class="form-control"
-                                                        ng-disabled="proposalStage" />
-                                                    <!-- || isCurrentUserSubmitted -->
+                                                    <input ng-model="row.Start_Year__c" class="form-control" type="text" ng-disabled="proposalStage"
+                                                        id="zipCode1{{$index}}" ng-change="removeClass('zipCode1', $index)" />
                                                 </td>
-
                                                 <td>
-                                                    <input type="text" ng-focus="removeClass('zipCode2',$index)" ng-model="row.End_Year__c" id="zipCode2{{$index}}" class="form-control"
-                                                        ng-disabled="proposalStage" />
-                                                    <!-- || isCurrentUserSubmitted -->
+                                                    <input ng-model="row.End_Year__c" class="form-control" type="text" ng-disabled="proposalStage"
+                                                        id="zipCode2{{$index}}" ng-change="removeClass('zipCode2', $index)" />
                                                 </td>
-
-                                                <!-- <td ng-show="!proposalStage && !isCurrentUserSubmitted" class="text-center">
-                                                    <i class="fa-sharp fa-solid fa-circle-xmark fa-2x text-danger" ng-click="removeEducationRow($index)"></i>
-                                                </td> -->
-
                                                 <td ng-if="!proposalStage" class="text-center">
-                                                    <!-- || isCurrentUserSubmitted -->
                                                     <i class="fa-sharp fa-solid fa-circle-xmark fa-2x text-danger" ng-click="removeEducationRow($index)"></i>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-
                             </div>
                         </div>
-                        <div class="vertical-scroll">
+
+                        <!-- Employment Section -->
+                        <div class="vertical-scroll mt-4">
                             <div class="progress-icon">
                                 <i class="fa-solid fa-briefcase"></i>
                             </div>
@@ -505,12 +483,12 @@
                                 </div>
                             </div>
 
-                            <div class=" row mt-3 pb-5">
+                            <div class="row mt-3 pb-5">
                                 <div class="col-md-12">
-                                    <table class="table2" cellpadding="4" style="width: 100%">
+                                    <table class="table2" style="width: 100%" cellpadding="4">
                                         <thead>
                                             <tr>
-                                                <th class="pb-3 color-theme">Organization
+                                                <th class="pb-3 color-theme">Organization Name
                                                     <span class="required-asterisk" style="color:red;">*</span>
                                                 </th>
                                                 <th class="pb-3 color-theme">Position
@@ -522,52 +500,42 @@
                                                 <th class="pb-3 color-theme">End Year
                                                     <span class="required-asterisk" style="color:red;">*</span>
                                                 </th>
-                                                <!-- <th ng-hide="proposalStage || isCurrentUserSubmitted" class="text-center">
-                                                    <i class="fas fa-plus-circle icon" ng-click="addEmploymentRow()"></i>
-                                                </th> -->
+                                                <!-- <th class="pb-3 color-theme">Current Employment</th> -->
                                                 <th ng-if="!proposalStage" class="text-center">
-                                                    <!-- || isCurrentUserSubmitted -->
                                                     <i class="fas fa-plus-circle icon" ng-click="addEmploymentRow()"></i>
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="row in contactData.Employment_Details__r">
+                                            <tr ng-repeat="row in employmentList track by $index">
                                                 <td>
-                                                    <input type="text" ng-focus="removeClass('org',$index)" id="org{{$index}}" ng-model="row.Organization_Name__c" class="form-control"
-                                                        ng-disabled="proposalStage" />
-                                                    <!-- || isCurrentUserSubmitted -->
+                                                    <input ng-model="row.Organization_Name__c" class="form-control" type="text"
+                                                        ng-disabled="proposalStage" id="org{{$index}}" ng-change="removeClass('org', $index)" />
                                                 </td>
                                                 <td>
-                                                    <input type="text" ng-focus="removeClass('position',$index)" id="position{{$index}}" ng-model="row.Position__c" class="form-control"
-                                                        ng-disabled="proposalStage" />
-                                                    <!-- || isCurrentUserSubmitted -->
+                                                    <input ng-model="row.Position__c" class="form-control" type="text" ng-disabled="proposalStage"
+                                                        id="position{{$index}}" ng-change="removeClass('position', $index)" />
                                                 </td>
                                                 <td>
-                                                    <input type="text" ng-focus="removeClass('zipCode11',$index)" ng-model="row.Start_Year__c" id="zipCode11{{$index}}" class="form-control"
-                                                        ng-disabled="proposalStage" />
-                                                    <!-- || isCurrentUserSubmitted -->
+                                                    <input ng-model="row.Start_Year__c" class="form-control" type="text" ng-disabled="proposalStage"
+                                                        id="zipCode11{{$index}}" ng-change="removeClass('zipCode11', $index)" />
                                                 </td>
                                                 <td>
-                                                    <input type="text" ng-focus="removeClass('zipCode22',$index)" ng-model="row.End_Year__c" id="zipCode22{{$index}}" class="form-control"
-                                                        ng-disabled="proposalStage" />
-                                                    <!-- || isCurrentUserSubmitted -->
+                                                    <input ng-model="row.End_Year__c" class="form-control" type="text" ng-disabled="proposalStage"
+                                                        id="zipCode22{{$index}}" ng-change="removeClass('zipCode22', $index)" />
                                                 </td>
-                                                <!-- <td ng-show="!proposalStage || !isCurrentUserSubmitted" class="text-center">
-                                                    <i class="fa-sharp fa-solid fa-circle-xmark fa-2x text-danger" ng-click="removeEmploymentRow($index)"></i>
-                                                </td> -->
+                                                <!-- <td><input type="checkbox" ng-model="row.current_employement__c"
+                                                        ng-disabled="proposalStage" /></td> -->
                                                 <td ng-if="!proposalStage" class="text-center">
-                                                    <!-- || isCurrentUserSubmitted -->
                                                     <i class="fa-sharp fa-solid fa-circle-xmark fa-2x text-danger" ng-click="removeEmploymentRow($index)"></i>
                                                 </td>
-
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-
                             </div>
                         </div>
+
                         <div class="vertical-scroll">
                             <div class="progress-icon">
                                 <i class="fas fa-file-invoice"></i>
@@ -589,8 +557,8 @@
                                     <b>To use RTF more efficiently, make sure you write your content in word document first
                                         and then copy paste here</b>
                                 </small>
-                                <ng-ckeditor id="publication12" read-Only="{{proposalStage}}" ng-change="readCharacter(contactData.Publications_Patents__c,0)"
-                                    ng-model="contactData.Publications_Patents__c" name="ckEditor" ng-config="config"></ng-ckeditor>
+                                <ng-ckeditor id="publication12" read-Only="{{proposalStage}}" ng-change="readCharacter(apaRecordData.Publications_Patents__c,0)"
+                                    ng-model="apaRecordData.Publications_Patents__c" name="ckEditor" ng-config="config"></ng-ckeditor>
                                 <!-- || isCurrentUserSubmitted -->
                                 <span>Total characters : {{objRtf[0].charCount}}</span>
                             </div>
@@ -612,8 +580,8 @@
                                     <b>To use RTF more efficiently, make sure you write your content in word document first
                                         and then copy paste here</b>
                                 </small>
-                                <ng-ckeditor id="publication" read-Only="{{proposalStage}}" ng-change="readCharacter(contactData.List_Of_Patents_Filed_Granted__c,1)"
-                                    ng-model="contactData.List_Of_Patents_Filed_Granted__c" name="ckEditor" ng-config="config"></ng-ckeditor>
+                                <ng-ckeditor id="publication" read-Only="{{proposalStage}}" ng-change="readCharacter(apaRecordData.List_Of_Patents_Filed_Granted__c,1)"
+                                    ng-model="apaRecordData.List_Of_Patents_Filed_Granted__c" name="ckEditor" ng-config="config"></ng-ckeditor>
                                 <!-- || isCurrentUserSubmitted -->
                                 <span>Total characters : {{objRtf[1].charCount}}</span>
                             </div>
@@ -635,8 +603,8 @@
                                     <b>To use RTF more efficiently, make sure you write your content in word document first
                                         and then copy paste here</b>
                                 </small>
-                                <ng-ckeditor id="publication" ng-change="readCharacter(contactData.Book_Chapters_Monographs__c,2)" read-Only="{{proposalStage}}"
-                                    ng-model="contactData.Book_Chapters_Monographs__c" name="ckEditor" ng-config="config"></ng-ckeditor>
+                                <ng-ckeditor id="publication" ng-change="readCharacter(apaRecordData.Book_Chapters_Monographs__c,2)" read-Only="{{proposalStage}}"
+                                    ng-model="apaRecordData.Book_Chapters_Monographs__c" name="ckEditor" ng-config="config"></ng-ckeditor>
                                 <!-- || isCurrentUserSubmitted -->
                                 <span>Total characters : {{objRtf[2].charCount}}</span>
                             </div>
@@ -658,7 +626,7 @@
                                     <b>To use RTF more efficiently, make sure you write your content in word document first
                                         and then copy paste here</b>
                                 </small>
-                                <ng-ckeditor id="publication" read-Only="{{proposalStage}}" ng-model="contactData.Any_Other_Notable_Achievements__c" ng-change="readCharacter(contactData.Any_Other_Notable_Achievements__c,3)"
+                                <ng-ckeditor id="publication" read-Only="{{proposalStage}}" ng-model="apaRecordData.Any_Other_Notable_Achievements__c" ng-change="readCharacter(apaRecordData.Any_Other_Notable_Achievements__c,3)"
                                     name="ckEditor" ng-config="config"></ng-ckeditor>
                                 <!-- || isCurrentUserSubmitted -->
                                 <span>Total characters : {{objRtf[3].charCount}}</span>

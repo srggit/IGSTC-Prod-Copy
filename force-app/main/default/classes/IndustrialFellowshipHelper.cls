@@ -578,6 +578,8 @@ return 'exception: ' + e.getMessage() + ' line no. ' + e.getLineNumber();
             system.debug('education detail :: '+instanceEduDet);
             Id eduId = Schema.SObjectType.Education_Details__c.getRecordTypeInfosByName().get('Education').getRecordTypeId();
             Id thesisId = Schema.SObjectType.Education_Details__c.getRecordTypeInfosByName().get('Thesis').getRecordTypeId();
+            List<Education_Details__c> existingApaRecords = [SELECT Id FROM Education_Details__c WHERE Applicant_Proposal_Association__c = :apaId LIMIT 1];
+            Boolean isApaExist = !existingApaRecords.isEmpty();
             Applicant_Proposal_Association__c apa = [SELECT Id,Contact__c FROM Applicant_Proposal_Association__c WHERE Id = :apaId LIMIT 1];
             Date newMtStartDate;
             Date newMtEndDate;
@@ -612,10 +614,14 @@ return 'exception: ' + e.getMessage() + ' line no. ' + e.getLineNumber();
                 }
             }
             for(Education_Details__c lineItem:instanceEduDet){
+                 if(!isApaExist){
+                        lineItem.Id = null;
+                    }
                 if(lineItem.Degree__c!=null){
                     lineItem.RecordTypeId=eduId;
                     lineItem.Applicant_Proposal_Association__c=apaId;
-                    lineItem.Contact__c=apa.contact__c;
+                    //lineItem.Contact__c=apa.contact__c;
+                   
                 }
                 else{
                     lineItem.RecordTypeId=thesisId;
@@ -644,7 +650,12 @@ return 'exception: ' + e.getMessage() + ' line no. ' + e.getLineNumber();
                 }
             }
             system.debug('education detail :: '+instanceEduDet);
-            upsert instanceEduDet;
+            // upsert instanceEduDet;
+            if(isApaExist){
+                update instanceEduDet;   // ✅ update APA records only
+            } else {
+                insert instanceEduDet;   // ✅ create NEW APA records
+            }
             return 'Your Education details have been saved successfully.';
         } catch (DmlException e) {
             system.debug('exception: '+e.getMessage()+' line no. '+e.getLineNumber()+'');

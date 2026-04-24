@@ -57,7 +57,9 @@ return proposalRecord;
             datawrapper.proposal = proposalRecord;
             datawrapper.apa = apaRec;
             return datawrapper;
-        }else{
+        }
+        /*
+        else{
             if(!string.isBlank(conRec.Proposals__c)){
                 proposalRecord = [SELECT Id, Name, User_Popup_Choice__c, Acronym__c, Title_Of__c, Title_In_German__c,Thematic_Topic__c, Duration_In_Months_Max_36__c,Tentative_Start_Date__c, Summary__c, KeyWords__c,Abstract_of_proposed__c, Project_Description__c,Stage__c, Proposed_Venue__c, Proposed_Date__c,(SELECT Name, Id, Thematic_Area_Name__c FROM Application_Thematic_Area__r) FROM Application_Proposal__c WHERE Id = :conRec.Proposals__c AND RecordTypeId = :twoPlusTwoRtId];
                 return datawrapper;
@@ -81,7 +83,7 @@ return proposalRecord;
                 return datawrapper;
             }
         }
-        
+        */
         return null;
     }
     
@@ -7369,34 +7371,98 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
         }
     }
     
+    // public static List<Employment_Details__c> getEmpDetails(string hashcode, string apaId){
+    //     try{
+    //         List<Employment_Details__c> empList = [Select Id,Name,Start_Date__c,End_Date__c,Position__c,Organization_Name__c,Nature_of_Job__c,Contact__c,current_employement__c,
+    //                                                Contact__r.Previous_industrial_internship__c,Contact__r.Availing_Fellowship__c,Contact__r.Fellowship_Details__c,Contact__r.Associated_with_IGSTC__c,Contact__r.Associated_Details__c,
+    //                                                Contact__r.Abstract_of_Ongoing_Work__c From Employment_Details__c Where  Applicant_Proposal_Association__c=:apaId ];
+    //         return empList;
+    //     }catch(Exception e){
+    //         return null;
+    //     }
+    // }
     public static List<Employment_Details__c> getEmpDetails(string hashcode, string apaId){
-        try{
-            List<Employment_Details__c> empList = [Select Id,Name,Start_Date__c,End_Date__c,Position__c,Organization_Name__c,Nature_of_Job__c,Contact__c,current_employement__c,
-                                                   Contact__r.Previous_industrial_internship__c,Contact__r.Availing_Fellowship__c,Contact__r.Fellowship_Details__c,Contact__r.Associated_with_IGSTC__c,Contact__r.Associated_Details__c,
-                                                   Contact__r.Abstract_of_Ongoing_Work__c From Employment_Details__c Where  Applicant_Proposal_Association__c=:apaId ];
-            return empList;
-        }catch(Exception e){
-            return null;
+        // Step 1: Check APA first
+        List<Employment_Details__c> apaRecords = [SELECT Id,Name,Start_Date__c,End_Date__c,Start_Year__c, End_Year__c,Position__c,Organization_Name__c,Nature_of_Job__c,current_employement__c
+                                                  FROM Employment_Details__c WHERE Applicant_Proposal_Association__c = :apaId];
+        if(!apaRecords.isEmpty()){
+            return apaRecords; // ALWAYS PRIORITY
         }
+        // Step 2: fallback → Contact
+        return [SELECT Id,Name,Start_Date__c,End_Date__c,Start_Year__c, End_Year__c,Position__c,Organization_Name__c,Nature_of_Job__c,current_employement__c 
+                FROM Employment_Details__c WHERE Contact__r.Login_Hash_Code__c = :hashcode];
     }
     
-    public static string insertEmploymentDetailsPECFAR(List<Employment_Details__c> empDetails,string apaId){
+    // public static string insertEmploymentDetailsPECFAR(List<Employment_Details__c> empDetails,string apaId){
         
+    //     try{
+    //         Applicant_Proposal_Association__c apa = [SELECT Id,Contact__c FROM Applicant_Proposal_Association__c WHERE Id = :apaId LIMIT 1];
+    //         if(empDetails != null && !empDetails.isEmpty()){
+    //             for(Employment_Details__c emp : empDetails){
+    //                 emp.Applicant_Proposal_Association__c = apa.Id;
+    //                 //emp.Contact__c = apa.Contact__c;
+    //             }
+    //             upsert empDetails;
+    //         }
+    //         return 'success';
+    //     }catch(Exception e){
+    //         return e.getMessage() + ' at line ' + e.getLineNumber();
+    //     }
+    // }
+    public static string insertEmploymentDetailsPECFAR(List<Employment_Details__c> empDetails, String apaId){
         try{
-            Applicant_Proposal_Association__c apa = [SELECT Id,Contact__c FROM Applicant_Proposal_Association__c WHERE Id = :apaId LIMIT 1];
-            if(empDetails != null && !empDetails.isEmpty()){
-                for(Employment_Details__c emp : empDetails){
-                    emp.Applicant_Proposal_Association__c = apa.Id;
-                    emp.Contact__c = apa.Contact__c;
+
+            List<Employment_Details__c> insertList = new List<Employment_Details__c>();
+            List<Employment_Details__c> updateList = new List<Employment_Details__c>();
+
+            for(Employment_Details__c emp : empDetails){
+                // UPDATE CASE (APA records already exist)
+                if(emp.Id != null){
+                    Employment_Details__c upd = new Employment_Details__c();
+                    upd.Id = emp.Id;
+                    upd.Organization_Name__c = emp.Organization_Name__c;
+                    upd.Position__c = emp.Position__c;
+                    upd.Nature_of_Job__c = emp.Nature_of_Job__c;
+                    upd.Start_Date__c = emp.Start_Date__c;
+                    upd.End_Date__c = emp.End_Date__c;
+                    upd.Start_Year__c = emp.Start_Date__c;
+                    upd.End_Year__c = emp.End_Date__c;
+                    upd.current_employement__c = emp.current_employement__c;                
+                    upd.Applicant_Proposal_Association__c = apaId;    //safety (ensure still APA tagged)
+                    upd.Contact__c = null;
+
+                    updateList.add(upd);
                 }
-                upsert empDetails;
+                //INSERT CASE (FIRST TIME / NEW ROWS)
+                else{
+                    Employment_Details__c ins = new Employment_Details__c();
+                    ins.Organization_Name__c = emp.Organization_Name__c;
+                    ins.Position__c = emp.Position__c;
+                    ins.Nature_of_Job__c = emp.Nature_of_Job__c;
+                    ins.Start_Date__c = emp.Start_Date__c;
+                    ins.End_Date__c = emp.End_Date__c;
+                    ins.Start_Year__c = emp.Start_Date__c;
+                    ins.End_Year__c = emp.End_Date__c;
+                    ins.current_employement__c = emp.current_employement__c;
+                    ins.Applicant_Proposal_Association__c = apaId;
+                    ins.Contact__c = null;
+
+                    insertList.add(ins);
+                }
+            }
+            if(!insertList.isEmpty()){
+                insert insertList;
+            }
+            if(!updateList.isEmpty()){
+                update updateList;
             }
             return 'success';
-        }catch(Exception e){
+        }
+        catch(Exception e){
             return e.getMessage() + ' at line ' + e.getLineNumber();
         }
     }
-    
+
     // public static string updateEmploymentDetails(List<employmentWrapper> empList){
     //     try{
     
@@ -7471,7 +7537,7 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
     
     public static Achievement__c getAchievements(string hashcode,string apaId){
         try{
-            List<Achievement__c> achieveRecord = [SELECT id,contact__c,Awards_Honours__c,List_of_Publications__c,List_of_Patents_filed__c,Book_Chapters__c,Any_other_achievements__c FROM Achievement__c where  Applicant_Proposal_Association__c=:apaId];
+            List<Achievement__c> achieveRecord = [SELECT id,Awards_Honours__c,List_of_Publications__c,List_of_Patents_filed__c,Book_Chapters__c,Any_other_achievements__c FROM Achievement__c where  Applicant_Proposal_Association__c=:apaId or Contact__r.Login_Hash_Code__c=:hashcode order by CreatedDate DESC];
             if(achieveRecord.size() > 0){
                 return achieveRecord[0];
             }
@@ -7482,13 +7548,47 @@ return e.getMessage() + ' Line: ' + e.getLineNumber() + ' Stack: ' + e.getStackT
         }
     }
     
-    public static string updateAchievements(Achievement__c achievementList,string apaId){
+    // public static string updateAchievements(Achievement__c achievementList,string apaId){
+    //     try{
+    //         achievementList.Applicant_Proposal_Association__c=apaId;
+    //         upsert achievementList;
+    //         return 'success';
+    //     }catch(Exception e){
+    //         return e.getMessage() + e.getLineNumber();
+    //     }
+    // }
+     public static String updateAchievements(Achievement__c achievementRec, String apaId){
         try{
-            achievementList.Applicant_Proposal_Association__c=apaId;
-            upsert achievementList;
+            if(achievementRec == null){
+                return 'No data received';
+            }
+            // Step 1: Check if APA record already exists in DB
+            List<Achievement__c> existingApa = [SELECT Id FROM Achievement__c WHERE Applicant_Proposal_Association__c = :apaId order by CreatedDate DESC LIMIT 1];
+
+            if(!existingApa.isEmpty()){
+                // UPDATE existing APA record
+                achievementRec.Id = existingApa[0].Id;
+                achievementRec.Applicant_Proposal_Association__c = apaId;
+                update achievementRec;
+            }
+            else{
+                // CREATE new record ONLY with APA
+                Achievement__c newRec = new Achievement__c();
+                newRec.Applicant_Proposal_Association__c = apaId;
+                newRec.Awards_Honours__c = achievementRec.Awards_Honours__c;
+                newRec.List_of_Publications__c = achievementRec.List_of_Publications__c;
+                newRec.List_of_Patents_filed__c = achievementRec.List_of_Patents_filed__c;
+                newRec.Book_Chapters__c = achievementRec.Book_Chapters__c;
+                newRec.Any_other_achievements__c = achievementRec.Any_other_achievements__c;
+
+                insert newRec;
+            }
+
             return 'success';
-        }catch(Exception e){
-            return e.getMessage() + e.getLineNumber();
+
+        }
+        catch(Exception e){
+            return e.getMessage() + ' line ' + e.getLineNumber();
         }
     }
     
@@ -9803,6 +9903,7 @@ return e.getMessage();
         }
     }
     
+    /*
     public static Contact getCVDetailsForWiserApplicant(string userId,String apaId){
         try{
             Contact conRec = [SELECT Id,Name,FirstName,LastName,Phone,Email,Publications_Patents__c,List_Of_Patents_Filed_Granted__c,Book_Chapters_Monographs__c,Any_Other_Notable_Achievements__c,MailingState, MailingCountry,
@@ -9814,6 +9915,149 @@ return e.getMessage();
             return null;
         }
     }
+    */
+
+    // Wrapper class definition (place this outside your main class, typically at the bottom of the file or in a separate file)
+    public class CVWrapper {
+        public Applicant_Proposal_Association__c apaRecord { get; set; }
+        public List<Education_Details__c> educationDetails { get; set; }
+        public List<Employment_Details__c> employmentDetails { get; set; }
+        
+        public CVWrapper() {
+            this.educationDetails = new List<Education_Details__c>();
+            this.employmentDetails = new List<Employment_Details__c>();
+        }
+    }
+
+    public static CVWrapper getCVDetailsForWiserApplicant(String userId, String apaId){
+        CVWrapper wrapper = new CVWrapper();
+        
+        System.debug(' ------------------------- getCVDetailsForWiserApplicant -----------------------------');
+        try {
+            System.debug('userId : ' + userId);
+            System.debug('apaId : ' + apaId);
+
+            if(String.isNotBlank(apaId)) {
+                // Query APA with its child records
+                Applicant_Proposal_Association__c apaWithEduAndEmpDetails = [
+                    SELECT Id, Contact__c, Proposals__c, Contact__r.FirstName,
+                        Contact__r.LastName, Publications_Patents__c, 
+                        List_Of_Patents_Filed_Granted__c, Book_Chapters_Monographs__c, 
+                        Any_Other_Notable_Achievements__c,
+                        (SELECT Id, Degree__c, End_Year__c, Start_Year__c, Institution_Name__c, 
+                                Percentage__c, Percentage_cgpa__c, Area_of_specialization__c, 
+                                Applicant_Proposal_Association__c 
+                            FROM Education_Thesis_Details__r 
+                            ORDER BY End_Year__c DESC),
+                        (SELECT Id, End_Year__c, Start_Year__c, Position__c, 
+                                current_employement__c, Organization_Name__c, Nature_of_Job__c, 
+                                Applicant_Proposal_Association__c 
+                            FROM Employment_Details__r 
+                            ORDER BY End_Year__c DESC) 
+                    FROM Applicant_Proposal_Association__c
+                    WHERE Id = :apaId
+                    LIMIT 1
+                ];
+                System.debug('apaWithEduAndEmpDetails : ' + apaWithEduAndEmpDetails);
+
+                // Check if both education AND employment details are empty
+                if(apaWithEduAndEmpDetails.Education_Thesis_Details__r.isEmpty() && 
+                apaWithEduAndEmpDetails.Employment_Details__r.isEmpty()) {
+                    
+                    System.debug('Education and Employment Details not found on APA, fetching from Contact Object');
+                    
+                    // Query Contact with its child records
+                    Contact conRec = [
+                        SELECT Id, Name, FirstName, LastName, Phone, Email, 
+                            Publications_Patents__c, List_Of_Patents_Filed_Granted__c, 
+                            Book_Chapters_Monographs__c, Any_Other_Notable_Achievements__c, 
+                            MailingState, MailingCountry,
+                            (SELECT Id, Degree__c, End_Year__c, Start_Year__c, Institution_Name__c, 
+                                    Percentage__c, Percentage_cgpa__c, Area_of_specialization__c, 
+                                    Applicant_Proposal_Association__c 
+                                FROM Education_Details__r 
+                                ORDER BY End_Year__c DESC),
+                            (SELECT Id, End_Year__c, Start_Year__c, Position__c, 
+                                    current_employement__c, Organization_Name__c, Nature_of_Job__c, 
+                                    Applicant_Proposal_Association__c 
+                                FROM Employment_Details__r 
+                                ORDER BY End_Year__c DESC) 
+                        FROM Contact 
+                        WHERE Login_Hash_Code__c = :userId 
+                        LIMIT 1
+                    ];
+                    System.debug('conRec : ' + conRec);
+                    
+                    // Create a new APA record with Contact data
+                    Applicant_Proposal_Association__c newAPA = new Applicant_Proposal_Association__c();
+                    newAPA.Publications_Patents__c = conRec.Publications_Patents__c;
+                    newAPA.List_Of_Patents_Filed_Granted__c = conRec.List_Of_Patents_Filed_Granted__c;
+                    newAPA.Book_Chapters_Monographs__c = conRec.Book_Chapters_Monographs__c;
+                    newAPA.Any_Other_Notable_Achievements__c = conRec.Any_Other_Notable_Achievements__c;
+                    
+                    // Set wrapper with APA record
+                    wrapper.apaRecord = newAPA;
+                    
+                    // Copy education details from Contact to wrapper
+                    if(!conRec.Education_Details__r.isEmpty()) {
+                        for(Education_Details__c edu : conRec.Education_Details__r) {
+                            Education_Details__c newEdu = new Education_Details__c();
+                            newEdu.Degree__c = edu.Degree__c;
+                            newEdu.Institution_Name__c = edu.Institution_Name__c;
+                            newEdu.Area_of_specialization__c = edu.Area_of_specialization__c;
+                            newEdu.Start_Year__c = edu.Start_Year__c;
+                            newEdu.End_Year__c = edu.End_Year__c;
+                            newEdu.Percentage__c = edu.Percentage__c;
+                            newEdu.Percentage_cgpa__c = edu.Percentage_cgpa__c;
+                            wrapper.educationDetails.add(newEdu);
+                        }
+                    }
+                    
+                    // Copy employment details from Contact to wrapper
+                    if(!conRec.Employment_Details__r.isEmpty()) {
+                        for(Employment_Details__c emp : conRec.Employment_Details__r) {
+                            Employment_Details__c newEmp = new Employment_Details__c();
+                            newEmp.Organization_Name__c = emp.Organization_Name__c;
+                            newEmp.Position__c = emp.Position__c;
+                            newEmp.Start_Year__c = emp.Start_Year__c;
+                            newEmp.End_Year__c = emp.End_Year__c;
+                            newEmp.current_employement__c = emp.current_employement__c;
+                            newEmp.Nature_of_Job__c = emp.Nature_of_Job__c;
+                            wrapper.employmentDetails.add(newEmp);
+                        }
+                    }
+                    
+                    System.debug('wrapper for contact : ' + wrapper);
+                    return wrapper;
+                }
+                
+                System.debug('---------- Education and Employment Details found on APA, fetching from APA record ------------');
+                // Set wrapper with APA record and its child records
+                wrapper.apaRecord = apaWithEduAndEmpDetails;
+                
+                // Copy education details to wrapper
+                if(!apaWithEduAndEmpDetails.Education_Thesis_Details__r.isEmpty()) {
+                    wrapper.educationDetails = new List<Education_Details__c>(apaWithEduAndEmpDetails.Education_Thesis_Details__r);
+                }
+                
+                // Copy employment details to wrapper
+                if(!apaWithEduAndEmpDetails.Employment_Details__r.isEmpty()) {
+                    wrapper.employmentDetails = new List<Employment_Details__c>(apaWithEduAndEmpDetails.Employment_Details__r);
+                }
+                
+                System.debug('wrapper : ' + wrapper);
+                return wrapper;
+            } else {
+                System.debug('----------- apaId is blank ------------');
+                return null;
+            }
+        } catch(Exception e) {
+            System.debug('Error in getCVDetailsForWiserApplicant: ' + e.getMessage());
+            System.debug('Stack trace: ' + e.getStackTraceString());
+            return null;
+        }
+    }
+
     
     // public static Account getMentorHostDetails(string userId){
     //     try{

@@ -1112,7 +1112,8 @@
 
             .three-field-row {
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
+                /* grid-template-columns: repeat(3, 1fr); */
+                grid-template-columns: 0.4fr 1fr 1fr;
                 gap: 16px 20px;
             }
 
@@ -1289,13 +1290,18 @@
                 padding: 14px;
                 background: #fff;
 
-                 max-height: 250px;   /* adjust as needed */
+                 max-height: 2000px;   /* adjust as needed */
                 overflow-y: auto;
 
             }
 
             .contact-profile-container .accordion-item.active .accordion-body {
                 display: block;
+            }
+
+            .cke_contents {
+                max-height: 1000px;
+                overflow-y: auto;
             }
         </style>
 
@@ -2720,7 +2726,7 @@
 
                                         <!-- ===== Form ===== -->
                                         <div class="form-grid">
-                                            <div class="three-field-row full-width">
+                                        <div class="three-field-row full-width">
                                             <div class="form-group">
                                                 <label>Salutation <span>*</span></label>
                                                 <select id="contactSalutation" class="form-control">
@@ -2744,14 +2750,8 @@
                                                 <input type="text" id="contactLastName" class="form-control"
                                                     value="{!IF(con != null, con.LastName, '')}" />
                                             </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label>Current Position / Designation <span>*</span></label>
-                                                <input type="text" id="contactDesignation" class="form-control"
-                                                    value="{!IF(con != null, con.Designation__c, '')}" />
-                                            </div>
-
+                                        </div>
+                    
                                            <!-- <div class="form-group">
                                                 <label>Institution / Industry</label>
                                                 <div class="radio-group">
@@ -2765,6 +2765,12 @@
                                                     </label>
                                                 </div>
                                             </div>-->
+
+                                            <div class="form-group">
+                                                <label>Email <span>*</span></label>
+                                                <input type="email" id="contactEmail" class="form-control"
+                                                    value="{!IF(con != null, con.Email, '')}" readonly="readonly"/>
+                                            </div>
 
                                             <div class="form-group">
                                                 <label>Institution / Organisation Name <span>*</span></label>
@@ -2781,10 +2787,11 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <label>Email <span>*</span></label>
-                                                <input type="email" id="contactEmail" class="form-control"
-                                                    value="{!IF(con != null, con.Email, '')}" readonly="readonly"/>
+                                                <label>Current Position / Designation </label>
+                                                <input type="text" id="contactDesignation" class="form-control"
+                                                    value="{!IF(con != null, con.Designation__c, '')}" />
                                             </div>
+                                            
 
                                             <div class="form-group">
                                                 <label>Phone <span>*</span></label>
@@ -2898,36 +2905,40 @@
                                                 <div class="accordion-header" onclick="toggleAccordion(this)">Awards and
                                                     Honours</div>
                                                 <div class="accordion-body ">
-                                                    <div id="achievementAwards" contenteditable="true"
+                                                    <!-- <div id="achievementAwards" contenteditable="true"
                                                         class="form-control"
-                                                        style="width:100%; min-height:200px; padding:10px;"></div>
+                                                        style="width:100%; min-height:200px; padding:10px;"></div> -->
+                                                    <textarea id="achievementAwards" ckeditor="true" class="form-control"></textarea>
                                                 </div>
                                             </div>
                                             <div class="accordion-item">
                                                 <div class="accordion-header" onclick="toggleAccordion(this)">List of
                                                     Patents filed / granted</div>
                                                 <div class="accordion-body">
-                                                    <div id="achievementPatents" contenteditable="true"
+                                                    <!-- <div id="achievementPatents" contenteditable="true"
                                                         class="form-control"
-                                                        style="width:100%; min-height:200px; padding:10px;"></div>
+                                                        style="width:100%; min-height:200px; padding:10px;"></div> -->
+                                                    <textarea id="achievementPatents" ckeditor="true" class="form-control"></textarea>
                                                 </div>
                                             </div>
                                             <div class="accordion-item">
                                                 <div class="accordion-header" onclick="toggleAccordion(this)">Book
                                                     Chapters / Monographs</div>
                                                 <div class="accordion-body">
-                                                    <div id="achievementBookChapters" contenteditable="true"
+                                                    <!-- <div id="achievementBookChapters" contenteditable="true"
                                                         class="form-control"
-                                                        style="width:100%; min-height:200px; padding:10px;"></div>
+                                                        style="width:100%; min-height:200px; padding:10px;"></div> -->
+                                                    <textarea id="achievementBookChapters" ckeditor="true" class="form-control"></textarea>
                                                 </div>
                                             </div>
                                             <div class="accordion-item">
                                                 <div class="accordion-header" onclick="toggleAccordion(this)">Any other
                                                     notable achievements</div>
                                                 <div class="accordion-body">
-                                                    <div id="achievementOther" contenteditable="true"
+                                                    <!-- <div id="achievementOther" contenteditable="true"
                                                         class="form-control"
-                                                        style="width:100%; min-height:200px; padding:10px;"></div>
+                                                        style="width:100%; min-height:200px; padding:10px;"></div> -->
+                                                    <textarea id="achievementOther" ckeditor="true" class="form-control"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -2949,9 +2960,10 @@
                                                 <div class="accordion-header" onclick="toggleAccordion(this)">List of
                                                     Publications</div>
                                                 <div class="accordion-body">
-                                                    <div id="achievementPublications" contenteditable="true"
+                                                    <!-- <div id="achievementPublications" contenteditable="true"
                                                         class="form-control"
-                                                        style="width:100%; min-height:200px; padding:10px;"></div>
+                                                        style="width:100%; min-height:200px; padding:10px;"></div> -->
+                                                    <textarea id="achievementPublications" ckeditor="true" class="form-control"></textarea>    
                                                 </div>
                                             </div>
                                         </div>

@@ -941,6 +941,11 @@
                 $scope.newUser = { firstName: "" };
                 $scope.errors = {};
                 $scope.isLoading = false;
+
+                // Online popup control
+                $scope.showOnlinePopup = false;
+                $scope.pageFullyLoaded = false;
+                $scope.showSupportModal = false;
                 localStorage.clear();
 
                 // Safety timeout to prevent permanent freezing
@@ -986,10 +991,6 @@
 
                     return result;
                 };
-
-                // Online popup control
-                $scope.showOnlinePopup = false;
-                $scope.pageFullyLoaded = false;
 
                 // Function to close online popup
                 $scope.closeOnlinePopup = function () {

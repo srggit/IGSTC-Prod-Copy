@@ -149,7 +149,7 @@ angular.module('cp_app').controller('ProjectDetailCtrl', function ($scope, $root
                         proposal.KeyWords__c = proposal.KeyWords__c ? proposal.KeyWords__c.replace(/&amp;/g, '&').replaceAll('&amp;amp;', '&').replace(/&#39;/g, '\'').replaceAll('&amp;gt;', '>').replaceAll('&lt;', '<').replaceAll('lt;', '<').replaceAll('&gt;', '>').replaceAll('gt;', '>').replaceAll('&amp;', '&').replaceAll('amp;', '&').replaceAll('&quot;', '\'') : proposal.KeyWords__c;
                     }
                     $scope.applicantDetails = proposal;
-                    console.log('#### $scope.applicantDetails : ', $scope.applicantDetails);
+                    // console.log('#### $scope.applicantDetails : ', $scope.applicantDetails);
 
                     $scope.userPopupChoice = $scope.applicantDetails.User_Popup_Choice__c;
 
